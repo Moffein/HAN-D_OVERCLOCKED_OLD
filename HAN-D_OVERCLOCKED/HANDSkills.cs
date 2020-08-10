@@ -72,7 +72,7 @@ namespace EntityStates.HANDOverclocked
         public override void OnEnter()
         {
             base.OnEnter();
-            this.duration = FullSwing.baseDuration / (this.attackSpeedStat + HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockAtkSpd * base.characterBody.GetBuffCount(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff));
+            this.duration = FullSwing.baseDuration / this.attackSpeedStat;
             this.modelAnimator = base.GetModelAnimator();
             Transform modelTransform = base.GetModelTransform();
             if (modelTransform)
@@ -427,8 +427,8 @@ namespace EntityStates.HANDOverclocked
         {
             base.OnEnter();
             Util.PlaySound("Play_parent_attack1_slam", base.gameObject);
-            this.duration = Slam.baseDuration / (this.attackSpeedStat + HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockAtkSpd * base.characterBody.GetBuffCount(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff));
-            this.minDuration = Slam.baseMinDuration / (this.attackSpeedStat + HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockAtkSpd * base.characterBody.GetBuffCount(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff));
+            this.duration = Slam.baseDuration / this.attackSpeedStat;
+            this.minDuration = Slam.baseMinDuration / this.attackSpeedStat;
             this.modelAnimator = base.GetModelAnimator();
             Transform modelTransform = base.GetModelTransform();
             if (modelTransform)

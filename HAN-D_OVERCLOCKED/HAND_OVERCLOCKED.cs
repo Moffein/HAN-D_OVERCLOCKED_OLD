@@ -349,8 +349,9 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.Slam.shorthopVelocityFromHit = 22.5f;
             EntityStates.HANDOverclocked.Slam.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
             EntityStates.HANDOverclocked.Slam.impactEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
-            
-            EntityStates.HANDOverclocked.Slam.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
+
+            //EntityStates.HANDOverclocked.Slam.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
+            EntityStates.HANDOverclocked.Slam.swingEffectPrefab = null;
             EntityStates.HANDOverclocked.Slam.returnToIdlePercentage = 0.443662f;
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.ChargeSlam));
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.Slam));
