@@ -63,7 +63,7 @@ namespace EntityStates.HANDOverclocked
                                 base.characterBody.AddTimedBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff, HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockBaseDecay + i * HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockDecay);
                             }
                         }
-                        base.gameObject.GetComponent<HANDController>().meleeHit(hitCount);
+                        base.gameObject.GetComponent<HANDController>().MeleeHit(hitCount);
                     }
                 }
             }
@@ -419,7 +419,7 @@ namespace EntityStates.HANDOverclocked
                             base.characterBody.AddTimedBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff, HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockBaseDecay + i * HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockDecay);
                         }
                     }
-                    base.gameObject.GetComponent<HANDController>().meleeHit(hitCount);
+                    base.gameObject.GetComponent<HANDController>().MeleeHit(hitCount);
                 }
             }
         }

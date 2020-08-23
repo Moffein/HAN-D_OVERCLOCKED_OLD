@@ -16,8 +16,9 @@ using UnityEngine;
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED", "1.0.0")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED", "0.0.2")]
     [R2APISubmoduleDependency(nameof(SurvivorAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(ResourcesAPI), nameof(BuffAPI), nameof(LanguageAPI))]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
@@ -45,6 +46,7 @@ namespace HAND_OVERCLOCKED
             SetAttributes();
             InitSkills();
             AssignSkills();
+            //MutilateBody();
         }
 
         public void Awake()
@@ -65,7 +67,8 @@ namespace HAND_OVERCLOCKED
                 descriptionToken = HANDDesc,
                 displayPrefab = HANDDisplay,
                 primaryColor = HANDColor,
-                unlockableName = ""
+                unlockableName = "",
+                outroFlavorToken = "HAND_OVERCLOCKED_OUTRO_FLAVOR"
             };
             SurvivorAPI.AddSurvivor(item);
 
@@ -232,7 +235,7 @@ namespace HAND_OVERCLOCKED
             sfx.landingSound = "play_char_land";
             sfx.fallDamageSound = "Play_MULT_shift_hit";
 
-            HANDBody.tag = "SkinReady";
+            HANDBody.tag = "Player";
 
             CharacterBody cb = HANDBody.GetComponent<CharacterBody>();
             cb.bodyFlags = CharacterBody.BodyFlags.ImmuneToExecutes;
@@ -245,6 +248,7 @@ namespace HAND_OVERCLOCKED
 
             cb.baseNameToken = "HAND_OVERCLOCKED_NAME";
             LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
+            LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "...and so it left, servos pulsing with new life.");
 
             String tldr = "<style=cMono>\r\n//--AUTO-TRANSCRIPTION FROM BASED DEPARTMENT OF UES SAFE TRAVELS--//</style>\r\n\r\n<i>*hits <color=#327FFF>Spinel Tonic</color>*</i>\n\nIs playing without the <color=#6955A6>Command</color> artifact the ultimate form of cuckoldry?\n\nI cannot think or comprehend of anything more cucked than playing without <color=#6955A6>Command</color>. Honestly, think about it rationally. You are shooting, running, jumping for like 60 minutes solely so you can get a fucking <color=#77FF16>Squid Polyp</color>. All that hard work you put into your run - dodging <style=cIsHealth>Stone Golem</style> lasers, getting annoyed by six thousand <style=cIsHealth>Lesser Wisps</color> spawning above your head, activating <color=#E5C962>Shrines of the Mountain</color> all for one simple result: your inventory is filled up with <color=#FFFFFF>Warbanners</color> and <color=#FFFFFF>Monster Tooth</color> necklaces which cost money.\n\nOn a god run? Great. A bunch of shitty items which add nothing to your run end up coming out of the <color=#E5C962>Chests</color> you buy. They get the benefit of your hard earned dosh that came from killing <style=cIsHealth>Lemurians</style>.\n\nAs a man who plays this game you are <style=cIsHealth>LITERALLY</style> dedicating two hours of your life to opening boxes and praying it's not another <color=#77FF16>Chronobauble</color>. It's the ultimate and final cuck. Think about it logically.\r\n<style=cMono>\r\nTranscriptions complete.\r\n</style>\r\n \r\n\r\n";
             LanguageAPI.Add("HAND_OVERCLOCKED_LORE", tldr);
@@ -307,8 +311,8 @@ namespace HAND_OVERCLOCKED
         private void InitSkills()
         {
             maxOverclock = 10;
-            overclockDecay = 1.5f;
-            overclockBaseDecay = 4.5f;
+            overclockDecay = 1f;
+            overclockBaseDecay = 4f;
             overclockArmor = 0f;
             overclockAtkSpd = 0.03f;
             overclockSpd = 0.03f;
@@ -320,7 +324,7 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.Overheat.baseDuration = 0.25f;
             EntityStates.HANDOverclocked.Overheat.soundString = "Play_clayboss_M1_explo";
 
-            EntityStates.HANDOverclocked.FullSwing.damageCoefficient = 4f;
+            EntityStates.HANDOverclocked.FullSwing.damageCoefficient = 3.9f;
             EntityStates.HANDOverclocked.FullSwing.baseDuration = 1f;
             EntityStates.HANDOverclocked.FullSwing.airbornVerticalForce = 0f;
             EntityStates.HANDOverclocked.FullSwing.forceMagnitude = 1200f;
@@ -566,6 +570,8 @@ namespace HAND_OVERCLOCKED
             skinDefInfo.RendererInfos = characterModel.baseRendererInfos;
             skinDefInfo.RootObject = model;
             skinDefInfo.UnlockableName = "";
+            skinDefInfo.MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0];
+            skinDefInfo.ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0];
 
             SkinDef defaultSkin = LoadoutAPI.CreateNewSkinDef(skinDefInfo);
 
@@ -573,6 +579,27 @@ namespace HAND_OVERCLOCKED
             {
                 defaultSkin,
             };
+        }
+
+        private void MutilateBody()
+        {
+            Component[] snComponents = HANDBody.GetComponentsInChildren<Transform>();
+            foreach (Transform t in snComponents)
+            {
+                //Debug.Log(t.name);
+                if (t.name == "HANDHammerMesh")
+                {
+                    //HANDController.hammer = t;
+                    break;
+                }
+            }
+            //HANDController.hammer.localScale = Vector3.zero;
+            /*rightGun.localScale = new Vector3(5f, 1.8f, 1.2f);
+            leftGun.localScale = new Vector3(0, 0, 0);
+            CharacterModel snCM = null;
+            snCM = SniperBody.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>();
+            CharacterModel.RendererInfo[] baseRendererInfos = snCM.baseRendererInfos;
+            */
         }
     }
 }

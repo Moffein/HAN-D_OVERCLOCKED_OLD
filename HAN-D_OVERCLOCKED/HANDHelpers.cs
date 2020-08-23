@@ -29,11 +29,20 @@ namespace HAND_OVERCLOCKED
     [RequireComponent(typeof(CharacterBody))]
     public class HANDController : MonoBehaviour
     {
-        public void meleeHit(int hitCount)
+        public void MeleeHit(int hitCount)
         {
-            hitCount -= 1;
+            /*hitCount -= 1;
             float hc = hitCount * 2f;
             meleeHits += hc + 6 + characterBody.GetBuffCount(HAND_OVERCLOCKED.OverclockBuff)/2.5f;
+            if (meleeHits >= meleeHitsMax)
+            {
+                meleeHits -= meleeHitsMax;
+                if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
+                {
+                    characterBody.skillLocator.special.AddOneStock();
+                }
+            }*/
+            meleeHits += 10;
             if (meleeHits >= meleeHitsMax)
             {
                 meleeHits -= meleeHitsMax;
@@ -120,7 +129,7 @@ namespace HAND_OVERCLOCKED
         private readonly BullseyeSearch search = new BullseyeSearch();
 
         private float meleeHits = 0;
-        public static float meleeHitsMax = 30;
+        public static float meleeHitsMax = 40;
     }
 
     public class HANDSwingAttack
