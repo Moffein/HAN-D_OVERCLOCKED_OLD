@@ -1,4 +1,5 @@
-﻿using R2API.Utils;
+﻿using EntityStates.Engi.EngiWeapon;
+using R2API.Utils;
 using RoR2;
 using RoR2.Networking;
 using RoR2.Orbs;
@@ -24,12 +25,18 @@ namespace HAND_OVERCLOCKED
         }
     }
 
+    public struct HANDHitResult
+    {
+        public int hitCount;
+        public bool hitBoss;
+    }
+
     [RequireComponent(typeof(TeamComponent))]
     [RequireComponent(typeof(InputBankTest))]
     [RequireComponent(typeof(CharacterBody))]
     public class HANDController : MonoBehaviour
     {
-        public void MeleeHit(int hitCount)
+        public void MeleeHit(HANDHitResult result)
         {
             /*hitCount -= 1;
             float hc = hitCount * 2f;
@@ -42,20 +49,67 @@ namespace HAND_OVERCLOCKED
                     characterBody.skillLocator.special.AddOneStock();
                 }
             }*/
-            meleeHits += 10;
+            /*meleeHits += 1;
             if (meleeHits >= meleeHitsMax)
             {
-                meleeHits -= meleeHitsMax;
+                meleeHits = 0;
                 if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
                 {
                     characterBody.skillLocator.special.AddOneStock();
                 }
             }
+            characterBody.skillLocator.special.rechargeStopwatch = meleeHits;*/
+            if (result.hitBoss)
+            {
+                meleeHits++;
+                if (meleeHits >= meleeHitsMax)
+                {
+                    meleeHits = 0;
+                    if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
+                    {
+                        characterBody.skillLocator.special.AddOneStock();
+                    }
+                }
+            }
         }
 
-        private void Awake()
+        public void BeginOverclock(float duration)
         {
-            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/HuntressTrackingIndicator"));
+            ovcTimer = duration;
+            ovcActive = true;
+            if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            {
+                characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
+            }
+            Util.PlaySound("Play_MULT_shift_start", base.gameObject);
+        }
+
+        private void EndOverclock()
+        {
+            ovcTimer = 0f;
+            ovcActive = false;
+            if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            {
+                characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
+            }
+            Util.PlaySound("Play_MULT_shift_end", base.gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            Util.PlaySound("Play_MULT_shift_end", base.gameObject);
+        }
+
+        public void ExtendOverclock(float duration)
+        {
+            if (ovcActive)
+            {
+                ovcTimer += duration;
+                if (ovcTimer > ovcTimerMax)
+                {
+                    ovcTimer = ovcTimerMax;
+                }
+            }
         }
 
         private void Start()
@@ -64,22 +118,11 @@ namespace HAND_OVERCLOCKED
             this.inputBank = base.GetComponent<InputBankTest>();
             this.teamComponent = base.GetComponent<TeamComponent>();
 
-            characterBody.skillLocator.special.RemoveAllStocks();   //HAN-D special starts at 0 stocks
-        }
+            characterBody.skillLocator.special.RemoveAllStocks();   //HAN-D DRONES starts at 0 stocks
+            characterBody.skillLocator.special.enabled = false;
 
-        public HurtBox GetTrackingTarget()
-        {
-            return this.trackingTarget;
-        }
-
-        private void OnEnable()
-        {
-            this.indicator.active = true;
-        }
-
-        private void OnDisable()
-        {
-            this.indicator.active = false;
+            ovcTimer = 0f;
+            ovcActive = false;
         }
 
         private void FixedUpdate()
@@ -102,6 +145,19 @@ namespace HAND_OVERCLOCKED
                 this.SearchForTarget(aimRay);
                 this.indicator.targetTransform = (this.trackingTarget ? this.trackingTarget.transform : null);
             }
+
+            if (ovcActive)
+            {
+                if (ovcTimer > 0f)
+                {
+                    characterBody.skillLocator.utility.rechargeStopwatch = 0f;
+                    ovcTimer -= Time.fixedDeltaTime;
+                }
+                else
+                {
+                    EndOverclock();
+                }
+            }
         }
 
         private void SearchForTarget(Ray aimRay)
@@ -117,6 +173,27 @@ namespace HAND_OVERCLOCKED
             this.search.FilterOutGameObject(base.gameObject);
             this.trackingTarget = this.search.GetResults().FirstOrDefault<HurtBox>();
         }
+
+        private void Awake()
+        {
+            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/HuntressTrackingIndicator"));
+        }
+
+        public HurtBox GetTrackingTarget()
+        {
+            return this.trackingTarget;
+        }
+
+        private void OnEnable()
+        {
+            this.indicator.active = true;
+        }
+
+        private void OnDisable()
+        {
+            this.indicator.active = false;
+        }
+
         public float maxTrackingDistance = 100f;
         public float maxTrackingAngle = 360f;
         public float trackerUpdateFrequency = 10f;
@@ -128,15 +205,21 @@ namespace HAND_OVERCLOCKED
         private Indicator indicator;
         private readonly BullseyeSearch search = new BullseyeSearch();
 
-        private float meleeHits = 0;
-        public static float meleeHitsMax = 40;
+        private int meleeHits = 0;
+        public static int meleeHitsMax = 3;
+
+        private float ovcTimer;
+        private float ovcTimerMax = 4f;
+        private bool ovcActive;
     }
 
     public class HANDSwingAttack
     {
-        public int Fire()
+        public HANDHitResult Fire()
         {
-            Collider[] array = Physics.OverlapBox(position, extents, orientation, LayerIndex.entityPrecise.mask);
+            bool bossWasHit = false;
+            HealthComponent myHC = this.attacker.GetComponent<CharacterBody>().healthComponent;
+            Collider[] array = useSphere? Physics.OverlapSphere(position, radius, LayerIndex.entityPrecise.mask) : Physics.OverlapBox(position, extents, orientation, LayerIndex.entityPrecise.mask);
             for (int i = 0; i < array.Length; i++)
             {
                 Collider collider = array[i];
@@ -144,7 +227,7 @@ namespace HAND_OVERCLOCKED
                 if (component)
                 {
                     HealthComponent healthComponent = component.healthComponent;
-                    if (healthComponent && healthComponent != this.attacker && (FriendlyFireManager.ShouldSplashHitProceed(healthComponent, this.teamIndex)))
+                    if (healthComponent && healthComponent != myHC && (FriendlyFireManager.ShouldSplashHitProceed(healthComponent, this.teamIndex)))
                     {
                         HANDSwingAttack.HitPoint hitPoint = default(HANDSwingAttack.HitPoint);
 
@@ -167,6 +250,11 @@ namespace HAND_OVERCLOCKED
             HANDSwingAttack.bestHitPoints.Clear();
             foreach (HANDSwingAttack.HitPoint hitPoint2 in array2)
             {
+                if (hitPoint2.hurtBox.healthComponent.body && hitPoint2.hurtBox.healthComponent.body.isBoss)
+                {
+                    bossWasHit = true;
+                }
+
                 DamageInfo damageInfo = new DamageInfo();
                 damageInfo.attacker = this.attacker;
                 damageInfo.inflictor = this.inflictor;
@@ -180,7 +268,7 @@ namespace HAND_OVERCLOCKED
                 damageInfo.position = hitPoint2.hitPosition;
                 damageInfo.ModifyDamageInfo(hitPoint2.hurtBox.damageModifier);
 
-                if (this.airbornVerticalForce != 0f || this.groundedVerticalForce != 0f || this.airbornHorizontalForceMult != 1f)
+                if (this.airbornVerticalForce != 0f || this.groundedVerticalForce != 0f || this.airbornHorizontalForceMult != 1f || this.landEnemyVerticalForce != 0f)
                 {
                     CharacterBody cb = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<CharacterBody>();
                     if (cb)
@@ -196,20 +284,24 @@ namespace HAND_OVERCLOCKED
                             damageInfo.force.x *= this.flyingHorizontalForceMult;
                             damageInfo.force.z *= this.flyingHorizontalForceMult;
                         }
-                        else if (cb.characterMotor && !cb.characterMotor.isGrounded)
+                        else
                         {
-                            if (this.overwriteVerticalVelocity && cb.characterMotor && cb.characterMotor.velocity.y > 0f)
+                            damageInfo.force += this.landEnemyVerticalForce * Vector3.up;
+                            if (cb.characterMotor && !cb.characterMotor.isGrounded)
                             {
-                                cb.characterMotor.velocity.y = 0f;
+                                if (this.overwriteVerticalVelocity && cb.characterMotor && cb.characterMotor.velocity.y > 0f)
+                                {
+                                    cb.characterMotor.velocity.y = 0f;
+                                }
+                                damageInfo.force += this.airbornVerticalForce * Vector3.up;
+                                damageInfo.force.x *= this.airbornHorizontalForceMult;
+                                damageInfo.force.z *= this.airbornHorizontalForceMult;
+                                airborn = true;
                             }
-                            damageInfo.force += this.airbornVerticalForce * Vector3.up;
-                            damageInfo.force.x *= this.airbornHorizontalForceMult;
-                            damageInfo.force.z *= this.airbornHorizontalForceMult;
-                            airborn = true;
-                        }
-                        else if (cb.characterMotor.isGrounded)
-                        {
-                            damageInfo.force += this.groundedVerticalForce * Vector3.up;
+                            else if (cb.characterMotor.isGrounded)
+                            {
+                                damageInfo.force += this.groundedVerticalForce * Vector3.up;
+                            }
                         }
                     }
                 }
@@ -244,7 +336,7 @@ namespace HAND_OVERCLOCKED
                     origin = hitPoint2.hitPosition
                 }, false);
             }
-            return array2.Length;
+            return new HANDHitResult() { hitCount = array2.Length, hitBoss = bossWasHit};
         }
 
         private struct HitPoint
@@ -272,7 +364,10 @@ namespace HAND_OVERCLOCKED
         public float airbornHorizontalForceMult = 1f;
         public float flyingHorizontalForceMult = 1f;
         public float airbornVerticalForce = 0f;
-        public float groundedVerticalForce = 1f;
+        public float groundedVerticalForce = 0f;
+        public float landEnemyVerticalForce = 0f;
+        public bool useSphere = false;
+        public float radius = 8f;
         private static readonly Dictionary<HealthComponent, HANDSwingAttack.HitPoint> bestHitPoints = new Dictionary<HealthComponent, HANDSwingAttack.HitPoint>();
     }
 
