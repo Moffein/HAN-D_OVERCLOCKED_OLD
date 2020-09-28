@@ -75,13 +75,26 @@ namespace HAND_OVERCLOCKED
 
         public void BeginOverclock(float duration)
         {
-            ovcTimer = duration;
-            ovcActive = true;
-            if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
-            {
-                characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
-            }
-            Util.PlaySound("Play_MULT_shift_start", base.gameObject);
+            //if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockCooldownBuff))
+            //{
+                if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+                {
+                    characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
+                    cancelledOVC = false;
+                    ovcTimer = duration;
+                    ovcActive = true;
+                    Util.PlaySound("Play_MULT_shift_start", base.gameObject);
+                    if (characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
+                    {
+                        characterBody.skillLocator.utility.stock++;
+                    }
+                }
+                else
+                {
+                    cancelledOVC = true;
+                    EndOverclock();
+                }
+            //}
         }
 
         private void EndOverclock()
@@ -91,8 +104,20 @@ namespace HAND_OVERCLOCKED
             if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
             {
                 characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
+                /*characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockCooldownBuff);
+                for (int i = 1; i <= 7; i++)
+                {
+                    characterBody.AddTimedBuff(HAND_OVERCLOCKED.OverclockCooldownBuff, i);
+                }*/
             }
             Util.PlaySound("Play_MULT_shift_end", base.gameObject);
+            if (!cancelledOVC)
+            {
+                if (characterBody.skillLocator.utility.stock > 0)
+                {
+                    characterBody.skillLocator.utility.stock--;
+                }
+            }
         }
 
         private void OnDestroy()
@@ -210,7 +235,9 @@ namespace HAND_OVERCLOCKED
 
         private float ovcTimer;
         private float ovcTimerMax = 4f;
-        private bool ovcActive;
+        public bool ovcActive;
+
+        private bool cancelledOVC = false;
     }
 
     public class HANDSwingAttack
@@ -301,6 +328,7 @@ namespace HAND_OVERCLOCKED
                             else if (cb.characterMotor.isGrounded)
                             {
                                 damageInfo.force += this.groundedVerticalForce * Vector3.up;
+                                damageInfo.force *= groundedForceMult;
                             }
                         }
                     }
@@ -309,11 +337,25 @@ namespace HAND_OVERCLOCKED
                 if (this.scaleForceMass)
                 {
                     Rigidbody rb = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<Rigidbody>();
-                    if (rb != null)
+                    if (rb)
                     {
                         damageInfo.force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), 6f);
+                        rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+                        rb.angularVelocity = new Vector3(0f, rb.angularVelocity.y, 0f);
+
+                    }
+                    CharacterMotor cm = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<CharacterMotor>();
+                    if (cm)
+                    {
+                        cm.velocity.x = 0f;
+                        cm.velocity.z = 0f;
+                        cm.rootMotion.x = 0f;
+                        cm.rootMotion.z = 0f;
                     }
                 }
+
+                
+                
 
                 if (NetworkServer.active)
                 {
@@ -325,7 +367,7 @@ namespace HAND_OVERCLOCKED
                 {
                     HANDNetworking.write.StartMessage(53);
                     HANDNetworking.write.Write(hitPoint2.hurtBox.healthComponent.gameObject);
-                    HANDNetworking.WriteDmgInfo(HANDNetworking.write, damageInfo);
+                    HANDNetworking.write.Write(damageInfo);
                     HANDNetworking.write.Write(hitPoint2.hurtBox.healthComponent != null);
                     HANDNetworking.write.FinishMessage();
                     ClientScene.readyConnection.SendWriter(HANDNetworking.write, QosChannelIndex.defaultReliable.intVal);
@@ -365,6 +407,7 @@ namespace HAND_OVERCLOCKED
         public float flyingHorizontalForceMult = 1f;
         public float airbornVerticalForce = 0f;
         public float groundedVerticalForce = 0f;
+        public float groundedForceMult = 1f;
         public float landEnemyVerticalForce = 0f;
         public bool useSphere = false;
         public float radius = 8f;

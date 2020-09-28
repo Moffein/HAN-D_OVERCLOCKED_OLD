@@ -28,6 +28,7 @@ namespace EntityStates.HANDOverclocked
                     EffectManager.SimpleMuzzleFlash(FullSwing.swingEffectPrefab, base.gameObject, "SwingCenter", true);
                     Vector3 directionFlat = base.GetAimRay().direction;
                     directionFlat.y = 0;
+                    //float vectorMagnitude = Mathf.Max(1f, base.characterMotor.velocity.magnitude / base.characterBody.baseMoveSpeed);
                     directionFlat.Normalize();
 
                     HANDHitResult hitCount = new HANDSwingAttack
@@ -46,7 +47,8 @@ namespace EntityStates.HANDOverclocked
                         airbornVerticalForce = FullSwing.airbornVerticalForce,
                         airbornHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
-                        damageType = (base.characterBody.HasBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff) && Util.CheckRoll(base.characterBody.skillLocator.special.stock*HAND_OVERCLOCKED.HAND_OVERCLOCKED.ovcShockChancePerDrone))? DamageType.Stun1s : DamageType.Generic
+                        damageType = (base.characterBody.HasBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff) && Util.CheckRoll(40f))? DamageType.Stun1s : DamageType.Generic
+                        //groundedForceMult = vectorMagnitude
                     }.Fire();
                     if (hitCount.hitCount > 0)
                     {
@@ -69,7 +71,7 @@ namespace EntityStates.HANDOverclocked
                         if (hc)
                         {
                             hc.MeleeHit(hitCount);
-                            hc.ExtendOverclock(1.2f);
+                            hc.ExtendOverclock(1.1f);
                         }
                         
                     }
@@ -1130,29 +1132,15 @@ namespace EntityStates.HANDOverclocked
             HANDController hc = base.gameObject.GetComponent<HANDController>();
             if (hc)
             {
+                if (hc.ovcActive)
+                {
+                    base.SmallHop(base.characterMotor, 24f);
+                }
                 hc.BeginOverclock(4f);
-            }
-            if (base.characterMotor && !base.characterMotor.isGrounded)
-            {
-                base.SmallHop(base.characterMotor, 24f);
             }
             /*if (NetworkServer.active)
             {
-                new BlastAttack
-                {
-                    attacker = base.gameObject,
-                    inflictor = base.gameObject,
-                    teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
-                    baseDamage = this.damageStat * 1f,
-                    baseForce = 0f,
-                    position = base.transform.position,
-                    radius = 8f,
-                    procCoefficient = 1f,
-                    falloffModel = BlastAttack.FalloffModel.None,
-                    damageType = DamageType.Shock5s,
-                    crit = RollCrit(),
-                    attackerFiltering = AttackerFiltering.NeverHit
-                }.Fire();
+                base.characterBody.AddTimedBuff(BuffIndex.CloakSpeed, 1.5f);
             }*/
         }
         public override InterruptPriority GetMinimumInterruptPriority()
@@ -1309,9 +1297,13 @@ namespace EntityStates.HANDOverclocked
                     groundedVerticalForce = Mathf.Lerp(forceMagnitudeMin,forceMagnitudeMax,chargePercent),
                     hitEffectPrefab = Slam2.hitEffectPrefab
                 }.Fire();
-                BeginHitPause();
+                if (base.characterMotor && !base.characterMotor.isGrounded)
+                {
+                    base.SmallHop(base.characterMotor, shorthopVelocityFromHit);
+                }
                 if (hitCount.hitCount > 0)
                 {
+                    BeginHitPause();
                     hc = base.gameObject.GetComponent<HANDController>();
                     if (hc)
                     {
@@ -1415,10 +1407,6 @@ namespace EntityStates.HANDOverclocked
         private void ExitHitPause()
         {
             this.hitPauseTimer = 0f;
-            if (!base.isGrounded)
-            {
-                this.storedVelocity.y = Mathf.Max(this.storedVelocity.y, Slam2.shorthopVelocityFromHit);
-            }
             base.characterMotor.velocity = this.storedVelocity;
             this.storedVelocity = Vector3.zero;
             if (this.modelAnimator)

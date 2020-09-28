@@ -30,6 +30,7 @@ namespace HAND_OVERCLOCKED
         String HANDBodyName = "";
         String HANDDesc = "";
         public static BuffIndex OverclockBuff;
+        public static BuffIndex OverclockCooldownBuff;
         //public static float overclockArmor;
         public static float overclockAtkSpd;
         public static float overclockSpd;
@@ -56,10 +57,11 @@ namespace HAND_OVERCLOCKED
             HANDDesc += "HAN-D is a robot janitor whose powerful melee attacks are sure to leave a mess!<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
             HANDDesc += "< ! > All of HAN-D's attacks can be used while sprinting." + Environment.NewLine + Environment.NewLine;
             HANDDesc += "< ! > HURT has increased knockback against airborne enemies. Use FORCED_REASSEMBLY to pop enemies in the air, then HURT them to send them flying!" + Environment.NewLine + Environment.NewLine;
-            HANDDesc += "< ! > Alternate between BLASTOFF and FORCED_REASSEMBLY to keep crowds of enemies stunned." + Environment.NewLine + Environment.NewLine;
+            HANDDesc += "< ! > Use JUMPSTART and FORCED_REASSEMBLY to reach flying enemies." + Environment.NewLine + Environment.NewLine;
             HANDDesc += "< ! > Use DRONES to heal and stay in the fight!" + Environment.NewLine + Environment.NewLine;
 
-            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>The skill gives an upwards boost when used midair.</style>");
+            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>The skill boosts you upwards when used.</style>");
+            //LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_OVERCLOCKED", "<style=cKeywordName>OVERCLOCK</style><style=cSub>While active, increases <style=cIsUtility>movement speed</style>, <style=cIsDamage>attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Increase duration by attacking enemies</style>. Takes <style=cIsUtility>7 seconds</style> to recharge.</style>");
 
             GameObject HANDDisplay = HANDBody.GetComponent<ModelLocator>().modelTransform.gameObject;
             HANDDisplay.AddComponent<MenuAnimComponent>();
@@ -89,36 +91,16 @@ namespace HAND_OVERCLOCKED
                 orig();
             };
 
-            On.RoR2.HealthComponent.TakeDamage += (orig, self, di) =>
+            On.RoR2.GlobalEventManager.OnCharacterDeath += (orig, self, report) =>
             {
-                bool attackerHAND = di.attacker != null && di.attacker.name == (HANDBodyName + "(Clone)");
-                bool  aliveBeforeHit = self.alive;
-                CharacterBody handBody = null;
-                if (attackerHAND)
+                orig(self, report);
+                if (report.victim && report.attacker && report.attackerBody && report.attackerBody.gameObject.name == (HANDBodyName + "(Clone)"))
                 {
-                    handBody = di.attacker.gameObject.GetComponent<CharacterBody>();
-                }
-                
-                /*if (self.body.HasBuff(OverclockBuff) && (di.damageType & DamageType.Freeze2s) > 0)
-                {
-                    if (di.damageType == DamageType.Freeze2s)
+                    if (report.attackerBody.skillLocator.special.stock < report.attackerBody.skillLocator.special.maxStock)
                     {
-                        di.damageType = DamageType.Generic;
-                    }
-                    else
-                    {
-                        di.damageType &= ~DamageType.Freeze2s;
-                    }
-                }*/
-
-                orig(self, di);
-                if (!self.alive && aliveBeforeHit && attackerHAND)
-                {
-                    if (handBody.skillLocator.special.stock < handBody.skillLocator.special.maxStock)
-                    {
-                        if (Util.CheckRoll(self.globalDeathEventChanceCoefficient*100f, handBody.master? handBody.master.luck : 0f, null))
+                        if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
                         {
-                            handBody.skillLocator.special.AddOneStock();
+                            report.attackerBody.skillLocator.special.AddOneStock();
                         }
                     }
                 }
@@ -255,7 +237,7 @@ namespace HAND_OVERCLOCKED
 
             CharacterBody cb = HANDBody.GetComponent<CharacterBody>();
             cb.bodyFlags = CharacterBody.BodyFlags.ImmuneToExecutes;
-            cb.subtitleNameToken = "Unpaid Janitor";
+            cb.subtitleNameToken = "Always Lending a Hand";
             cb.crosshairPrefab = Resources.Load<GameObject>("prefabs/crosshair/simpledotcrosshair");
             cb.hideCrosshair = false;
 
@@ -343,9 +325,9 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.FullSwing.damageCoefficient = 3.9f;
             EntityStates.HANDOverclocked.FullSwing.baseDuration = 1f;
             EntityStates.HANDOverclocked.FullSwing.airbornVerticalForce = 0f;
-            EntityStates.HANDOverclocked.FullSwing.forceMagnitude = 1200f;
-            EntityStates.HANDOverclocked.FullSwing.airbornHorizontalForceMult = 2.2f;
-            EntityStates.HANDOverclocked.FullSwing.flyingHorizontalForceMult = 1.1f;
+            EntityStates.HANDOverclocked.FullSwing.forceMagnitude = 1400f;
+            EntityStates.HANDOverclocked.FullSwing.airbornHorizontalForceMult = 1.8f;
+            EntityStates.HANDOverclocked.FullSwing.flyingHorizontalForceMult = 0.5f;
             EntityStates.HANDOverclocked.FullSwing.shorthopVelocityFromHit = 8f;
             EntityStates.HANDOverclocked.FullSwing.returnToIdlePercentage = 0.443662f;
             EntityStates.HANDOverclocked.FullSwing.swingEffectPrefab = null;
@@ -441,14 +423,14 @@ namespace HAND_OVERCLOCKED
 
             /*skillComponent.passiveSkill.enabled = false;
             skillComponent.passiveSkill.icon = skillComponent.utility.skillFamily.variants[0].skillDef.icon;
-            skillComponent.passiveSkill.skillNameToken = "OVERCLOCK";
-            skillComponent.passiveSkill.skillDescriptionToken = "Gain increased <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> when you have <style=cIsHealth>10 DRONES</style>.";*/
+            skillComponent.passiveSkill.skillNameToken = "ENHANCED THRUSTERS";
+            skillComponent.passiveSkill.skillDescriptionToken = "HAN-D can <style=cIsUtility>jump twice</style>.";*/
 
             SkillDef primarySkill = SkillDef.CreateInstance<SkillDef>();
             primarySkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.FullSwing));
             primarySkill.skillNameToken = "HURT";
             primarySkill.skillName = "FullSwing";
-            primarySkill.skillDescriptionToken = "Swing your hammer in a wide arc, hurting enemies for <style=cIsDamage>" + EntityStates.HANDOverclocked.FullSwing.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>.";
+            primarySkill.skillDescriptionToken = "<style=cIsUtility>Agile</style>. Swing your hammer in a wide arc, hurting enemies for <style=cIsDamage>" + EntityStates.HANDOverclocked.FullSwing.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>.";
             primarySkill.noSprint = false;
             primarySkill.canceledFromSprinting = false;
             primarySkill.baseRechargeInterval = 0f;
@@ -464,6 +446,7 @@ namespace HAND_OVERCLOCKED
             primarySkill.icon = skillComponent.primary.skillFamily.variants[0].skillDef.icon;
             primarySkill.requiredStock = 1;
             primarySkill.stockToConsume = 1;
+            primarySkill.keywordTokens = new string[] { "KEYWORD_AGILE"};
             LoadoutAPI.AddSkillDef(primarySkill);
 
             SkillDef secondarySkill = SkillDef.CreateInstance<SkillDef>();
@@ -486,7 +469,7 @@ namespace HAND_OVERCLOCKED
             secondarySkill.isBullets = false;
             secondarySkill.shootDelay = 0.08f;
             secondarySkill.beginSkillCooldownOnSkillEnd = true;
-            secondarySkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_SPRINGY", "KEYWORD_STUNNING" };
+            secondarySkill.keywordTokens = new string[] {"KEYWORD_STUNNING","KEYWORD_HANDOVERCLOCKED_SPRINGY" };
             LoadoutAPI.AddSkillDef(secondarySkill);
             #region graveyard
             /*SkillDef utilitySkill = SkillDef.CreateInstance<SkillDef>();
@@ -585,9 +568,8 @@ namespace HAND_OVERCLOCKED
             ovcSkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.Overclock));
             ovcSkill.skillNameToken = "OVERCLOCK";
             ovcSkill.skillName = "Overclock";
-            ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Gain increased <style=cIsDamage>attack speed</style> and <style=cIsUtility>movement speed</style>,";
-            ovcSkill.skillDescriptionToken += " and <style=cIsDamage>+5% stun chance</style> for each charge of <style=cIsUtility>DRONES</style>.";
-            ovcSkill.skillDescriptionToken += " <style=cIsUtility>Increase duration by attacking enemies</style>.";
+            //ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Gain a brief <style=cIsUtility>burst of speed</style> and activate <style=cIsDamage>OVERCLOCK</style> if it is available.";
+            ovcSkill.skillDescriptionToken = "Gain increased <style=cIsUtility>movement speed</style>, <style=cIsDamage>attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel OVERCLOCK to <style=cIsUtility>Spring</style> into the air.";
             ovcSkill.isCombatSkill = false;
             ovcSkill.noSprint = false;
             ovcSkill.canceledFromSprinting = false;
@@ -604,7 +586,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.activationStateMachineName = "Hook";
             ovcSkill.isBullets = false;
             ovcSkill.shootDelay = 0f;
-            ovcSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_SPRINGY", "KEYWORD_STUNNING"};
+            ovcSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_SPRINGY"};
             LoadoutAPI.AddSkillDef(ovcSkill);
 
             SkillFamily.Variant[] primaryVariants = new SkillFamily.Variant[1];
@@ -646,6 +628,18 @@ namespace HAND_OVERCLOCKED
                 name = "MoffeinHANDOverclock"
             };
             HAND_OVERCLOCKED.OverclockBuff = BuffAPI.Add(new CustomBuff(OverclockBuffDef));
+
+            BuffDef OverclockCooldownBuffDef = new BuffDef
+            {
+                buffColor = Color.gray,
+                buffIndex = BuffIndex.Count,
+                canStack = true,
+                eliteIndex = EliteIndex.None,
+                iconPath = "Textures/BuffIcons/texBuffTeslaIcon",
+                isDebuff = true,
+                name = "MoffeinHANDOverclockCooldown"
+            };
+            HAND_OVERCLOCKED.OverclockCooldownBuff = BuffAPI.Add(new CustomBuff(OverclockCooldownBuffDef));
         }
 
         private void AddSkin()    //credits to rob
