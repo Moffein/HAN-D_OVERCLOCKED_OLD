@@ -1,4 +1,5 @@
 ﻿using EntityStates.Engi.EngiWeapon;
+using R2API.Networking;
 using R2API.Utils;
 using RoR2;
 using RoR2.Networking;
@@ -34,32 +35,12 @@ namespace HAND_OVERCLOCKED
     [RequireComponent(typeof(TeamComponent))]
     [RequireComponent(typeof(InputBankTest))]
     [RequireComponent(typeof(CharacterBody))]
-    public class HANDController : MonoBehaviour
+    public class HANDController : NetworkBehaviour
     {
+        [Client]
         public void MeleeHit(HANDHitResult result)
         {
-            /*hitCount -= 1;
-            float hc = hitCount * 2f;
-            meleeHits += hc + 6 + characterBody.GetBuffCount(HAND_OVERCLOCKED.OverclockBuff)/2.5f;
-            if (meleeHits >= meleeHitsMax)
-            {
-                meleeHits -= meleeHitsMax;
-                if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
-                {
-                    characterBody.skillLocator.special.AddOneStock();
-                }
-            }*/
-            /*meleeHits += 1;
-            if (meleeHits >= meleeHitsMax)
-            {
-                meleeHits = 0;
-                if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
-                {
-                    characterBody.skillLocator.special.AddOneStock();
-                }
-            }
-            characterBody.skillLocator.special.rechargeStopwatch = meleeHits;*/
-            if (result.hitBoss)
+            if (this.hasAuthority && result.hitBoss)
             {
                 meleeHits++;
                 if (meleeHits >= meleeHitsMax)
@@ -73,51 +54,44 @@ namespace HAND_OVERCLOCKED
             }
         }
 
+        [Client]
         public void BeginOverclock(float duration)
         {
-            //if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockCooldownBuff))
-            //{
-                if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
-                {
-                    characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
-                    cancelledOVC = false;
-                    ovcTimer = duration;
-                    ovcActive = true;
-                    Util.PlaySound("Play_MULT_shift_start", base.gameObject);
-                    if (characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
-                    {
-                        characterBody.skillLocator.utility.stock++;
-                    }
-                }
-                else
-                {
-                    cancelledOVC = true;
-                    EndOverclock();
-                }
-            //}
+            if (this.hasAuthority && !characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            {
+                ovcTimer = duration;
+                NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, ovcTimer);
+                ovcActive = true;
+                startOverclockCooldown = characterBody.skillLocator.special.rechargeStopwatch;
+            }
         }
 
-        private void EndOverclock()
+        [Client]
+        public void EndOverclock()
         {
-            ovcTimer = 0f;
-            ovcActive = false;
+            if (this.hasAuthority)
+            {
+                ovcTimer = 0f;
+                ovcActive = false;
+                Util.PlaySound("Play_MULT_shift_end", base.gameObject);//disable this later
+                CmdEndOverclock();
+            }
+        }
+
+        [Command]
+        private void CmdEndOverclock()
+        {
             if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
             {
-                characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
-                /*characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockCooldownBuff);
-                for (int i = 1; i <= 7; i++)
-                {
-                    characterBody.AddTimedBuff(HAND_OVERCLOCKED.OverclockCooldownBuff, i);
-                }*/
+                characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockBuff);
             }
+            //RpcEndOverclockSound();
+        }
+
+        [ClientRpc]
+        private void RpcEndOverclockSound()
+        {
             Util.PlaySound("Play_MULT_shift_end", base.gameObject);
-            if (!cancelledOVC)
-            {
-                if (characterBody.skillLocator.utility.stock > 0)
-                {
-                    characterBody.skillLocator.utility.stock--;
-                }
-            }
         }
 
         private void OnDestroy()
@@ -125,14 +99,19 @@ namespace HAND_OVERCLOCKED
             Util.PlaySound("Play_MULT_shift_end", base.gameObject);
         }
 
+        [Client]
         public void ExtendOverclock(float duration)
         {
-            if (ovcActive)
+            if (this.hasAuthority && ovcActive)
             {
                 ovcTimer += duration;
                 if (ovcTimer > ovcTimerMax)
                 {
                     ovcTimer = ovcTimerMax;
+                }
+                if (ovcTimer > 0)
+                {
+                    NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, ovcTimer);
                 }
             }
         }
@@ -171,18 +150,50 @@ namespace HAND_OVERCLOCKED
                 this.indicator.targetTransform = (this.trackingTarget ? this.trackingTarget.transform : null);
             }
 
-            if (ovcActive)
+            TickOverclock();
+        }
+
+        [Client]
+        private void TickOverclock()
+        {
+            if (this.hasAuthority)
             {
-                if (ovcTimer > 0f)
+                if (ovcActive)
                 {
-                    characterBody.skillLocator.utility.rechargeStopwatch = 0f;
-                    ovcTimer -= Time.fixedDeltaTime;
-                }
-                else
-                {
-                    EndOverclock();
+                    if (ovcTimer > 0f)
+                    {
+                        characterBody.skillLocator.utility.rechargeStopwatch = startOverclockCooldown;
+                        if (ovcTimer > 0f)
+                        {
+                            ovcTimer -= Time.fixedDeltaTime;
+                        }
+                    }
+                    else
+                    {
+                        if (characterBody.skillLocator.utility.stock > 0)
+                        {
+                            characterBody.skillLocator.utility.stock--;
+                        }
+                        EndOverclock();
+                    }
                 }
             }
+        }
+
+        [ClientRpc]
+        public void RpcAddSpecialStock()
+        {
+            if (this.hasAuthority && characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock )
+            {
+                characterBody.skillLocator.special.AddOneStock();
+                CmdUpdateDrones(characterBody.skillLocator.special.stock);
+            }
+        }
+
+        [Command]
+        public void CmdUpdateDrones(int stock)
+        {
+            droneCount = stock;
         }
 
         private void SearchForTarget(Ray aimRay)
@@ -201,7 +212,7 @@ namespace HAND_OVERCLOCKED
 
         private void Awake()
         {
-            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/HuntressTrackingIndicator"));
+            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
         }
 
         public HurtBox GetTrackingTarget()
@@ -222,7 +233,9 @@ namespace HAND_OVERCLOCKED
         public float maxTrackingDistance = 100f;
         public float maxTrackingAngle = 360f;
         public float trackerUpdateFrequency = 10f;
+
         private HurtBox trackingTarget;
+
         private CharacterBody characterBody;
         private TeamComponent teamComponent;
         private InputBankTest inputBank;
@@ -234,10 +247,14 @@ namespace HAND_OVERCLOCKED
         public static int meleeHitsMax = 3;
 
         private float ovcTimer;
-        private float ovcTimerMax = 4f;
         public bool ovcActive;
 
-        private bool cancelledOVC = false;
+        private float ovcTimerMax = 4f;
+
+        private float startOverclockCooldown;
+
+        [SyncVar]
+        public int droneCount = 0;
     }
 
     public class HANDSwingAttack
@@ -339,7 +356,7 @@ namespace HAND_OVERCLOCKED
                     Rigidbody rb = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<Rigidbody>();
                     if (rb)
                     {
-                        damageInfo.force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), 6f);
+                        damageInfo.force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
                         rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
                         rb.angularVelocity = new Vector3(0f, rb.angularVelocity.y, 0f);
 
@@ -354,10 +371,8 @@ namespace HAND_OVERCLOCKED
                     }
                 }
 
-                
-                
-
-                if (NetworkServer.active)
+                NetworkingHelpers.DealDamage(damageInfo, hitPoint2.hurtBox, true, true, true);
+                /*if (NetworkServer.active)
                 {
                     hitPoint2.hurtBox.healthComponent.TakeDamage(damageInfo);
                     GlobalEventManager.instance.OnHitEnemy(damageInfo, hitPoint2.hurtBox.healthComponent.gameObject);
@@ -371,7 +386,7 @@ namespace HAND_OVERCLOCKED
                     HANDNetworking.write.Write(hitPoint2.hurtBox.healthComponent != null);
                     HANDNetworking.write.FinishMessage();
                     ClientScene.readyConnection.SendWriter(HANDNetworking.write, QosChannelIndex.defaultReliable.intVal);
-                }
+                }*/
 
                 EffectManager.SpawnEffect(hitEffectPrefab, new EffectData
                 {
@@ -411,81 +426,7 @@ namespace HAND_OVERCLOCKED
         public float landEnemyVerticalForce = 0f;
         public bool useSphere = false;
         public float radius = 8f;
+        public float maxForceScale = 6f;
         private static readonly Dictionary<HealthComponent, HANDSwingAttack.HitPoint> bestHitPoints = new Dictionary<HealthComponent, HANDSwingAttack.HitPoint>();
     }
-
-    public static class HANDNetworking
-    {
-        //WriteDMGInfo Credits: Rein
-        public static void WriteDmgInfo(NetworkWriter writer, DamageInfo damageInfo)
-        {
-            writer.Write(damageInfo.damage);
-            writer.Write(damageInfo.crit);
-            writer.Write(damageInfo.attacker);
-            writer.Write(damageInfo.inflictor);
-            writer.Write(damageInfo.position);
-            writer.Write(damageInfo.force);
-            writer.Write(damageInfo.procChainMask.mask);
-            writer.Write(damageInfo.procCoefficient);
-            writer.Write((byte)damageInfo.damageType);
-            writer.Write((byte)damageInfo.damageColorIndex);
-            writer.Write((byte)(damageInfo.dotIndex + 1));
-        }
-        public static NetworkWriter write = new NetworkWriter();
-    }
-
-    /*public static class OrbHelper
-    {
-        private static bool eventRegistered = false;
-        private static List<Type> orbs = new List<Type>();
-
-        public static bool AddOrb(Type t)
-        {
-            if (t == null || !t.IsSubclassOf(typeof(Orb)))
-            {
-                Debug.Log("Type is not based on Orb or is null");
-                return false;
-            }
-
-            RegisterEvent();
-
-            orbs.Add(t);
-
-            return true;
-        }
-
-        private static void RegisterEvent()
-        {
-            if (eventRegistered)
-            {
-                return;
-            }
-
-            eventRegistered = true;
-
-            On.RoR2.Orbs.OrbCatalog.GenerateCatalog += AddCustomOrbs;
-        }
-
-        private static void AddCustomOrbs(On.RoR2.Orbs.OrbCatalog.orig_GenerateCatalog orig)
-        {
-            orig();
-
-            Type[] orbCat = typeof(OrbCatalog).GetFieldValue<Type[]>("indexToType");
-            Dictionary<Type, int> typeToIndex = typeof(OrbCatalog).GetFieldValue<Dictionary<Type, int>>("typeToIndex");
-
-            int origLength = orbCat.Length;
-            int extraLength = orbs.Count;
-
-            Array.Resize<Type>(ref orbCat, origLength + extraLength);
-
-            int temp;
-
-            for (int i = 0; i < extraLength; i++)
-            {
-                temp = i + origLength;
-                orbCat[temp] = orbs[i];
-                typeToIndex.Add(orbs[i], temp);
-            }
-        }
-    }*/
 }

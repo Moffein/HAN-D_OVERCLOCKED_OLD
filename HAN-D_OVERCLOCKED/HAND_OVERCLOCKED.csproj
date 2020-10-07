@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HANDSkillsUnused.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="handprofile.pdn" />
     <None Remove="handprofile.png" />
     <None Remove="hand_overclocked_portrait" />
@@ -13,6 +17,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="hand_overclocked_portrait" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="HANDSkillsUnused.cs" />
   </ItemGroup>
 
   <ItemGroup>

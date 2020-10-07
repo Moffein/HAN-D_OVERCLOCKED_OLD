@@ -5,6 +5,7 @@ using R2API;
 using R2API.Networking;
 using R2API.Utils;
 using RoR2;
+using RoR2.CharacterAI;
 using RoR2.Orbs;
 using RoR2.Skills;
 using System;
@@ -13,17 +14,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED", "0.0.3")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.7")]
     [R2APISubmoduleDependency(nameof(SurvivorAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(ResourcesAPI), nameof(BuffAPI), nameof(LanguageAPI), nameof(NetworkingAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
         public static GameObject droneProjectileOrb = null;
+        GameObject HANDMonsterMaster = null;
         Texture2D HANDIcon = null;
         Color HANDColor = new Color(0.556862745f, 0.682352941f, 0.690196078f);
         Color OverclockColor = new Color(1.0f, 0.45f, 0f);
@@ -35,10 +38,8 @@ namespace HAND_OVERCLOCKED
         public static float overclockAtkSpd;
         public static float overclockSpd;
 
-        public static float ovcShockChancePerDrone;
-
         const String assetPrefix = "@MoffeinHAND_OVERCLOCKED";
-        const String portraitPath = assetPrefix + ":HAND_Overclocked_portrait.png";
+        const String portraitPath = assetPrefix + ":handprofile2.png";
 
         bool useBodyClone = true;
 
@@ -53,15 +54,21 @@ namespace HAND_OVERCLOCKED
         public void Awake()
         {
             SetBody();
+            RepairSwingEffect();
             AddSkin();
+            CreateMaster();
             HANDDesc += "HAN-D is a robot janitor whose powerful melee attacks are sure to leave a mess!<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-            HANDDesc += "< ! > All of HAN-D's attacks can be used while sprinting." + Environment.NewLine + Environment.NewLine;
             HANDDesc += "< ! > HURT has increased knockback against airborne enemies. Use FORCED_REASSEMBLY to pop enemies in the air, then HURT them to send them flying!" + Environment.NewLine + Environment.NewLine;
-            HANDDesc += "< ! > Use JUMPSTART and FORCED_REASSEMBLY to reach flying enemies." + Environment.NewLine + Environment.NewLine;
-            HANDDesc += "< ! > Use DRONES to heal and stay in the fight!" + Environment.NewLine + Environment.NewLine;
+            HANDDesc += "< ! > FORCED_REASSEMBLY's self-knockback can be used to reach flying enemies." + Environment.NewLine + Environment.NewLine;
+            HANDDesc += "< ! > OVERCLOCK lasts as long as you can keep hitting enemies." + Environment.NewLine + Environment.NewLine;
+            HANDDesc += "< ! > Use DRONES to heal and stay in the fight." + Environment.NewLine + Environment.NewLine;
 
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>The skill boosts you upwards when used.</style>");
-            //LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_OVERCLOCKED", "<style=cKeywordName>OVERCLOCK</style><style=cSub>While active, increases <style=cIsUtility>movement speed</style>, <style=cIsDamage>attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Increase duration by attacking enemies</style>. Takes <style=cIsUtility>7 seconds</style> to recharge.</style>");
+            LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
+            LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, unrewarded in all of its efforts.");
+            String tldr = "<style=cMono>\r\n//--AUTO-TRANSCRIPTION FROM BASED DEPARTMENT OF UES SAFE TRAVELS--//</style>\r\n\r\n<i>*hits <color=#327FFF>Spinel Tonic</color>*</i>\n\nIs playing without the <color=#6955A6>Command</color> artifact the ultimate form of cuckoldry?\n\nI cannot think or comprehend of anything more cucked than playing without <color=#6955A6>Command</color>. Honestly, think about it rationally. You are shooting, running, jumping for like 60 minutes solely so you can get a fucking <color=#77FF16>Squid Polyp</color>. All that hard work you put into your run - dodging <style=cIsHealth>Stone Golem</style> lasers, getting annoyed by six thousand <style=cIsHealth>Lesser Wisps</color> spawning above your head, activating <color=#E5C962>Shrines of the Mountain</color> all for one simple result: your inventory is filled up with <color=#FFFFFF>Warbanners</color> and <color=#FFFFFF>Monster Tooth</color> necklaces which cost money.\n\nOn a god run? Great. A bunch of shitty items which add nothing to your run end up coming out of the <color=#E5C962>Chests</color> you buy. They get the benefit of your hard earned dosh that came from killing <style=cIsHealth>Lemurians</style>.\n\nAs a man who plays this game you are <style=cIsHealth>LITERALLY</style> dedicating two hours of your life to opening boxes and praying it's not another <color=#77FF16>Chronobauble</color>. It's the ultimate and final cuck. Think about it logically.\r\n<style=cMono>\r\nTranscriptions complete.\r\n</style>\r\n \r\n\r\n";
+            LanguageAPI.Add("HAND_OVERCLOCKED_LORE", tldr);
+            LanguageAPI.Add("HANDOCBODY_DEFAULT_SKIN_NAME", "Default");
 
             GameObject HANDDisplay = HANDBody.GetComponent<ModelLocator>().modelTransform.gameObject;
             HANDDisplay.AddComponent<MenuAnimComponent>();
@@ -96,13 +103,15 @@ namespace HAND_OVERCLOCKED
                 orig(self, report);
                 if (report.victim && report.attacker && report.attackerBody && report.attackerBody.gameObject.name == (HANDBodyName + "(Clone)"))
                 {
-                    if (report.attackerBody.skillLocator.special.stock < report.attackerBody.skillLocator.special.maxStock)
+                    if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
                     {
-                        if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
+                        HANDController hc = report.attackerBody.gameObject.GetComponent<HANDController>();
+                        if (hc)
                         {
-                            report.attackerBody.skillLocator.special.AddOneStock();
+                            hc.RpcAddSpecialStock();
                         }
                     }
+                    
                 }
             };
 
@@ -237,19 +246,14 @@ namespace HAND_OVERCLOCKED
 
             CharacterBody cb = HANDBody.GetComponent<CharacterBody>();
             cb.bodyFlags = CharacterBody.BodyFlags.ImmuneToExecutes;
-            cb.subtitleNameToken = "Always Lending a Hand";
+            cb.subtitleNameToken = "Disposal Unit";
             cb.crosshairPrefab = Resources.Load<GameObject>("prefabs/crosshair/simpledotcrosshair");
             cb.hideCrosshair = false;
 
             CharacterDeathBehavior handCDB = cb.gameObject.GetComponent<CharacterDeathBehavior>();
             handCDB.deathState = Resources.Load<GameObject>("prefabs/characterbodies/WispBody").GetComponent<CharacterDeathBehavior>().deathState;
 
-            LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
-            LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, servos pulsing with new life.");
-            cb.baseNameToken = "HAN-D";//setting it to the token made it show up incorrectly?
-
-            String tldr = "<style=cMono>\r\n//--AUTO-TRANSCRIPTION FROM BASED DEPARTMENT OF UES SAFE TRAVELS--//</style>\r\n\r\n<i>*hits <color=#327FFF>Spinel Tonic</color>*</i>\n\nIs playing without the <color=#6955A6>Command</color> artifact the ultimate form of cuckoldry?\n\nI cannot think or comprehend of anything more cucked than playing without <color=#6955A6>Command</color>. Honestly, think about it rationally. You are shooting, running, jumping for like 60 minutes solely so you can get a fucking <color=#77FF16>Squid Polyp</color>. All that hard work you put into your run - dodging <style=cIsHealth>Stone Golem</style> lasers, getting annoyed by six thousand <style=cIsHealth>Lesser Wisps</color> spawning above your head, activating <color=#E5C962>Shrines of the Mountain</color> all for one simple result: your inventory is filled up with <color=#FFFFFF>Warbanners</color> and <color=#FFFFFF>Monster Tooth</color> necklaces which cost money.\n\nOn a god run? Great. A bunch of shitty items which add nothing to your run end up coming out of the <color=#E5C962>Chests</color> you buy. They get the benefit of your hard earned dosh that came from killing <style=cIsHealth>Lemurians</style>.\n\nAs a man who plays this game you are <style=cIsHealth>LITERALLY</style> dedicating two hours of your life to opening boxes and praying it's not another <color=#77FF16>Chronobauble</color>. It's the ultimate and final cuck. Think about it logically.\r\n<style=cMono>\r\nTranscriptions complete.\r\n</style>\r\n \r\n\r\n";
-            LanguageAPI.Add("HAND_OVERCLOCKED_LORE", tldr);
+            cb.baseNameToken = "HAND_OVERCLOCKED_NAME"; 
 
             cb.baseMaxHealth = 150f;
             cb.baseRegen = 2.5f;
@@ -313,14 +317,6 @@ namespace HAND_OVERCLOCKED
             //overclockArmor = 0f;
             overclockAtkSpd = 0.4f;
             overclockSpd = 0.3f;
-            ovcShockChancePerDrone = 5f;
-
-            EntityStates.HANDOverclocked.Overheat.damageCoefficient = 2.3f;
-            EntityStates.HANDOverclocked.Overheat.radius = 9f;
-            EntityStates.HANDOverclocked.Overheat.healPercent = 0.1f;
-            EntityStates.HANDOverclocked.Overheat.effectPrefab = Resources.Load<GameObject>("prefabs/effects/WilloWispExplosion");
-            EntityStates.HANDOverclocked.Overheat.baseDuration = 0.25f;
-            EntityStates.HANDOverclocked.Overheat.soundString = "Play_clayboss_M1_explo";
 
             EntityStates.HANDOverclocked.FullSwing.damageCoefficient = 3.9f;
             EntityStates.HANDOverclocked.FullSwing.baseDuration = 1f;
@@ -328,57 +324,13 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.FullSwing.forceMagnitude = 1400f;
             EntityStates.HANDOverclocked.FullSwing.airbornHorizontalForceMult = 1.8f;
             EntityStates.HANDOverclocked.FullSwing.flyingHorizontalForceMult = 0.5f;
-            EntityStates.HANDOverclocked.FullSwing.shorthopVelocityFromHit = 8f;
+            EntityStates.HANDOverclocked.FullSwing.shorthopVelocityFromHit = 10f; //old value was 8
             EntityStates.HANDOverclocked.FullSwing.returnToIdlePercentage = 0.443662f;
-            EntityStates.HANDOverclocked.FullSwing.swingEffectPrefab = null;
+            EntityStates.HANDOverclocked.FullSwing.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.FullSwing));
 
-            /*EntityStates.HANDOverclocked.BlastOff.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
-            EntityStates.HANDOverclocked.BlastOff.jumpForce = 27f;
-            EntityStates.HANDOverclocked.BlastOff.forceMagnitude = 16f;
-            EntityStates.HANDOverclocked.BlastOff.damageCoefficient = 2.5f;
-            EntityStates.HANDOverclocked.BlastOff.radius = 9f;
-            EntityStates.HANDOverclocked.BlastOff.baseDuration = 0.2f;
-            EntityStates.HANDOverclocked.BlastOff.airbornVerticalForce = -2000f;
-            LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.BlastOff));*/
-
-            /*EntityStates.HANDOverclocked.ChargeSpin.baseChargePartDuration = 0.3f;
-            EntityStates.HANDOverclocked.ChargeSpin.baseSpinCount = 1;
-            EntityStates.HANDOverclocked.ChargeSpin.maxSpinCount = 5;
-
-            EntityStates.HANDOverclocked.SpinAttack.damageCoefficient = 3f;
-            EntityStates.HANDOverclocked.SpinAttack.baseSwingDuration = 0.25f;
-            EntityStates.HANDOverclocked.SpinAttack.smallHopVelocity = 0f;
-            EntityStates.HANDOverclocked.SpinAttack.airVelocity = 18f;
-            EntityStates.HANDOverclocked.SpinAttack.groundVelocity = 24f;*/
-
-            //EntityStates.HANDOverclocked.ChargeRocketSmash.baseChargeDuration = 2f;
-            //LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.ChargeRocketSmash));
 
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.Overclock));
-
-            EntityStates.HANDOverclocked.FireRocketSmash.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
-            EntityStates.HANDOverclocked.FireRocketSmash.jumpForce = 27f;
-            EntityStates.HANDOverclocked.FireRocketSmash.forceMagnitude = 3000f;
-            EntityStates.HANDOverclocked.FireRocketSmash.damageCoefficientMin = 3f;
-            EntityStates.HANDOverclocked.FireRocketSmash.damageCoefficientMax = 12f;
-            EntityStates.HANDOverclocked.FireRocketSmash.radius = 9f;
-            EntityStates.HANDOverclocked.FireRocketSmash.baseDuration = 0.3f;
-            LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.FireRocketSmash));
-
-            /*EntityStates.HANDOverclocked.ChargeSlam.baseDuration = 1.0f;
-            EntityStates.HANDOverclocked.Slam.baseDuration = 0.8f;
-            EntityStates.HANDOverclocked.Slam.damageCoefficient = 6f;
-            EntityStates.HANDOverclocked.Slam.baseMinDuration = 0.4f;
-            EntityStates.HANDOverclocked.Slam.forceMagnitude = 2000f;
-            EntityStates.HANDOverclocked.Slam.airbornVerticalForce = -2400f;
-            EntityStates.HANDOverclocked.Slam.shorthopVelocityFromHit = 24f;
-            EntityStates.HANDOverclocked.Slam.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
-            EntityStates.HANDOverclocked.Slam.impactEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
-            EntityStates.HANDOverclocked.Slam.swingEffectPrefab = null;
-            EntityStates.HANDOverclocked.Slam.returnToIdlePercentage = 0.443662f;
-            LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.ChargeSlam));
-            LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.Slam));*/
 
             EntityStates.HANDOverclocked.ChargeSlam2.baseMinDuration = 0.6f;
             EntityStates.HANDOverclocked.ChargeSlam2.baseChargeDuration = 1.4f;
@@ -393,7 +345,7 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.Slam2.shorthopVelocityFromHit = 24f;
             EntityStates.HANDOverclocked.Slam2.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
             EntityStates.HANDOverclocked.Slam2.impactEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
-            EntityStates.HANDOverclocked.Slam2.swingEffectPrefab = null;
+            EntityStates.HANDOverclocked.Slam2.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
             EntityStates.HANDOverclocked.Slam2.returnToIdlePercentage = 0.443662f;
             EntityStates.HANDOverclocked.Slam2.minRange = 9;
             EntityStates.HANDOverclocked.Slam2.maxRange = 22;
@@ -401,30 +353,16 @@ namespace HAND_OVERCLOCKED
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.Slam2));
 
 
-            EntityStates.HANDOverclocked.FireSeekingDrone.orbDamageCoefficient = 2.7f;
-            EntityStates.HANDOverclocked.FireSeekingDrone.orbProcCoefficient = 1.0f;
+            EntityStates.HANDOverclocked.FireSeekingDrone.damageCoefficient = 2.7f;
+            EntityStates.HANDOverclocked.FireSeekingDrone.projectilePrefab = Resources.Load<GameObject>("prefabs/projectiles/EngiHarpoon");
             EntityStates.HANDOverclocked.FireSeekingDrone.baseDuration = 0.25f;
             EntityStates.HANDOverclocked.FireSeekingDrone.healPercent = 0.1f;
             EntityStates.HANDOverclocked.FireSeekingDrone.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
-
-            /*if (useBodyClone)
-            {
-                AkEvent[] events = droneProjectileOrb.GetComponents<AkEvent>();
-                foreach(AkEvent ak in events)
-                {
-                    ak.data = null;
-                }
-            }*/
         }
 
         private void AssignSkills()
         {
             SkillLocator skillComponent = HANDBody.GetComponent<SkillLocator>();
-
-            /*skillComponent.passiveSkill.enabled = false;
-            skillComponent.passiveSkill.icon = skillComponent.utility.skillFamily.variants[0].skillDef.icon;
-            skillComponent.passiveSkill.skillNameToken = "ENHANCED THRUSTERS";
-            skillComponent.passiveSkill.skillDescriptionToken = "HAN-D can <style=cIsUtility>jump twice</style>.";*/
 
             SkillDef primarySkill = SkillDef.CreateInstance<SkillDef>();
             primarySkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.FullSwing));
@@ -471,80 +409,14 @@ namespace HAND_OVERCLOCKED
             secondarySkill.beginSkillCooldownOnSkillEnd = true;
             secondarySkill.keywordTokens = new string[] {"KEYWORD_STUNNING","KEYWORD_HANDOVERCLOCKED_SPRINGY" };
             LoadoutAPI.AddSkillDef(secondarySkill);
-            #region graveyard
-            /*SkillDef utilitySkill = SkillDef.CreateInstance<SkillDef>();
-            utilitySkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.BlastOff));
-            utilitySkill.skillNameToken = "BLASTOFF";
-            utilitySkill.skillName = "BlastOff";
-            utilitySkill.skillDescriptionToken = "Engage thrusters and <style=cIsUtility>take flight</style>, <style=cIsDamage>stunning</style> nearby enemies for <style=cIsDamage>" + EntityStates.HANDOverclocked.BlastOff.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>.";
-            utilitySkill.noSprint = false;
-            utilitySkill.canceledFromSprinting = false;
-            utilitySkill.baseRechargeInterval = 5f;
-            utilitySkill.baseMaxStock = 1;
-            utilitySkill.rechargeStock = 1;
-            utilitySkill.isBullets = false;
-            utilitySkill.shootDelay = 0.1f;
-            utilitySkill.beginSkillCooldownOnSkillEnd = false;
-            utilitySkill.activationStateMachineName = "Hook";
-            utilitySkill.interruptPriority = EntityStates.InterruptPriority.Skill;
-            utilitySkill.isCombatSkill = false;
-            utilitySkill.mustKeyPress = true;
-            utilitySkill.icon = skillComponent.utility.skillFamily.variants[0].skillDef.icon;
-            utilitySkill.requiredStock = 1;
-            utilitySkill.stockToConsume = 1;
-            LoadoutAPI.AddSkillDef(utilitySkill);*/
-
-            /*SkillDef utilitySkill = SkillDef.CreateInstance<SkillDef>();
-            utilitySkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.ChargeSpin));
-            utilitySkill.skillNameToken = "OVERDRIVE";
-            utilitySkill.skillName = "Overdrive";
-            utilitySkill.skillDescriptionToken = "todo";
-            utilitySkill.noSprint = false;
-            utilitySkill.canceledFromSprinting = false;
-            utilitySkill.baseRechargeInterval = 6f;
-            utilitySkill.baseMaxStock = 1;
-            utilitySkill.rechargeStock = 1;
-            utilitySkill.isBullets = false;
-            utilitySkill.shootDelay = 0.1f;
-            utilitySkill.beginSkillCooldownOnSkillEnd = true;
-            utilitySkill.activationStateMachineName = "Weapon";
-            utilitySkill.interruptPriority = EntityStates.InterruptPriority.Skill;
-            utilitySkill.isCombatSkill = false;
-            utilitySkill.mustKeyPress = false;
-            utilitySkill.icon = skillComponent.utility.skillFamily.variants[0].skillDef.icon;
-            utilitySkill.requiredStock = 1;
-            utilitySkill.stockToConsume = 1;
-            LoadoutAPI.AddSkillDef(utilitySkill);*/
-
-            /*SkillDef utilitySkill = SkillDef.CreateInstance<SkillDef>();
-            utilitySkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.ChargeRocketSmash));
-            utilitySkill.skillNameToken = "OVERDRIVE";
-            utilitySkill.skillName = "Overdrive";
-            utilitySkill.skillDescriptionToken = "todo";
-            utilitySkill.noSprint = false;
-            utilitySkill.canceledFromSprinting = false;
-            utilitySkill.baseRechargeInterval = 6f;
-            utilitySkill.baseMaxStock = 1;
-            utilitySkill.rechargeStock = 1;
-            utilitySkill.isBullets = false;
-            utilitySkill.shootDelay = 0.1f;
-            utilitySkill.beginSkillCooldownOnSkillEnd = true;
-            utilitySkill.activationStateMachineName = "Weapon";
-            utilitySkill.interruptPriority = EntityStates.InterruptPriority.Skill;
-            utilitySkill.isCombatSkill = false;
-            utilitySkill.mustKeyPress = false;
-            utilitySkill.icon = skillComponent.utility.skillFamily.variants[0].skillDef.icon;
-            utilitySkill.requiredStock = 1;
-            utilitySkill.stockToConsume = 1;
-            LoadoutAPI.AddSkillDef(utilitySkill);*/
-            #endregion
+            
             SkillDef droneSkill = SkillDef.CreateInstance<SkillDef>();
             droneSkill.activationState = new SerializableEntityStateType(typeof(EntityStates.HANDOverclocked.FireSeekingDrone));
             droneSkill.skillNameToken = "DRONES";
             droneSkill.skillName = "Drones";
             //droneSkill.skillDescriptionToken = "Increase <style=cIsUtility>move speed</style> and <style=cIsDamage>attack speed by " + EntityStates.HANDOverclocked.Overclock.attackSpeedBonus.ToString("P0").Replace(" ", "") + "</style>.";
             //droneSkill.skillDescriptionToken += " All attacks <style=cIsHealing>give a temporary barrier on hit.</style> <style=cIsUtility>Increase duration by attacking enemies</style>.";
-            droneSkill.skillDescriptionToken = "Expell a helper drone, <style=cIsHealing>healing yourself for 10% HP</style> and dealing <style=cIsDamage>" + EntityStates.HANDOverclocked.FireSeekingDrone.orbDamageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>. ";
+            droneSkill.skillDescriptionToken = "Expel a helper drone, <style=cIsHealing>healing yourself for 10% HP</style> and dealing <style=cIsDamage>" + EntityStates.HANDOverclocked.FireSeekingDrone.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>. ";
             droneSkill.skillDescriptionToken += "<style=cIsUtility>Gain charges by killing enemies or hitting bosses.</style>";
             droneSkill.isCombatSkill = true;
             droneSkill.noSprint = false;
@@ -576,7 +448,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.baseRechargeInterval = 7f;
             ovcSkill.interruptPriority = EntityStates.InterruptPriority.PrioritySkill;
             ovcSkill.mustKeyPress = true;
-            ovcSkill.beginSkillCooldownOnSkillEnd = true;
+            ovcSkill.beginSkillCooldownOnSkillEnd = false;
             ovcSkill.baseMaxStock = 1;
             ovcSkill.fullRestockOnAssign = true;
             ovcSkill.rechargeStock = 1;
@@ -675,8 +547,6 @@ namespace HAND_OVERCLOCKED
                 }
             }
 
-            LanguageAPI.Add("HANDOCBODY_DEFAULT_SKIN_NAME", "Default");
-
             LoadoutAPI.SkinDefInfo skinDefInfo = default(LoadoutAPI.SkinDefInfo);
             skinDefInfo.BaseSkins = Array.Empty<SkinDef>();
             skinDefInfo.GameObjectActivations = Array.Empty<SkinDef.GameObjectActivation>();
@@ -705,9 +575,9 @@ namespace HAND_OVERCLOCKED
             };
         }
 
-        private void MutilateBody() //the most bootleg way of getting punch han-d back
+        /*private void MutilateBody() //the most bootleg way of getting punch han-d back
         {
-            /*Component[] snComponents = HANDBody.GetComponentsInChildren<Transform>();
+            Component[] snComponents = HANDBody.GetComponentsInChildren<Transform>();
             foreach (Transform t in snComponents)
             {
                 //Debug.Log(t.name);
@@ -723,7 +593,154 @@ namespace HAND_OVERCLOCKED
             CharacterModel snCM = null;
             snCM = SniperBody.GetComponent<ModelLocator>().modelTransform.GetComponent<CharacterModel>();
             CharacterModel.RendererInfo[] baseRendererInfos = snCM.baseRendererInfos;
-            */
+            
+        }*/
+
+        //Credits to Enigma
+        private void RepairSwingEffect()
+        {
+            GameObject HANDSwingTrail = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
+            Transform HANDSwingTrailTransform = HANDSwingTrail.transform.Find("SlamTrail");
+            
+            var HANDrenderer = HANDSwingTrailTransform.GetComponent<Renderer>();
+
+            if (HANDrenderer)
+            {
+                HANDrenderer.material = Resources.Load<GameObject>("prefabs/effects/LemurianBiteTrail").transform.Find("SwingTrail").GetComponent<Renderer>().material;
+            }
+        }
+
+        private void CreateMaster()
+        {
+            HANDMonsterMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/commandomonstermaster"), "HANDOverclockedMonsterMaster", true);
+            MasterCatalog.getAdditionalEntries += delegate (List<GameObject> list)
+            {
+                list.Add(HANDMonsterMaster);
+            };
+
+            CharacterMaster cm = HANDMonsterMaster.GetComponent<CharacterMaster>();
+            cm.bodyPrefab = HANDBody;
+
+            Component[] toDelete = HANDMonsterMaster.GetComponents<AISkillDriver>();
+            foreach (AISkillDriver asd in toDelete)
+            {
+                Destroy(asd);
+            }
+
+            AISkillDriver special = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            special.skillSlot = SkillSlot.Special;
+            special.requireSkillReady = true;
+            special.requireEquipmentReady = false;
+            special.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            special.minDistance = 0f;
+            special.maxDistance = float.PositiveInfinity;
+            special.selectionRequiresTargetLoS = false;
+            special.activationRequiresTargetLoS = false;
+            special.activationRequiresAimConfirmation = false;
+            special.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            special.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+            special.ignoreNodeGraph = false;
+            special.driverUpdateTimerOverride = 0.1f;
+            special.noRepeat = false;
+            special.shouldSprint = true;
+            special.shouldFireEquipment = false;
+            special.shouldTapButton = false;
+            special.maxUserHealthFraction = 0.6f;
+
+            AISkillDriver utility = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            utility.skillSlot = SkillSlot.Utility;
+            utility.requireSkillReady = true;
+            utility.requireEquipmentReady = false;
+            utility.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            utility.minDistance = 0f;
+            utility.maxDistance = 20f;
+            utility.selectionRequiresTargetLoS = false;
+            utility.activationRequiresTargetLoS = false;
+            utility.activationRequiresAimConfirmation = false;
+            utility.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            utility.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+            utility.ignoreNodeGraph = false;
+            utility.driverUpdateTimerOverride = 0f;
+            utility.noRepeat = true;
+            utility.shouldSprint = true;
+            utility.shouldFireEquipment = false;
+            utility.shouldTapButton = false;
+
+            AISkillDriver secondary = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            secondary.skillSlot = SkillSlot.Secondary;
+            secondary.requireSkillReady = true;
+            secondary.requireEquipmentReady = false;
+            secondary.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            secondary.minDistance = 0f;
+            secondary.maxDistance = 18f;
+            secondary.selectionRequiresTargetLoS = true;
+            secondary.activationRequiresTargetLoS = false;
+            secondary.activationRequiresAimConfirmation = false;
+            secondary.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            secondary.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+            secondary.ignoreNodeGraph = false;
+            secondary.driverUpdateTimerOverride = 2f;
+            secondary.noRepeat = true;
+            secondary.shouldSprint = true;
+            secondary.shouldFireEquipment = false;
+            secondary.shouldTapButton = false;
+
+            AISkillDriver primary = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            primary.skillSlot = SkillSlot.Primary;
+            primary.requireSkillReady = false;
+            primary.requireEquipmentReady = false;
+            primary.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            primary.minDistance = 0f;
+            primary.maxDistance = 15f;
+            primary.selectionRequiresTargetLoS = true;
+            primary.activationRequiresTargetLoS = false;
+            primary.activationRequiresAimConfirmation = false;
+            primary.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            primary.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+            primary.ignoreNodeGraph = false;
+            primary.driverUpdateTimerOverride = 0.6f;
+            primary.noRepeat = false;
+            primary.shouldSprint = true;
+            primary.shouldFireEquipment = false;
+            primary.shouldTapButton = false;
+
+            AISkillDriver chase = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            chase.skillSlot = SkillSlot.None;
+            chase.requireSkillReady = false;
+            chase.requireEquipmentReady = false;
+            chase.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            chase.minDistance = 0f;
+            chase.maxDistance = float.PositiveInfinity;
+            chase.selectionRequiresTargetLoS = false;
+            chase.activationRequiresTargetLoS = false;
+            chase.activationRequiresAimConfirmation = false;
+            chase.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            chase.aimType = AISkillDriver.AimType.AtMoveTarget;
+            chase.ignoreNodeGraph = false;
+            chase.driverUpdateTimerOverride = -1f;
+            chase.noRepeat = false;
+            chase.shouldSprint = true;
+            chase.shouldFireEquipment = false;
+            chase.shouldTapButton = false;
+
+            AISkillDriver afk = HANDMonsterMaster.AddComponent<AISkillDriver>();
+            afk.skillSlot = SkillSlot.None;
+            afk.requireSkillReady = false;
+            afk.requireEquipmentReady = false;
+            afk.moveTargetType = AISkillDriver.TargetType.NearestFriendlyInSkillRange;
+            afk.minDistance = 0f;
+            afk.maxDistance = float.PositiveInfinity;
+            afk.selectionRequiresTargetLoS = false;
+            afk.activationRequiresTargetLoS = false;
+            afk.activationRequiresAimConfirmation = false;
+            afk.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            afk.aimType = AISkillDriver.AimType.MoveDirection;
+            afk.ignoreNodeGraph = false;
+            afk.driverUpdateTimerOverride = -1f;
+            afk.noRepeat = false;
+            afk.shouldSprint = true;
+            afk.shouldFireEquipment = false;
+            afk.shouldTapButton = false;
         }
     }
 }

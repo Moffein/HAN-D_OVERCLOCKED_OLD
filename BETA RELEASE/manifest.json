@@ -1,0 +1,10 @@
+{
+  "name": "HAND_OVERCLOCKED_BETA",
+  "version_number": "0.0.7",
+  "website_url": "",
+  "description": "BEEP BOOP",
+  "dependencies": [
+    "bbepis-BepInExPack-5.3.1",
+    "tristanmcpherson-R2API-2.5.14"
+  ]
+}
