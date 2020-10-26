@@ -19,7 +19,7 @@ using UnityEngine.Networking;
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.7")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.12")]
     [R2APISubmoduleDependency(nameof(SurvivorAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(ResourcesAPI), nameof(BuffAPI), nameof(LanguageAPI), nameof(NetworkingAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
@@ -33,8 +33,7 @@ namespace HAND_OVERCLOCKED
         String HANDBodyName = "";
         String HANDDesc = "";
         public static BuffIndex OverclockBuff;
-        public static BuffIndex OverclockCooldownBuff;
-        //public static float overclockArmor;
+
         public static float overclockAtkSpd;
         public static float overclockSpd;
 
@@ -53,7 +52,12 @@ namespace HAND_OVERCLOCKED
 
         public void Awake()
         {
+            Debug.Log("\n\nSTATUS UPDATE:\n\nMACHINE ID:\t\tHAN-D\nLOCATION:\t\tAPPROACHING PETRICHOR V\nCURRENT OBJECTIVE:\tFIND AND ACTIVATE THE TELEPORTER\n\nPROVIDENCE IS DEAD.\nBLOOD IS FUEL.\nSPEED IS WAR.\n");
+
             SetBody();
+
+            //HANDBody.GetComponent<ModelLocator>().modelTransform.localScale *= 1.2f;
+
             RepairSwingEffect();
             AddSkin();
             CreateMaster();
@@ -207,7 +211,7 @@ namespace HAND_OVERCLOCKED
             {
                 if (useBodyClone)
                 {
-                    HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclocked", true);
+                    HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
                     BodyCatalog.getAdditionalEntries += delegate (List<GameObject> list)
                     {
                         list.Add(HANDBody);
@@ -324,7 +328,7 @@ namespace HAND_OVERCLOCKED
             EntityStates.HANDOverclocked.FullSwing.forceMagnitude = 1400f;
             EntityStates.HANDOverclocked.FullSwing.airbornHorizontalForceMult = 1.8f;
             EntityStates.HANDOverclocked.FullSwing.flyingHorizontalForceMult = 0.5f;
-            EntityStates.HANDOverclocked.FullSwing.shorthopVelocityFromHit = 10f; //old value was 8
+            EntityStates.HANDOverclocked.FullSwing.shorthopVelocityFromHit = 10f;
             EntityStates.HANDOverclocked.FullSwing.returnToIdlePercentage = 0.443662f;
             EntityStates.HANDOverclocked.FullSwing.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
             LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.FullSwing));
@@ -441,7 +445,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.skillNameToken = "OVERCLOCK";
             ovcSkill.skillName = "Overclock";
             //ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Gain a brief <style=cIsUtility>burst of speed</style> and activate <style=cIsDamage>OVERCLOCK</style> if it is available.";
-            ovcSkill.skillDescriptionToken = "Gain increased <style=cIsUtility>movement speed</style>, <style=cIsDamage>attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel OVERCLOCK to <style=cIsUtility>Spring</style> into the air.";
+            ovcSkill.skillDescriptionToken = "Gain <style=cIsUtility>+30% movement speed</style>, <style=cIsDamage>+40% attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel OVERCLOCK to release steam and <style=cIsUtility>Spring</style> into the air, <style=cIsDamage>igniting</style> enemies for <style=cIsDamage>200%-600% damage</style>.";
             ovcSkill.isCombatSkill = false;
             ovcSkill.noSprint = false;
             ovcSkill.canceledFromSprinting = false;
@@ -500,18 +504,6 @@ namespace HAND_OVERCLOCKED
                 name = "MoffeinHANDOverclock"
             };
             HAND_OVERCLOCKED.OverclockBuff = BuffAPI.Add(new CustomBuff(OverclockBuffDef));
-
-            BuffDef OverclockCooldownBuffDef = new BuffDef
-            {
-                buffColor = Color.gray,
-                buffIndex = BuffIndex.Count,
-                canStack = true,
-                eliteIndex = EliteIndex.None,
-                iconPath = "Textures/BuffIcons/texBuffTeslaIcon",
-                isDebuff = true,
-                name = "MoffeinHANDOverclockCooldown"
-            };
-            HAND_OVERCLOCKED.OverclockCooldownBuff = BuffAPI.Add(new CustomBuff(OverclockCooldownBuffDef));
         }
 
         private void AddSkin()    //credits to rob

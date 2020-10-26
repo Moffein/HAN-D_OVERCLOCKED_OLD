@@ -12,24 +12,15 @@ using UnityEngine.Networking;
 
 namespace HAND_OVERCLOCKED
 {
-    public class HandDroneOrb : GenericDamageOrb
-    {
-        public override void Begin()
-        {
-            this.speed = 120f;
-            base.Begin();
-        }
-
-        protected override GameObject GetOrbEffect()
-        {
-            return HAND_OVERCLOCKED.droneProjectileOrb;
-        }
-    }
-
     public struct HANDHitResult
     {
         public int hitCount;
         public bool hitBoss;
+    }
+
+    public class HANDDronePersistComponent : NetworkBehaviour
+    {
+        public int droneCount = 0;
     }
 
     [RequireComponent(typeof(TeamComponent))]
@@ -37,6 +28,12 @@ namespace HAND_OVERCLOCKED
     [RequireComponent(typeof(CharacterBody))]
     public class HANDController : NetworkBehaviour
     {
+        [Command]
+        public void CmdHeal()
+        {
+            characterBody.healthComponent.HealFraction(EntityStates.HANDOverclocked.FireSeekingDrone.healPercent, new ProcChainMask());
+        }
+
         [Client]
         public void MeleeHit(HANDHitResult result)
         {
@@ -49,6 +46,7 @@ namespace HAND_OVERCLOCKED
                     if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
                     {
                         characterBody.skillLocator.special.AddOneStock();
+                        CmdUpdateDrones(characterBody.skillLocator.special.stock);
                     }
                 }
             }
@@ -63,6 +61,8 @@ namespace HAND_OVERCLOCKED
                 NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, ovcTimer);
                 ovcActive = true;
                 startOverclockCooldown = characterBody.skillLocator.special.rechargeStopwatch;
+                ovcDuration = 0f;
+                CmdStartOverclock();
             }
         }
 
@@ -73,8 +73,18 @@ namespace HAND_OVERCLOCKED
             {
                 ovcTimer = 0f;
                 ovcActive = false;
-                Util.PlaySound("Play_MULT_shift_end", base.gameObject);//disable this later
                 CmdEndOverclock();
+            }
+        }
+
+        [Client]
+        public void ManualEndOverclock()
+        {
+            if (this.hasAuthority)
+            {
+                ovcTimer = 0f;
+                ovcActive = false;
+                CmdManualEndOverclock(ovcDuration/ovcDurationMax);
             }
         }
 
@@ -85,13 +95,56 @@ namespace HAND_OVERCLOCKED
             {
                 characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockBuff);
             }
-            //RpcEndOverclockSound();
+            RpcEndOverclockSound();
+        }
+
+        [Command]
+        private void CmdManualEndOverclock(float f)
+        {
+            if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            {
+                characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockBuff);
+            }
+
+            EffectManager.SpawnEffect(ovcCancelEffectPrefab, new EffectData
+            {
+                origin = base.transform.position,
+                scale = 10f
+            }, true);
+            new BlastAttack
+            {
+                attacker = base.gameObject,
+                inflictor = base.gameObject,
+                teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
+                baseDamage = characterBody.damage * Mathf.Lerp(ovcCancelMinDamageCoefficient,ovcCancelMaxDamageCoefficient,f),
+                baseForce = 0f,
+                position = base.transform.position,
+                radius = ovcCancelRadius,
+                falloffModel = BlastAttack.FalloffModel.None,
+                damageType = (DamageType.Stun1s | DamageType.IgniteOnHit),
+                crit = characterBody.RollCrit(),
+                attackerFiltering = AttackerFiltering.NeverHit
+            }.Fire();
+
+            RpcEndOverclockSound();
         }
 
         [ClientRpc]
         private void RpcEndOverclockSound()
         {
             Util.PlaySound("Play_MULT_shift_end", base.gameObject);
+        }
+
+        [Command]
+        private void CmdStartOverclock()
+        {
+            RpcStartOverclockSound();
+        }
+
+        [ClientRpc]
+        private void RpcStartOverclockSound()
+        {
+            Util.PlaySound("Play_MULT_shift_start", base.gameObject);
         }
 
         private void OnDestroy()
@@ -127,6 +180,24 @@ namespace HAND_OVERCLOCKED
 
             ovcTimer = 0f;
             ovcActive = false;
+
+            AddDronePersist();
+        }
+
+        [Client]
+        private void AddDronePersist()
+        {
+            dronePersist = characterBody.master.gameObject.GetComponent<HANDDronePersistComponent>();
+            if (!dronePersist)
+            {
+                dronePersist = characterBody.master.gameObject.AddComponent<HANDDronePersistComponent>();
+            }
+            else
+            {
+                characterBody.skillLocator.special.stock = dronePersist.droneCount;
+                CmdUpdateDrones(dronePersist.droneCount);
+            }
+            hasDronePersist = true;
         }
 
         private void FixedUpdate()
@@ -138,6 +209,10 @@ namespace HAND_OVERCLOCKED
             else if (!this.indicator.active)
             {
                 OnEnable();
+            }
+            if (hasDronePersist)
+            {
+                dronePersist.droneCount = characterBody.skillLocator.special.stock;
             }
 
             this.trackerUpdateStopwatch += Time.fixedDeltaTime;
@@ -160,6 +235,15 @@ namespace HAND_OVERCLOCKED
             {
                 if (ovcActive)
                 {
+                    if (ovcDuration < ovcDurationMax)
+                    {
+                        ovcDuration += Time.fixedDeltaTime;
+                        if (ovcDuration > ovcDurationMax)
+                        {
+                            ovcDuration = ovcDurationMax;
+                        }
+                    }
+
                     if (ovcTimer > 0f)
                     {
                         characterBody.skillLocator.utility.rechargeStopwatch = startOverclockCooldown;
@@ -194,6 +278,17 @@ namespace HAND_OVERCLOCKED
         public void CmdUpdateDrones(int stock)
         {
             droneCount = stock;
+            RpcUpdateDrones(stock);
+        }
+
+        [ClientRpc]
+        public void RpcUpdateDrones(int stock)
+        {
+            if (!this.hasAuthority)
+            {
+                droneCount = stock;
+                characterBody.skillLocator.special.stock = stock;
+            }
         }
 
         private void SearchForTarget(Ray aimRay)
@@ -242,6 +337,7 @@ namespace HAND_OVERCLOCKED
         private float trackerUpdateStopwatch;
         private Indicator indicator;
         private readonly BullseyeSearch search = new BullseyeSearch();
+        private HANDDronePersistComponent dronePersist;
 
         private int meleeHits = 0;
         public static int meleeHitsMax = 3;
@@ -253,8 +349,18 @@ namespace HAND_OVERCLOCKED
 
         private float startOverclockCooldown;
 
+        private bool hasDronePersist = false;
+
         [SyncVar]
         public int droneCount = 0;
+
+        public float ovcDuration;
+        public static float ovcDurationMax = 6f; //time it takes to build up max ovc cancel damage
+
+        public static float ovcCancelMinDamageCoefficient = 2f;
+        public static float ovcCancelMaxDamageCoefficient = 6f;
+        public static float ovcCancelRadius = 10f;
+        public static GameObject ovcCancelEffectPrefab = EntityStates.Commando.CommandoWeapon.CastSmokescreenNoDelay.smokescreenEffectPrefab;
     }
 
     public class HANDSwingAttack
@@ -312,81 +418,9 @@ namespace HAND_OVERCLOCKED
                 damageInfo.position = hitPoint2.hitPosition;
                 damageInfo.ModifyDamageInfo(hitPoint2.hurtBox.damageModifier);
 
-                if (this.airbornVerticalForce != 0f || this.groundedVerticalForce != 0f || this.airbornHorizontalForceMult != 1f || this.landEnemyVerticalForce != 0f)
-                {
-                    CharacterBody cb = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<CharacterBody>();
-                    if (cb)
-                    {
-                        bool airborn = false;
-                        if (cb.isFlying)
-                        {
-                            if (this.overwriteVerticalVelocity && cb.characterMotor && cb.characterMotor.velocity.y > 0f)
-                            {
-                                cb.characterMotor.velocity.y = 0f;
-                            }
-                            damageInfo.force += this.airbornVerticalForce * Vector3.up;
-                            damageInfo.force.x *= this.flyingHorizontalForceMult;
-                            damageInfo.force.z *= this.flyingHorizontalForceMult;
-                        }
-                        else
-                        {
-                            damageInfo.force += this.landEnemyVerticalForce * Vector3.up;
-                            if (cb.characterMotor && !cb.characterMotor.isGrounded)
-                            {
-                                if (this.overwriteVerticalVelocity && cb.characterMotor && cb.characterMotor.velocity.y > 0f)
-                                {
-                                    cb.characterMotor.velocity.y = 0f;
-                                }
-                                damageInfo.force += this.airbornVerticalForce * Vector3.up;
-                                damageInfo.force.x *= this.airbornHorizontalForceMult;
-                                damageInfo.force.z *= this.airbornHorizontalForceMult;
-                                airborn = true;
-                            }
-                            else if (cb.characterMotor.isGrounded)
-                            {
-                                damageInfo.force += this.groundedVerticalForce * Vector3.up;
-                                damageInfo.force *= groundedForceMult;
-                            }
-                        }
-                    }
-                }
-
-                if (this.scaleForceMass)
-                {
-                    Rigidbody rb = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<Rigidbody>();
-                    if (rb)
-                    {
-                        damageInfo.force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
-                        rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
-                        rb.angularVelocity = new Vector3(0f, rb.angularVelocity.y, 0f);
-
-                    }
-                    CharacterMotor cm = hitPoint2.hurtBox.healthComponent.gameObject.GetComponent<CharacterMotor>();
-                    if (cm)
-                    {
-                        cm.velocity.x = 0f;
-                        cm.velocity.z = 0f;
-                        cm.rootMotion.x = 0f;
-                        cm.rootMotion.z = 0f;
-                    }
-                }
+                damageInfo.force = ModifyForce(hitPoint2.hurtBox.healthComponent.gameObject, damageInfo.force);
 
                 NetworkingHelpers.DealDamage(damageInfo, hitPoint2.hurtBox, true, true, true);
-                /*if (NetworkServer.active)
-                {
-                    hitPoint2.hurtBox.healthComponent.TakeDamage(damageInfo);
-                    GlobalEventManager.instance.OnHitEnemy(damageInfo, hitPoint2.hurtBox.healthComponent.gameObject);
-                    GlobalEventManager.instance.OnHitAll(damageInfo, hitPoint2.hurtBox.healthComponent.gameObject);
-                }
-                else
-                {
-                    HANDNetworking.write.StartMessage(53);
-                    HANDNetworking.write.Write(hitPoint2.hurtBox.healthComponent.gameObject);
-                    HANDNetworking.write.Write(damageInfo);
-                    HANDNetworking.write.Write(hitPoint2.hurtBox.healthComponent != null);
-                    HANDNetworking.write.FinishMessage();
-                    ClientScene.readyConnection.SendWriter(HANDNetworking.write, QosChannelIndex.defaultReliable.intVal);
-                }*/
 
                 EffectManager.SpawnEffect(hitEffectPrefab, new EffectData
                 {
@@ -394,6 +428,11 @@ namespace HAND_OVERCLOCKED
                 }, false);
             }
             return new HANDHitResult() { hitCount = array2.Length, hitBoss = bossWasHit};
+        }
+
+        public virtual Vector3 ModifyForce(GameObject go, Vector3 force)
+        {
+            return force;
         }
 
         private struct HitPoint
@@ -412,21 +451,119 @@ namespace HAND_OVERCLOCKED
         public float baseDamage;
         public Vector3 force;
         public bool crit;
-        public bool scaleForceMass = false;
-        public bool overwriteVerticalVelocity = false;
+        
         public DamageType damageType;
         public DamageColorIndex damageColorIndex;
         public ProcChainMask procChainMask;
         public float procCoefficient = 1f;
-        public float airbornHorizontalForceMult = 1f;
-        public float flyingHorizontalForceMult = 1f;
-        public float airbornVerticalForce = 0f;
-        public float groundedVerticalForce = 0f;
-        public float groundedForceMult = 1f;
-        public float landEnemyVerticalForce = 0f;
+
         public bool useSphere = false;
         public float radius = 8f;
-        public float maxForceScale = 6f;
+
+
         private static readonly Dictionary<HealthComponent, HANDSwingAttack.HitPoint> bestHitPoints = new Dictionary<HealthComponent, HANDSwingAttack.HitPoint>();
+    }
+
+    public class HANDSwingAttackPrimary : HANDSwingAttack
+    {
+        public override Vector3 ModifyForce(GameObject go, Vector3 force)
+        {
+            if (go)
+            {
+                CharacterBody cb = go.GetComponent<CharacterBody>();   
+                if (cb)
+                {
+                    if(cb.isFlying)
+                    {
+                        force.x *= this.flyingHorizontalForceMult;
+                        force.z *= this.flyingHorizontalForceMult;
+                    }
+                    else if (cb.characterMotor)
+                    {
+                        if (!cb.characterMotor.isGrounded)    //Multiply launched enemy force
+                        {
+                            force.x *= this.airborneHorizontalForceMult;
+                            force.z *= this.airborneHorizontalForceMult;
+                        }
+                        else if (cb.isChampion) //deal less knockback against bosses if they're on the ground
+                        {
+                            force.x *= bossGroundedForceMult;
+                            force.z *= bossGroundedForceMult;
+                        }
+                    }
+                }
+
+                //Scale force to match mass and reset current horizontal velocity to prevent launching at high attack speeds
+                Rigidbody rb = cb.rigidbody;
+                if (rb)
+                {
+                    //Debug.Log("Mass: " + rb.mass);
+                    force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
+                    rb.velocity = new Vector3(0f, rb.velocity.y, 0f);//NEEDS TO BE FIXED IN MULTIPLAYER
+                    rb.angularVelocity = new Vector3(0f, rb.angularVelocity.y, 0f);//NEEDS TO BE FIXED IN MULTIPLAYER
+
+                }
+                CharacterMotor cm = cb.characterMotor;
+                if (cm)//NEEDS TO BE FIXED IN MULTIPLAYER
+                {
+                    cm.velocity.x = 0f;
+                    cm.velocity.z = 0f;
+                    cm.rootMotion.x = 0f;
+                    cm.rootMotion.z = 0f;
+                }
+            }
+            return force;
+        }
+        public float maxForceScale = 6f;
+        public float airborneHorizontalForceMult = 1f;
+        public float flyingHorizontalForceMult = 1f;
+        public float bossGroundedForceMult = 1f;
+    }
+
+    public class HANDSwingAttackSecondary : HANDSwingAttack
+    {
+        public override Vector3 ModifyForce(GameObject go, Vector3 force)
+        {
+            if (go)
+            {
+                //Use separate knockback values when dealing with airborne/grounded targets.
+                CharacterBody cb = go.GetComponent<CharacterBody>();
+                if (cb)
+                {
+                    if (cb.characterMotor && cb.characterMotor.isGrounded)
+                    {
+                        force += groundedLaunchForce*Vector3.up;
+                    }
+                    else
+                    {
+                        force += airborneLaunchForce * Vector3.up;
+                        if (cb.characterMotor && cb.characterMotor.velocity.y > 0f)
+                        {
+                            cb.characterMotor.velocity.y = 0f;  //NEEDS TO BE FIXED IN MULTIPLAYER
+                        }
+                    }
+                }
+
+                //Scale force to match mass
+                Rigidbody rb = cb.rigidbody;
+                if (rb)
+                {
+                    //Debug.Log("Mass: " + rb.mass);
+                    force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
+                    if (rb.velocity.y > 0f)
+                    {
+                        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);    //NEEDS TO BE FIXED IN MULTIPLAYER
+                    }
+                    if (rb.angularVelocity.y > 0f)
+                    {
+                        rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);   //NEEDS TO BE FIXED IN MULTIPLAYER
+                    }
+                }
+            }
+            return force;
+        }
+        public float maxForceScale = 6f;
+        public float groundedLaunchForce = 0f;
+        public float airborneLaunchForce = 0f;
     }
 }

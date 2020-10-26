@@ -20,22 +20,19 @@ namespace EntityStates.HANDOverclocked
     {
         private void DealDamage()
         {
-            if (!this.hasSwung && base.isAuthority)
+            if (!this.hasSwung)
             {
                 Util.PlaySound("Play_loader_m1_swing", base.gameObject);
-                bool hitEnemy = false;
                 if (base.isAuthority)
                 {
                     this.hasSwung = true;
                     EffectManager.SimpleMuzzleFlash(FullSwing.swingEffectPrefab, base.gameObject, "SwingCenter", true);
                     Vector3 directionFlat = base.GetAimRay().direction;
                     directionFlat.y = 0;
-                    //float vectorMagnitude = Mathf.Max(1f, base.characterMotor.velocity.magnitude / base.characterBody.baseMoveSpeed);
                     directionFlat.Normalize();
 
-                    HANDHitResult hitCount = new HANDSwingAttack
+                    HANDHitResult hitCount = new HANDSwingAttackPrimary
                     {
-                        scaleForceMass = true,
                         attacker = base.gameObject,
                         inflictor = base.gameObject,
                         teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
@@ -46,29 +43,16 @@ namespace EntityStates.HANDOverclocked
                         procCoefficient = 1f,
                         crit = RollCrit(),
                         force = FullSwing.forceMagnitude * directionFlat,
-                        airbornVerticalForce = FullSwing.airbornVerticalForce,
-                        airbornHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
+                        airborneHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
-                        damageType = (base.characterBody.HasBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff) && Util.CheckRoll(40f))? DamageType.Stun1s : DamageType.Generic
-                        //groundedForceMult = vectorMagnitude
+                        damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
+                        maxForceScale = 20f,
+                        bossGroundedForceMult = 0.5f
                     }.Fire();
                     if (hitCount.hitCount > 0)
                     {
-                        hitEnemy = true;
+                        Util.PlaySound("Play_MULT_shift_hit", base.gameObject);
                         BeginHitPause();
-                        /*if (NetworkServer.active)
-                        {
-                            int ovcCount = base.characterBody.GetBuffCount(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff);
-                            base.characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff);
-                            if (ovcCount < HAND_OVERCLOCKED.HAND_OVERCLOCKED.maxOverclock)
-                            {
-                                ovcCount++;
-                            }
-                            for (int i = 0; i < ovcCount; i++)
-                            {
-                                base.characterBody.AddTimedBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff, HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockBaseDecay + i * HAND_OVERCLOCKED.HAND_OVERCLOCKED.overclockDecay);
-                            }
-                        }*/
                         hc = base.gameObject.GetComponent<HANDController>();
                         if (hc)
                         {
@@ -77,10 +61,6 @@ namespace EntityStates.HANDOverclocked
                         }
                         
                     }
-                }
-                if (hitEnemy)
-                {
-                    Util.PlaySound("Play_MULT_shift_hit", base.gameObject);
                 }
             }
         }
@@ -105,6 +85,7 @@ namespace EntityStates.HANDOverclocked
                 if (this.modelAnimator.GetCurrentAnimatorStateInfo(layerIndex).IsName("FullSwing3") || this.modelAnimator.GetCurrentAnimatorStateInfo(layerIndex).IsName("FullSwing1"))
                 {
                     base.PlayCrossfade("Gesture", "FullSwing2", "FullSwing.playbackRate", this.duration / (1f - FullSwing.returnToIdlePercentage), 0.2f);
+                    secondSwing = true;
                 }
                 else if (this.modelAnimator.GetCurrentAnimatorStateInfo(layerIndex).IsName("FullSwing2"))
                 {
@@ -113,14 +94,13 @@ namespace EntityStates.HANDOverclocked
                 else
                 {
                     base.PlayCrossfade("Gesture", "FullSwing1", "FullSwing.playbackRate", this.duration / (1f - FullSwing.returnToIdlePercentage), 0.2f);
+                    firstSwing = true;
                 }
             }
             if (base.characterBody)
             {
                 base.characterBody.SetAimTimer(2f);
             }
-            //Pull disabled because it was splatting Greater Wisps and was generally unworkable
-            //PullEnemies(base.transform.position, base.GetAimRay().direction, FullSwing.pullAngle, FullSwing.pullDistance, FullSwing.pullForce, base.GetTeam());
         }
 
         private void BeginHitPause()
@@ -225,6 +205,9 @@ namespace EntityStates.HANDOverclocked
         private HANDController hc;
 
         public static float shorthopVelocityFromHit;
+
+        private bool secondSwing = false;
+        private bool firstSwing = false;
     }
 
     public class FireSeekingDrone : BaseState
@@ -236,14 +219,15 @@ namespace EntityStates.HANDOverclocked
             {
                 origin = base.transform.position
             }, false);
-            base.healthComponent.HealFraction(FireSeekingDrone.healPercent, new ProcChainMask());
+            
             hasFired = false;
             Transform modelTransform = base.GetModelTransform();
             this.handController = base.GetComponent<HANDController>();
             Util.PlaySound("Play_drone_repair", base.gameObject);
-            if (this.handController)
+            if (base.isAuthority && this.handController)
             {
                 this.initialOrbTarget = this.handController.GetTrackingTarget();
+                handController.CmdHeal();
             }
             this.duration = baseDuration / this.attackSpeedStat;
             if (base.characterBody)
@@ -257,7 +241,6 @@ namespace EntityStates.HANDOverclocked
         {
             if (!hasFired && base.isAuthority)
             {
-                //this.FireOrbDrone();
                 FireMissile(this.initialOrbTarget, base.inputBank.aimOrigin);
             }
             if (base.isAuthority && this.handController)
@@ -265,11 +248,6 @@ namespace EntityStates.HANDOverclocked
                 this.handController.CmdUpdateDrones(characterBody.skillLocator.special.stock);
             }
             base.OnExit();
-        }
-
-        protected virtual GenericDamageOrb CreateDroneOrb()
-        {
-            return new HandDroneOrb();
         }
 
         private void FireMissile(HurtBox target, Vector3 position)
@@ -280,7 +258,7 @@ namespace EntityStates.HANDOverclocked
             fireProjectileInfo.rotation = Quaternion.LookRotation(Vector3.up);
             fireProjectileInfo.crit = base.RollCrit();
             fireProjectileInfo.damage = this.damageStat * FireSeekingDrone.damageCoefficient;
-            fireProjectileInfo.damageColorIndex = DamageColorIndex.Default;
+            fireProjectileInfo.damageColorIndex = DamageColorIndex.Item;
             fireProjectileInfo.owner = base.gameObject;
             fireProjectileInfo.projectilePrefab = FireSeekingDrone.projectilePrefab;
             if (target)
@@ -290,36 +268,11 @@ namespace EntityStates.HANDOverclocked
             ProjectileManager.instance.FireProjectile(fireProjectileInfo);
         }
 
-        /*private void FireOrbDrone()
-        {
-            hasFired = true;
-            if (initialOrbTarget == null || !NetworkServer.active)
-            {
-                return;
-            }
-  
-            GenericDamageOrb genericDamageOrb = this.CreateDroneOrb();
-            genericDamageOrb.damageValue = base.characterBody.damage * orbDamageCoefficient;
-            genericDamageOrb.isCrit = this.isCrit;
-            genericDamageOrb.teamIndex = TeamComponent.GetObjectTeam(base.gameObject);
-            genericDamageOrb.attacker = base.gameObject;
-            genericDamageOrb.procCoefficient = orbProcCoefficient;
-            HurtBox hurtBox = this.initialOrbTarget;
-            if (hurtBox)
-            {
-                EffectManager.SimpleMuzzleFlash(muzzleflashEffectPrefab, base.gameObject, muzzleString, true);
-                genericDamageOrb.origin = base.transform.position;
-                genericDamageOrb.target = hurtBox;
-                OrbManager.instance.AddOrb(genericDamageOrb);
-            }
-        }*/
-
         public override void FixedUpdate()
         {
             base.FixedUpdate();
             if (!hasFired && base.isAuthority)
             {
-                //this.FireOrbDrone();
                 FireMissile(this.initialOrbTarget, base.inputBank.aimOrigin);
             }
             if (base.fixedAge > this.duration && base.isAuthority)
@@ -339,8 +292,6 @@ namespace EntityStates.HANDOverclocked
 
         public static float damageCoefficient;
         public static GameObject projectilePrefab;
-        //public static float orbDamageCoefficient;
-        //public static float orbProcCoefficient;
         public static string muzzleString;
         public static GameObject muzzleflashEffectPrefab;
         public static GameObject effectPrefab;
@@ -366,25 +317,17 @@ namespace EntityStates.HANDOverclocked
                     {
                         base.SmallHop(base.characterMotor, 24f);
                     }
-                    hc.EndOverclock();
+                    hc.ManualEndOverclock();
                 }
                 else
                 {
                     hc.BeginOverclock(4f);
-                    if(base.isAuthority)//remove this check to properly network the sound
-                    {
-                        Util.PlaySound("Play_MULT_shift_start", base.gameObject);
-                    }
                     if (base.isAuthority && characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
                     {
                         characterBody.skillLocator.utility.stock++;
                     }
                 }
             }
-            /*if (NetworkServer.active)
-            {
-                base.characterBody.AddTimedBuff(BuffIndex.CloakSpeed, 1.5f);
-            }*/
         }
         public override InterruptPriority GetMinimumInterruptPriority()
         {
@@ -523,9 +466,8 @@ namespace EntityStates.HANDOverclocked
 
                 if (base.isAuthority)
                 {
-                    HANDHitResult hitCount = new HAND_OVERCLOCKED.HANDSwingAttack
+                    HANDHitResult hitCount = new HAND_OVERCLOCKED.HANDSwingAttackSecondary
                     {
-                        scaleForceMass = true,
                         attacker = base.gameObject,
                         inflictor = base.gameObject,
                         teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
@@ -536,11 +478,11 @@ namespace EntityStates.HANDOverclocked
                         procCoefficient = 1f,
                         crit = RollCrit(),
                         force = Vector3.zero,
-                        airbornVerticalForce = Mathf.Lerp(airbornVerticalForceMin, airbornVerticalForceMax, chargePercent),
+                        airborneLaunchForce = Mathf.Lerp(airbornVerticalForceMin, airbornVerticalForceMax, chargePercent),
                         damageType = DamageType.Stun1s,
-                        overwriteVerticalVelocity = true,
-                        groundedVerticalForce = Mathf.Lerp(forceMagnitudeMin, forceMagnitudeMax, chargePercent),
-                        hitEffectPrefab = Slam2.hitEffectPrefab
+                        groundedLaunchForce = Mathf.Lerp(forceMagnitudeMin, forceMagnitudeMax, chargePercent),
+                        hitEffectPrefab = Slam2.hitEffectPrefab,
+                        maxForceScale = 20f
                     }.Fire();
                     if (base.characterMotor && !base.characterMotor.isGrounded)
                     {
