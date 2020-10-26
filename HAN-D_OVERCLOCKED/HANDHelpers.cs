@@ -58,7 +58,7 @@ namespace HAND_OVERCLOCKED
             if (this.hasAuthority && !characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
             {
                 ovcTimer = duration;
-                NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, ovcTimer);
+                NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, -1);
                 ovcActive = true;
                 startOverclockCooldown = characterBody.skillLocator.special.rechargeStopwatch;
                 ovcDuration = 0f;
@@ -93,7 +93,7 @@ namespace HAND_OVERCLOCKED
         {
             if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
             {
-                characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockBuff);
+                characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
             }
             RpcEndOverclockSound();
         }
@@ -121,7 +121,7 @@ namespace HAND_OVERCLOCKED
                 position = base.transform.position,
                 radius = ovcCancelRadius,
                 falloffModel = BlastAttack.FalloffModel.None,
-                damageType = (DamageType.Stun1s | DamageType.IgniteOnHit),
+                damageType = (DamageType.Stun1s),
                 crit = characterBody.RollCrit(),
                 attackerFiltering = AttackerFiltering.NeverHit
             }.Fire();
@@ -161,10 +161,6 @@ namespace HAND_OVERCLOCKED
                 if (ovcTimer > ovcTimerMax)
                 {
                     ovcTimer = ovcTimerMax;
-                }
-                if (ovcTimer > 0)
-                {
-                    NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, ovcTimer);
                 }
             }
         }

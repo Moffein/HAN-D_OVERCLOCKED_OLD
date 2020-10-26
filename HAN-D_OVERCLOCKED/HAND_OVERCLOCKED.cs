@@ -445,7 +445,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.skillNameToken = "OVERCLOCK";
             ovcSkill.skillName = "Overclock";
             //ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Gain a brief <style=cIsUtility>burst of speed</style> and activate <style=cIsDamage>OVERCLOCK</style> if it is available.";
-            ovcSkill.skillDescriptionToken = "Gain <style=cIsUtility>+30% movement speed</style>, <style=cIsDamage>+40% attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel OVERCLOCK to release steam and <style=cIsUtility>Spring</style> into the air, <style=cIsDamage>igniting</style> enemies for <style=cIsDamage>200%-600% damage</style>.";
+            ovcSkill.skillDescriptionToken = "Gain <style=cIsUtility>+30% movement speed</style>, <style=cIsDamage>+40% attack speed</style>, and <style=cIsDamage>stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel OVERCLOCK to release steam and <style=cIsUtility>Spring</style> into the air, damaging enemies for <style=cIsDamage>200%-600% damage</style>.";
             ovcSkill.isCombatSkill = false;
             ovcSkill.noSprint = false;
             ovcSkill.canceledFromSprinting = false;
