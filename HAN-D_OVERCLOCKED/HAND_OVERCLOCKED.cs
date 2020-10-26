@@ -259,7 +259,7 @@ namespace HAND_OVERCLOCKED
 
             cb.baseNameToken = "HAND_OVERCLOCKED_NAME"; 
 
-            cb.baseMaxHealth = 150f;
+            cb.baseMaxHealth = 160f;
             cb.baseRegen = 2.5f;
             cb.baseMaxShield = 0f;
             cb.baseMoveSpeed = 7f;
