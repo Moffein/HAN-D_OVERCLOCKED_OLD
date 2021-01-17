@@ -12,7 +12,12 @@
   <ItemGroup>
     <None Remove="handprofile.pdn" />
     <None Remove="handprofile.png" />
+    <None Remove="hand_assets" />
     <None Remove="hand_overclocked_portrait" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="hand_assets" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,9 +77,6 @@
     <Reference Include="R2API">
       <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API\R2API.dll</HintPath>
     </Reference>
-    <Reference Include="Rewired_Core">
-      <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\Rewired_Core.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -103,5 +105,9 @@
       <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\Risk of Rain 2_Data\Managed\Wwise.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(Username)&quot; == &quot;User1&quot; copy /Y &quot;$(TargetPath)&quot; &quot;F:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\plugins&quot;&#xD;&#xA;if &quot;$(Username)&quot; == &quot;kurog&quot; copy /Y &quot;$(TargetPath)&quot; &quot;E:\Steam\steamapps\common\Risk of Rain 2\BepInEx\plugins\&quot;&#xD;&#xA;if &quot;$(Username)&quot; == &quot;User3&quot; copy /Y &quot;$(TargetPath)&quot; &quot;{RoR2Path}&quot;&#xD;&#xA;" />
+  </Target>
 
 </Project>

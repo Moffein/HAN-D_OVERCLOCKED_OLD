@@ -24,10 +24,180 @@ namespace HAND_OVERCLOCKED
     }
 
     [RequireComponent(typeof(TeamComponent))]
+    [RequireComponent(typeof(CharacterBody))]
+    public class HANDOverclockController : NetworkBehaviour, IOnDamageDealtServerReceiver
+    {
+        private CharacterBody characterBody;
+        private TeamComponent teamComponent;
+        private InputBankTest inputBank;
+        public void OnDamageDealtServer(DamageReport damageReport)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [RequireComponent(typeof(InputBankTest))]
     [RequireComponent(typeof(CharacterBody))]
-    public class HANDController : NetworkBehaviour
+    public class HANDDroneController : NetworkBehaviour, IOnKilledOtherServerReceiver
     {
+        public float maxTrackingDistance = 100f;
+        public float maxTrackingAngle = 360f;
+        public float trackerUpdateFrequency = 10f;
+
+        private float trackerUpdateStopwatch;
+        private HurtBox trackingTarget;
+        private readonly BullseyeSearch search = new BullseyeSearch();
+
+        private TeamComponent team;
+        private InputBankTest input;
+        private CharacterBody body;
+        private SkillLocator locator;
+
+        [SyncVar]
+        private int droneCount;
+
+        private bool hasDronePersist;
+        private HANDDronePersistComponent dronePersist;
+
+        private Indicator indicator;
+
+
+
+        private void Awake()
+        {
+            //fetch components in awake, it's the only safe way
+            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
+            this.body = base.GetComponent<CharacterBody>();
+            this.input = base.GetComponent<InputBankTest>();
+            this.team = base.GetComponent<TeamComponent>();
+            this.locator = base.GetComponent<SkillLocator>();
+        }
+
+        private void Start() {
+            //do our component stuff here
+            body.skillLocator.special.RemoveAllStocks();   //HAN-D DRONES starts at 0 stocks
+            body.skillLocator.special.enabled = false;
+
+            AddDronePersist();
+        }
+
+        [Client]
+        private void AddDronePersist()
+        {
+            if (body.master)
+            {
+                dronePersist = body.master.gameObject.GetComponent<HANDDronePersistComponent>();
+                if (!dronePersist)
+                {
+                    dronePersist = body.master.gameObject.AddComponent<HANDDronePersistComponent>();
+                }
+                else
+                {
+                    body.skillLocator.special.stock = dronePersist.droneCount;
+                    CmdUpdateDrones(dronePersist.droneCount);
+                }
+                hasDronePersist = true;
+            }
+        }
+
+        [Command]
+        public void CmdUpdateDrones(int stock)
+        {
+            //IF IT IS SYNCED
+            //JUST UPDATE IT ON THE FUCKING CLIENT DUUUUUUUUUUUUUUDE
+            //I DON'T GET IT
+            //LITERALLY
+            //DOES THE SAME THING AS RpcUpdateDrones
+            //SO WHY DO YOU UPDATE IT ON SERVER
+            //THEN UPDATE IT ON CLIENT
+            //DO YOU NOT CARE??
+            droneCount = stock;
+            RpcUpdateDrones(stock);
+        }
+
+        [ClientRpc]
+        public void RpcUpdateDrones(int stock)
+        {
+            droneCount = stock;
+            locator.special.stock = stock;
+        }
+
+        public void FixedUpdate() {
+            this.trackerUpdateStopwatch += Time.fixedDeltaTime;
+            if (this.trackerUpdateStopwatch >= 1f / this.trackerUpdateFrequency)
+            {
+                this.trackerUpdateStopwatch -= 1f / this.trackerUpdateFrequency;
+                HurtBox hurtBox = this.trackingTarget;
+                Ray aimRay = new Ray(this.input.aimOrigin, this.input.aimDirection);
+                this.SearchForTarget(aimRay);
+                this.indicator.targetTransform = (this.trackingTarget ? this.trackingTarget.transform : null);
+            }
+        }
+
+        private void SearchForTarget(Ray aimRay)
+        {
+            this.search.teamMaskFilter = TeamMask.GetUnprotectedTeams(this.team.teamIndex);
+            this.search.filterByLoS = true;
+            this.search.searchOrigin = aimRay.origin;
+            this.search.searchDirection = aimRay.direction;
+            this.search.sortMode = BullseyeSearch.SortMode.Angle;
+            this.search.maxDistanceFilter = this.maxTrackingDistance;
+            this.search.maxAngleFilter = this.maxTrackingAngle;
+            this.search.RefreshCandidates();
+            this.search.FilterOutGameObject(base.gameObject);
+            this.trackingTarget = this.search.GetResults().FirstOrDefault<HurtBox>();
+        }
+
+
+
+        public void OnKilledOtherServer(DamageReport damageReport)
+        {
+            //throw new NotImplementedException();
+        }
+    }
+
+    [RequireComponent(typeof(TeamComponent))]
+    [RequireComponent(typeof(InputBankTest))]
+    [RequireComponent(typeof(CharacterBody))]
+    public class HANDController : NetworkBehaviour, IOnDamageInflictedServerReceiver
+    {
+        public float maxTrackingDistance = 100f;
+        public float maxTrackingAngle = 360f;
+        public float trackerUpdateFrequency = 10f;
+
+        private HurtBox trackingTarget;
+
+        private CharacterBody characterBody;
+        private TeamComponent teamComponent;
+        private InputBankTest inputBank;
+        private float trackerUpdateStopwatch;
+        private Indicator indicator;
+        private readonly BullseyeSearch search = new BullseyeSearch();
+        private HANDDronePersistComponent dronePersist;
+
+        private int meleeHits = 0;
+        public static int meleeHitsMax = 3;
+
+        private float ovcTimer;
+        public bool ovcActive;
+
+        private float ovcTimerMax = 4f;
+
+        private float startOverclockCooldown;
+
+        private bool hasDronePersist = false;
+
+        [SyncVar]
+        public int droneCount = 0;
+
+        public float ovcDuration;
+        public static float ovcDurationMax = 6f; //time it takes to build up max ovc cancel damage
+
+        public static float ovcCancelMinDamageCoefficient = 2f;
+        public static float ovcCancelMaxDamageCoefficient = 6f;
+        public static float ovcCancelRadius = 10f;
+        public static GameObject ovcCancelEffectPrefab = EntityStates.Commando.CommandoWeapon.CastSmokescreenNoDelay.smokescreenEffectPrefab;
+        #region shit
         [Command]
         public void CmdHeal()
         {
@@ -57,8 +227,8 @@ namespace HAND_OVERCLOCKED
         {
             if (this.hasAuthority && !characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
             {
+                LogCore.LogI("Overclock activated");
                 ovcTimer = duration;
-                NetworkingHelpers.ApplyBuff(characterBody, HAND_OVERCLOCKED.OverclockBuff, 1, -1);
                 ovcActive = true;
                 startOverclockCooldown = characterBody.skillLocator.special.rechargeStopwatch;
                 ovcDuration = 0f;
@@ -71,6 +241,7 @@ namespace HAND_OVERCLOCKED
         {
             if (this.hasAuthority)
             {
+                LogCore.LogI("ENDOVERCLOCK");
                 ovcTimer = 0f;
                 ovcActive = false;
                 CmdEndOverclock();
@@ -82,28 +253,34 @@ namespace HAND_OVERCLOCKED
         {
             if (this.hasAuthority)
             {
+                LogCore.LogI("ManualEndOverclock");
                 ovcTimer = 0f;
                 ovcActive = false;
-                CmdManualEndOverclock(ovcDuration/ovcDurationMax);
+                CmdManualEndOverclock(ovcDuration / ovcDurationMax);
             }
         }
 
         [Command]
         private void CmdEndOverclock()
         {
-            if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
-            {
-                characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
-            }
+            LogCore.LogI("CmdEndOverclock");
+
+
+            characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
+
+            ovcActive = false;
             RpcEndOverclockSound();
         }
 
         [Command]
         private void CmdManualEndOverclock(float f)
         {
-            if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            LogCore.LogI("CmdManualEndOverclock");
+
+            characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
+            for (int i = 0; i < characterBody.GetBuffCount(HAND_OVERCLOCKED.steamBuff); i++)
             {
-                characterBody.ClearTimedBuffs(HAND_OVERCLOCKED.OverclockBuff);
+                characterBody.RemoveBuff(HAND_OVERCLOCKED.steamBuff);
             }
 
             EffectManager.SpawnEffect(ovcCancelEffectPrefab, new EffectData
@@ -116,7 +293,7 @@ namespace HAND_OVERCLOCKED
                 attacker = base.gameObject,
                 inflictor = base.gameObject,
                 teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
-                baseDamage = characterBody.damage * Mathf.Lerp(ovcCancelMinDamageCoefficient,ovcCancelMaxDamageCoefficient,f),
+                baseDamage = characterBody.damage * Mathf.Lerp(ovcCancelMinDamageCoefficient, ovcCancelMaxDamageCoefficient, f),
                 baseForce = 0f,
                 position = base.transform.position,
                 radius = ovcCancelRadius,
@@ -125,6 +302,7 @@ namespace HAND_OVERCLOCKED
                 crit = characterBody.RollCrit(),
                 attackerFiltering = AttackerFiltering.NeverHit
             }.Fire();
+            ovcActive = false;
 
             RpcEndOverclockSound();
         }
@@ -138,6 +316,7 @@ namespace HAND_OVERCLOCKED
         [Command]
         private void CmdStartOverclock()
         {
+            characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
             RpcStartOverclockSound();
         }
 
@@ -164,6 +343,7 @@ namespace HAND_OVERCLOCKED
                 }
             }
         }
+        #endregion
 
         private void Start()
         {
@@ -263,7 +443,7 @@ namespace HAND_OVERCLOCKED
         [ClientRpc]
         public void RpcAddSpecialStock()
         {
-            if (this.hasAuthority && characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock )
+            if (this.hasAuthority && characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
             {
                 characterBody.skillLocator.special.AddOneStock();
                 CmdUpdateDrones(characterBody.skillLocator.special.stock);
@@ -321,42 +501,13 @@ namespace HAND_OVERCLOCKED
             this.indicator.active = false;
         }
 
-        public float maxTrackingDistance = 100f;
-        public float maxTrackingAngle = 360f;
-        public float trackerUpdateFrequency = 10f;
+        public void OnDamageInflictedServer(DamageReport damageReport)
+        {
+            if (ovcActive) {
+                characterBody.AddBuff(HAND_OVERCLOCKED.steamBuff);//
+            }
+        }
 
-        private HurtBox trackingTarget;
-
-        private CharacterBody characterBody;
-        private TeamComponent teamComponent;
-        private InputBankTest inputBank;
-        private float trackerUpdateStopwatch;
-        private Indicator indicator;
-        private readonly BullseyeSearch search = new BullseyeSearch();
-        private HANDDronePersistComponent dronePersist;
-
-        private int meleeHits = 0;
-        public static int meleeHitsMax = 3;
-
-        private float ovcTimer;
-        public bool ovcActive;
-
-        private float ovcTimerMax = 4f;
-
-        private float startOverclockCooldown;
-
-        private bool hasDronePersist = false;
-
-        [SyncVar]
-        public int droneCount = 0;
-
-        public float ovcDuration;
-        public static float ovcDurationMax = 6f; //time it takes to build up max ovc cancel damage
-
-        public static float ovcCancelMinDamageCoefficient = 2f;
-        public static float ovcCancelMaxDamageCoefficient = 6f;
-        public static float ovcCancelRadius = 10f;
-        public static GameObject ovcCancelEffectPrefab = EntityStates.Commando.CommandoWeapon.CastSmokescreenNoDelay.smokescreenEffectPrefab;
     }
 
     public class HANDSwingAttack
@@ -365,7 +516,7 @@ namespace HAND_OVERCLOCKED
         {
             bool bossWasHit = false;
             HealthComponent myHC = this.attacker.GetComponent<CharacterBody>().healthComponent;
-            Collider[] array = useSphere? Physics.OverlapSphere(position, radius, LayerIndex.entityPrecise.mask) : Physics.OverlapBox(position, extents, orientation, LayerIndex.entityPrecise.mask);
+            Collider[] array = useSphere ? Physics.OverlapSphere(position, radius, LayerIndex.entityPrecise.mask) : Physics.OverlapBox(position, extents, orientation, LayerIndex.entityPrecise.mask);
             for (int i = 0; i < array.Length; i++)
             {
                 Collider collider = array[i];
@@ -423,7 +574,7 @@ namespace HAND_OVERCLOCKED
                     origin = hitPoint2.hitPosition
                 }, false);
             }
-            return new HANDHitResult() { hitCount = array2.Length, hitBoss = bossWasHit};
+            return new HANDHitResult() { hitCount = array2.Length, hitBoss = bossWasHit };
         }
 
         public virtual Vector3 ModifyForce(GameObject go, Vector3 force)
@@ -447,7 +598,7 @@ namespace HAND_OVERCLOCKED
         public float baseDamage;
         public Vector3 force;
         public bool crit;
-        
+
         public DamageType damageType;
         public DamageColorIndex damageColorIndex;
         public ProcChainMask procChainMask;
@@ -466,10 +617,10 @@ namespace HAND_OVERCLOCKED
         {
             if (go)
             {
-                CharacterBody cb = go.GetComponent<CharacterBody>();   
+                CharacterBody cb = go.GetComponent<CharacterBody>();
                 if (cb)
                 {
-                    if(cb.isFlying)
+                    if (cb.isFlying)
                     {
                         force.x *= this.flyingHorizontalForceMult;
                         force.z *= this.flyingHorizontalForceMult;
@@ -528,7 +679,7 @@ namespace HAND_OVERCLOCKED
                 {
                     if (cb.characterMotor && cb.characterMotor.isGrounded)
                     {
-                        force += groundedLaunchForce*Vector3.up;
+                        force += groundedLaunchForce * Vector3.up;
                     }
                     else
                     {

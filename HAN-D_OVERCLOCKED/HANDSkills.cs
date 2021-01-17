@@ -59,7 +59,7 @@ namespace EntityStates.HANDOverclocked
                             hc.MeleeHit(hitCount);
                             hc.ExtendOverclock(1.1f);
                         }
-                        
+
                     }
                 }
             }
@@ -219,7 +219,7 @@ namespace EntityStates.HANDOverclocked
             {
                 origin = base.transform.position
             }, false);
-            
+
             hasFired = false;
             Transform modelTransform = base.GetModelTransform();
             this.handController = base.GetComponent<HANDController>();
@@ -311,8 +311,10 @@ namespace EntityStates.HANDOverclocked
             HANDController hc = base.gameObject.GetComponent<HANDController>();
             if (hc)
             {
+                LogCore.LogI("HIIII");
                 if (hc.ovcActive && base.isAuthority)
                 {
+                    LogCore.LogI("ovc active, boost time");
                     if (base.characterMotor)
                     {
                         base.SmallHop(base.characterMotor, 24f);
@@ -321,10 +323,14 @@ namespace EntityStates.HANDOverclocked
                 }
                 else
                 {
-                    hc.BeginOverclock(4f);
-                    if (base.isAuthority && characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
+                    if (isAuthority)
                     {
-                        characterBody.skillLocator.utility.stock++;
+                        LogCore.LogI("ok");
+                        hc.BeginOverclock(4f);
+                        if (base.isAuthority && characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
+                        {
+                            characterBody.skillLocator.utility.stock++;
+                        }
                     }
                 }
             }
@@ -379,7 +385,7 @@ namespace EntityStates.HANDOverclocked
         {
             base.FixedUpdate();
 
-            if (base.fixedAge > this.minDuration  && charge < chargeDuration)
+            if (base.fixedAge > this.minDuration && charge < chargeDuration)
             {
                 charge += Time.deltaTime * this.attackSpeedStat;
                 /*if (!played50 && charge > chargeDuration/2f)
@@ -455,7 +461,7 @@ namespace EntityStates.HANDOverclocked
 
                 float hitRange = Mathf.Lerp(minRange, maxRange, chargePercent);
 
-                for (int i = 5; i <= Mathf.RoundToInt(hitRange)+1; i += 2)
+                for (int i = 5; i <= Mathf.RoundToInt(hitRange) + 1; i += 2)
                 {
                     EffectManager.SpawnEffect(Slam2.impactEffectPrefab, new EffectData
                     {
