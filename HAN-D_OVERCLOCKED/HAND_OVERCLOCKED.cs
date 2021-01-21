@@ -1005,7 +1005,7 @@ namespace HAND_OVERCLOCKED
             mc.maxVelocity = 50f;
             mc.acceleration = 3f;
             mc.maxSeekDistance = 160f;
-            mc.giveupTimer = 10f;
+            mc.giveupTimer = 20f;
             mc.deathTimer = 20f;
 
             Destroy(droneProjectile.GetComponent<AkGameObj>());
