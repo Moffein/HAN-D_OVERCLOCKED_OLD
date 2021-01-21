@@ -1002,7 +1002,7 @@ namespace HAND_OVERCLOCKED
             };
 
             MissileController mc = droneProjectile.GetComponent<MissileController>();
-            mc.maxVelocity = 50f;
+            mc.maxVelocity = 25f;
             mc.acceleration = 3f;
             mc.maxSeekDistance = 160f;
             mc.giveupTimer = 20f;

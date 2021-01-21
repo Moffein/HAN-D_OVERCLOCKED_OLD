@@ -20,8 +20,6 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                 stopwatch = 0f;
                 distanceTravelled = 0f;
                 stuckCounter = 0;
-                unstuckCounter = 0;
-                projectileTarget = base.GetComponent<ProjectileTargetComponent>();
                 intangibleStopwatch = 0f;
             }
         }
@@ -41,30 +39,30 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                             this.gameObject.layer = LayerIndex.projectile.intVal;
                         }
                     }
-
-                    distanceTravelled += Mathf.Abs((this.transform.position - previousPos).magnitude);
-                    stopwatch += Time.fixedDeltaTime;
-                    if (stopwatch > 1f)
+                    else
                     {
-                        stopwatch -= 1f;
-                        //Debug.Log("Distance Travelled: " + distanceTravelled);
-                        if (distanceTravelled < 0.1f)
+                        distanceTravelled += Mathf.Abs((this.transform.position - previousPos).magnitude);
+                        stopwatch += Time.fixedDeltaTime;
+                        if (stopwatch > 0.15f)
                         {
-                            stuckCounter++;
+                            stopwatch -= 0.15f;
+                            //Debug.Log("Distance Travelled: " + distanceTravelled);
+                            if (distanceTravelled < 0.02f)
+                            {
+                                stuckCounter++;
+                            }
+                            distanceTravelled = 0f;
                         }
-                        distanceTravelled = 0f;
-                    }
-                    
-                    if (previousPos == this.transform.position || stuckCounter > 1)
-                    {
-                        if (unstuckCounter < 4 || !projectileTarget)
+
+                        if (previousPos == this.transform.position || stuckCounter > 1)
                         {
-                            //Debug.Log("Unstucking");
                             stuckCounter = 0;
                             this.transform.rotation = Quaternion.Inverse(this.transform.rotation);
-                            unstuckCounter++;
-                            intangibleStopwatch = 0.2f;
+                            intangibleStopwatch = 0.15f;
                             this.gameObject.layer = LayerIndex.entityPrecise.intVal;
+
+                            stopwatch = 0f;
+                            distanceTravelled = 0f;
                         }
                     }
                     previousPos = this.transform.position;
@@ -77,12 +75,10 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         }
 
         private float intangibleStopwatch;
-        private int unstuckCounter;
         private int stuckCounter;
         private float distanceTravelled;
         private float stopwatch;
         private Vector3 previousPos;
         private ProjectileStickOnImpact stick;
-        private ProjectileTargetComponent projectileTarget;
     }
 }
