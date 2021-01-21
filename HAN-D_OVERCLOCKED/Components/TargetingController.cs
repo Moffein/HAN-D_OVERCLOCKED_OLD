@@ -42,7 +42,8 @@ namespace HAND_OVERCLOCKED.Components
 
         private void SearchForTarget(Ray aimRay)
         {
-            this.search.teamMaskFilter = TeamMask.GetUnprotectedTeams(this.teamComponent.teamIndex);
+            //this.search.teamMaskFilter = TeamMask.GetUnprotectedTeams(this.teamComponent.teamIndex);
+            this.search.teamMaskFilter = TeamMask.all;
             this.search.filterByLoS = true;
             this.search.searchOrigin = aimRay.origin;
             this.search.searchDirection = aimRay.direction;

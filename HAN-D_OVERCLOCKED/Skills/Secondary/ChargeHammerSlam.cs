@@ -43,6 +43,11 @@ namespace EntityStates.HANDOverclocked
         {
             base.FixedUpdate();
 
+            if (base.characterBody && base.characterBody.isSprinting)
+            {
+                base.characterBody.isSprinting = false;
+            }
+
             if (base.fixedAge > this.minDuration && charge < chargeDuration)
             {
                 charge += Time.deltaTime * this.attackSpeedStat;
@@ -79,9 +84,7 @@ namespace EntityStates.HANDOverclocked
         private Animator modelAnimator;
         public static GameObject chargeEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
-        private bool played50 = false;
         public static GameObject holdChargeVfxPrefab = EntityStates.Toolbot.ChargeSpear.holdChargeVfxPrefab;
-        private bool chargeEffect = false;
         private GameObject holdChargeVfxGameObject = null;
     }
 }

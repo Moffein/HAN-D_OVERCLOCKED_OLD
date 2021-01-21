@@ -65,6 +65,8 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                     if (owner)
                     {
                         ownerHealthComponent = projectileController.owner.GetComponent<HealthComponent>();
+                        TeamComponent tc = owner.GetComponent<TeamComponent>();
+                        teamIndex = tc.teamIndex;
                     }
                 }
                 if (stick.stuck)
@@ -113,39 +115,58 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                     firstHit = false;
                                     if (victimHealthComponent.body)
                                     {
-                                        victimHealthComponent.body.AddTimedBuff(HAND_OVERCLOCKED.DroneDebuff, (float)damageTicksTotal * damageTimer);
+                                        if (victimHealthComponent.body.teamComponent && victimHealthComponent.body.teamComponent.teamIndex == teamIndex)
+                                        {
+                                            victimHealthComponent.body.AddTimedBuff(HAND_OVERCLOCKED.DroneBoost, (float)damageTicksTotal * damageTimer);
+                                        }
+                                        else
+                                        {
+                                            victimHealthComponent.body.AddTimedBuff(HAND_OVERCLOCKED.DroneDebuff, (float)damageTicksTotal * damageTimer);
+                                        }
                                     }
                                 }
 
-                                victimHealthComponent.TakeDamage(new DamageInfo
+                                if (victimHealthComponent.body && victimHealthComponent.body.teamComponent && victimHealthComponent.body.teamComponent.teamIndex == teamIndex)
                                 {
-                                    attacker = owner,
-                                    inflictor = owner,
-                                    damage = projectileDamage.damage/(float)damageTicksTotal,
-                                    damageColorIndex = DamageColorIndex.Default,
-                                    damageType = DamageType.Generic,
-                                    crit = projectileDamage.crit,
-                                    dotIndex = DotController.DotIndex.None,
-                                    force = projectileDamage.force * Vector3.down,
-                                    position = this.transform.position,
-                                    procChainMask = default(ProcChainMask),
-                                    procCoefficient = procCoefficient
-                                });
+                                    HealOrb healOrb = new HealOrb();
+                                    healOrb.origin = this.transform.position;
+                                    healOrb.target = victimHealthComponent.body.mainHurtBox;
+                                    healOrb.healValue = victimHealthComponent.body.maxHealth * healFractionPerTick;
+                                    healOrb.overrideDuration = 0.3f;
+                                    OrbManager.instance.AddOrb(healOrb);
+                                }
+                                else
+                                {
+                                    victimHealthComponent.TakeDamage(new DamageInfo
+                                    {
+                                        attacker = owner,
+                                        inflictor = owner,
+                                        damage = projectileDamage.damage / (float)damageTicksTotal,
+                                        damageColorIndex = DamageColorIndex.Default,
+                                        damageType = DamageType.Generic,
+                                        crit = projectileDamage.crit,
+                                        dotIndex = DotController.DotIndex.None,
+                                        force = projectileDamage.force * Vector3.down,
+                                        position = this.transform.position,
+                                        procChainMask = default(ProcChainMask),
+                                        procCoefficient = procCoefficient
+                                    });
 
-                                GlobalEventManager.instance.OnHitEnemy(new DamageInfo
-                                {
-                                    attacker = owner,
-                                    inflictor = owner,
-                                    damage = projectileDamage.damage / (float)damageTicksTotal,
-                                    damageColorIndex = DamageColorIndex.Default,
-                                    damageType = DamageType.Generic,
-                                    crit = projectileDamage.crit,
-                                    dotIndex = DotController.DotIndex.None,
-                                    force = projectileDamage.force * Vector3.down,
-                                    position = this.transform.position,
-                                    procChainMask = default(ProcChainMask),
-                                    procCoefficient = procCoefficient
-                                }, victimHealthComponent.gameObject);
+                                    GlobalEventManager.instance.OnHitEnemy(new DamageInfo
+                                    {
+                                        attacker = owner,
+                                        inflictor = owner,
+                                        damage = projectileDamage.damage / (float)damageTicksTotal,
+                                        damageColorIndex = DamageColorIndex.Default,
+                                        damageType = DamageType.Generic,
+                                        crit = projectileDamage.crit,
+                                        dotIndex = DotController.DotIndex.None,
+                                        force = projectileDamage.force * Vector3.down,
+                                        position = this.transform.position,
+                                        procChainMask = default(ProcChainMask),
+                                        procCoefficient = procCoefficient
+                                    }, victimHealthComponent.gameObject);
+                                }
                             }
 
                             stopwatch -= damageTimer;
@@ -175,6 +196,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         private GameObject bleedEffect;
 
         private GameObject owner;
+        private TeamIndex teamIndex;
         private ProjectileController projectileController;
         private ProjectileDamage projectileDamage;
         private HealthComponent ownerHealthComponent;

@@ -38,6 +38,7 @@ namespace HAND_OVERCLOCKED
 
         public static BuffIndex OverclockBuff;
         public static BuffIndex DroneDebuff;
+        public static BuffIndex DroneBoost;
 
         const String assetPrefix = "@MoffeinHAND_OVERCLOCKED";
 
@@ -65,6 +66,7 @@ namespace HAND_OVERCLOCKED
 
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>The skill boosts you upwards when used.</style>");
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_DEBILITATE", "<style=cKeywordName>Debilitate</style><style=cSub>Reduce damage by <style=cIsDamage>30%</style>. Reduce movement speed by <style=cIsDamage>60%</style>.</style>");
+            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_ENERGIZE", "<style=cKeywordName>Energize</style><style=cSub>Increase movement speed and attack speed by <style=cIsDamage>40%</style>.</style>");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
             LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, unrewarded in all of its efforts.");
@@ -118,6 +120,11 @@ namespace HAND_OVERCLOCKED
             if (self)
             {
                 if (self.HasBuff(OverclockBuff))
+                {
+                    self.attackSpeed *= 1.4f;
+                    self.moveSpeed *= 1.4f;
+                }
+                if (self.HasBuff(DroneBoost))
                 {
                     self.attackSpeed *= 1.4f;
                     self.moveSpeed *= 1.4f;
@@ -487,12 +494,12 @@ namespace HAND_OVERCLOCKED
             ChargeSlam2.baseChargeDuration = 1.4f;
             Slam2.baseDuration = 0.6f;
             Slam2.damageCoefficientMin = 4f;
-            Slam2.damageCoefficientMax = 12f;
+            Slam2.damageCoefficientMax = 16f;
             Slam2.baseMinDuration = 0.4f;
             Slam2.forceMagnitudeMin = 2000f;
             Slam2.forceMagnitudeMax = 2000f;
             Slam2.airbornVerticalForceMin = -2400f;
-            Slam2.airbornVerticalForceMax = -3000f;
+            Slam2.airbornVerticalForceMax = -3200f;
             Slam2.shorthopVelocityFromHit = 24f;
             Slam2.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
             Slam2.impactEffectPrefab = slamEffect;//Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
@@ -507,7 +514,7 @@ namespace HAND_OVERCLOCKED
             secondarySkill.activationState = new SerializableEntityStateType(typeof(ChargeSlam2));
             secondarySkill.skillNameToken = "HAND_OVERCLOCKED_SECONDARY_NAME";
             secondarySkill.skillName = "ChargeSlam";
-            secondarySkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Charge up a powerful hammer slam for <style=cIsDamage>400%-1200% damage</style>. <style=cIsDamage>Range and knockback</style> increases with charge.";
+            secondarySkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Charge up a powerful hammer slam for <style=cIsDamage>400%-1600% damage</style>. <style=cIsDamage>Range and knockback</style> increases with charge.";
             secondarySkill.noSprint = true;
             secondarySkill.canceledFromSprinting = false;
             secondarySkill.baseRechargeInterval = 5f;
@@ -602,7 +609,8 @@ namespace HAND_OVERCLOCKED
             droneSkill.skillNameToken = "HAND_OVERCLOCKED_SPECIAL_NAME";
             droneSkill.skillName = "Drones";
             droneSkill.skillDescriptionToken = "Send out a drone that <style=cIsDamage>debilitates</style> enemies for <style=cIsDamage>" + FireSeekingDrone.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style> while also <style=cIsHealing>healing yourself</style>.";
-            droneSkill.skillDescriptionToken += " <style=cIsUtility>Kills and melee hits reduce cooldown.</style>";
+            droneSkill.skillDescriptionToken += " <style=cIsHealing>Heals</style> and <style=cIsUtility>Energizes</style> allies.";
+            droneSkill.skillDescriptionToken += " <style=cIsUtility>Kills and melee hits reduce cooldown</style>.";
             droneSkill.isCombatSkill = true;
             droneSkill.noSprint = false;
             droneSkill.canceledFromSprinting = false;
@@ -619,7 +627,7 @@ namespace HAND_OVERCLOCKED
             droneSkill.activationStateMachineName = "DroneLauncher";
             droneSkill.isBullets = false;
             droneSkill.shootDelay = 0f;
-            droneSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_DEBILITATE" };
+            droneSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_DEBILITATE", "KEYWORD_HANDOVERCLOCKED_ENERGIZE" };
             LoadoutAPI.AddSkillDef(droneSkill);
 
             SkillFamily specialSkillFamily = skillLocator.special.skillFamily;
@@ -646,6 +654,18 @@ namespace HAND_OVERCLOCKED
                 name = "MoffeinHANDOverclock"
             };
             HAND_OVERCLOCKED.OverclockBuff = BuffAPI.Add(new CustomBuff(OverclockBuffDef));
+
+            BuffDef DroneBoostDef = new BuffDef
+            {
+                buffColor = OverclockColor,
+                buffIndex = BuffIndex.Count,
+                canStack = false,
+                eliteIndex = EliteIndex.None,
+                iconPath = "Textures/BuffIcons/texWarcryBuffIcon",
+                isDebuff = false,
+                name = "MoffeinHANDDroneBoost"
+            };
+            HAND_OVERCLOCKED.DroneBoost = BuffAPI.Add(new CustomBuff(DroneBoostDef));
 
             BuffDef DroneDebuffDef = new BuffDef
             {
