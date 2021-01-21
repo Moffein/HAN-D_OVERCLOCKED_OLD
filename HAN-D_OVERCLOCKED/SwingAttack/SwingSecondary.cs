@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using HAND_OVERCLOCKED.Components;
 using RoR2;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ namespace HAND_OVERCLOCKED
         {
             if (go)
             {
+
                 //Use separate knockback values when dealing with airborne/grounded targets.
                 CharacterBody cb = go.GetComponent<CharacterBody>();
                 if (cb)
@@ -28,6 +30,17 @@ namespace HAND_OVERCLOCKED
                             cb.characterMotor.velocity.y = 0f;  //NEEDS TO BE FIXED IN MULTIPLAYER
                         }*/
                     }
+
+                    /*if (squashPercent > 0f)
+                    {
+                        if (cb.modelLocator && cb.modelLocator.modelTransform && cb.modelLocator.modelTransform.gameObject && !cb.modelLocator.modelTransform.gameObject.GetComponent<SquashedComponent>())
+                        {
+                            SquashedComponent sc = cb.modelLocator.modelTransform.gameObject.AddComponent<SquashedComponent>();
+                            sc.squashMult = squashPercent;
+                            sc.speed = 5f;
+                            sc.BeginSquash();
+                        }
+                    }*/
                 }
 
                 //Scale force to match mass
@@ -51,5 +64,6 @@ namespace HAND_OVERCLOCKED
         public float maxForceScale = 6f;
         public float groundedLaunchForce = 0f;
         public float airborneLaunchForce = 0f;
+        //public float squashPercent = 1f;
     }
 }

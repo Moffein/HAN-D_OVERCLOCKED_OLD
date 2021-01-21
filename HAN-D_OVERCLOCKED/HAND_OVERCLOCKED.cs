@@ -29,7 +29,6 @@ namespace HAND_OVERCLOCKED
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
-        public static GameObject droneProjectileOrb = null;
         GameObject HANDMonsterMaster = null;
         Color HANDColor = new Color(0.556862745f, 0.682352941f, 0.690196078f);
         Color OverclockColor = new Color(1.0f, 0.45f, 0f);
@@ -41,8 +40,6 @@ namespace HAND_OVERCLOCKED
         public static BuffIndex DroneBoost;
 
         const String assetPrefix = "@MoffeinHAND_OVERCLOCKED";
-
-        bool useBodyClone = true;
 
         public CharacterBody body;
         public SkillLocator skillLocator;
@@ -114,6 +111,7 @@ namespace HAND_OVERCLOCKED
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
         }
         #region Hooks
+
         private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
         {
             orig(self);
@@ -156,6 +154,20 @@ namespace HAND_OVERCLOCKED
                     if (hc)
                     {
                         hc.RpcAddSpecialStock();
+                    }
+                }
+
+                if (report.attacker == report.damageInfo.inflictor)
+                {
+                    if ((report.damageInfo.damageType & DamageType.Stun1s) > 0 && (report.damageInfo.damageType & DamageType.AOE) == 0 && report.damageInfo.procCoefficient >= 1f && report.damageInfo.damage > report.attackerBody.damage * 4f)
+                    {
+                        if (report.victimBody)
+                        {
+                            if (report.victimBody.modelLocator && report.victimBody.modelLocator.modelTransform && report.victimBody.modelLocator.modelTransform.gameObject && !report.victimBody.modelLocator.modelTransform.gameObject.GetComponent<SquashedComponent>())
+                            {
+                                report.victimBody.modelLocator.modelTransform.gameObject.AddComponent<SquashedComponent>().speed = 5f;
+                            }
+                        }
                     }
                 }
             }
@@ -248,33 +260,14 @@ namespace HAND_OVERCLOCKED
         {
             if (HANDBody == null)
             {
-                if (useBodyClone)
+                HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
+                BodyCatalog.getAdditionalEntries += delegate (List<GameObject> list)
                 {
-                    HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
-                    BodyCatalog.getAdditionalEntries += delegate (List<GameObject> list)
-                    {
-                        list.Add(HANDBody);
-                    };
-                }
-                else
-                {
-                    HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody");
-                }
+                    list.Add(HANDBody);
+                };
                 HANDBodyName = HANDBody.name;
                 LoadAssets();
                 HANDBody.GetComponent<CharacterBody>().portraitIcon = Resources.Load<Texture2D>(assetPrefix + ":Portrait.png");
-            }
-            if (droneProjectileOrb == null)
-            {
-                /*if (useBodyClone)
-                {
-                    droneProjectileOrb = Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/ArrowOrbEffect").InstantiateClone("HOCDroneOrb", false);
-                }
-                else
-                {
-                    droneProjectileOrb = Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/ArrowOrbEffect");
-                }*/
-                droneProjectileOrb = Resources.Load<GameObject>("Prefabs/Effects/OrbEffects/ArrowOrbEffect");
             }
         }
 
@@ -282,6 +275,7 @@ namespace HAND_OVERCLOCKED
         {
             AddComponents();
             SetCharacterBodyAttributes();
+            SetCameraAttributes();
             SetupSFX();
             FixSetStateOnHurt();
             SetDeathBehavior();
@@ -388,6 +382,12 @@ namespace HAND_OVERCLOCKED
                 }*/
             }
 
+            void SetCameraAttributes() {
+                CameraTargetParams cameraTargetParams = HANDBody.GetComponent<CameraTargetParams>();
+                cameraTargetParams.idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
+                cameraTargetParams.cameraParams = Resources.Load<GameObject>("prefabs/characterbodies/toolbotbody").GetComponent<CameraTargetParams>().cameraParams;
+            }
+
             void SetCharacterBodyAttributes() {
                 body = HANDBody.GetComponent<CharacterBody>();
                 body.bodyFlags = CharacterBody.BodyFlags.ImmuneToExecutes;
@@ -402,7 +402,7 @@ namespace HAND_OVERCLOCKED
                 body.baseRegen = 2.5f;
                 body.baseMaxShield = 0f;
                 body.baseMoveSpeed = 7f;
-                body.baseAcceleration = 30f;
+                body.baseAcceleration = 40f;
                 body.baseJumpPower = 15f;
                 body.baseDamage = 14f;
                 body.baseAttackSpeed = 1f;
@@ -426,7 +426,7 @@ namespace HAND_OVERCLOCKED
                 body.preferredPodPrefab = Resources.Load<GameObject>("prefabs/networkedobjects/robocratepod");
             }
 
-            HANDBody.GetComponent<CameraTargetParams>().idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
+            HANDBody.GetComponent<ModelLocator>().modelTransform.localScale *= 1.2f;
 
             CreateSkills();
         }
@@ -1005,23 +1005,26 @@ namespace HAND_OVERCLOCKED
             mc.maxVelocity = 50f;
             mc.acceleration = 3f;
             mc.maxSeekDistance = 160f;
-            mc.giveupTimer = 12f;
-            mc.deathTimer = 30f;
+            mc.giveupTimer = 10f;
+            mc.deathTimer = 20f;
 
             Destroy(droneProjectile.GetComponent<AkGameObj>());
             Destroy(droneProjectile.GetComponent<AkEvent>());
             Destroy(droneProjectile.GetComponent<ProjectileSingleTargetImpact>());
 
             ProjectileStickOnImpact stick = droneProjectile.AddComponent<ProjectileStickOnImpact>();
-            stick.ignoreWorld = false;
+            stick.ignoreWorld = true;
             stick.ignoreCharacters = false;
 
             droneProjectile.AddComponent<DroneProjectileDamageController>();
+            droneProjectile.AddComponent<PreventGroundCollision>();
 
             Destroy(droneProjectile.GetComponent<BoxCollider>());
             SphereCollider sc = droneProjectile.AddComponent<SphereCollider>();
             sc.radius = 0.6f;
             sc.contactOffset = 0.01f;
+
+            //droneProjectile.layer = LayerIndex.entityPrecise.intVal;
 
             //droneProjectile.AddComponent<DroneProjectileRotation>();
 

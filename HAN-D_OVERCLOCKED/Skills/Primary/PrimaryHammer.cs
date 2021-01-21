@@ -49,7 +49,7 @@ namespace EntityStates.HANDOverclocked
                         if (hc)
                         {
                             hc.MeleeHit(hitCount);
-                            hc.ExtendOverclock(1f);
+                            hc.ExtendOverclock(0.8f);
                         }
                     }
                 }

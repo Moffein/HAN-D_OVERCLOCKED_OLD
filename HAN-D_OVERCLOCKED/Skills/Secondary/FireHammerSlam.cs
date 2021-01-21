@@ -60,7 +60,7 @@ namespace EntityStates.HANDOverclocked
                         if (hc)
                         {
                             hc.MeleeHit(hitCount);
-                            hc.ExtendOverclock(Mathf.Lerp(1.2f, 4f, chargePercent));
+                            hc.ExtendOverclock(Mathf.Lerp(0.8f, 1.6f, chargePercent));
                         }
                     }
                 }
