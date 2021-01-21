@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2170072663
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: handassets
+      Dependencies: {}

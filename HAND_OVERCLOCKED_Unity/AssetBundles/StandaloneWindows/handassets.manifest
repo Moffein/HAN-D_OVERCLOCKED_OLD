@@ -1,0 +1,30 @@
+ManifestFileVersion: 0
+CRC: 1869708150
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: c6f089d0a1381932bfd20791d2e747a5
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ea5a42e0fd8ea905efa7aa926a3b8944
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/Skill Icons/Explunge.png
+- Assets/UI/gaugeArrow.png
+- Assets/UI/Portrait.png
+- Assets/UI/gauge.png
+- Assets/Skill Icons/Drone.png
+- Assets/Skill Icons/PassiveDrone.png
+- Assets/UI/gauge_bar_arrow.png
+- Assets/Skill Icons/Unethical_Reassembly.png
+- Assets/Skill Icons/Winch.png
+- Assets/UI/gauge_bar.png
+- Assets/Skill Icons/Hurt.png
+- Assets/Skill Icons/Forced_Reassembly.png
+- Assets/Skill Icons/Overclock.png
+Dependencies: []
