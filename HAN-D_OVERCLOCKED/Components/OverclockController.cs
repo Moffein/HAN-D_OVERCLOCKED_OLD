@@ -40,6 +40,8 @@ namespace HAND_OVERCLOCKED.Components
                 characterBody.skillLocator.utility.rechargeStopwatch = initialOverclockCooldown;
 
                 ovcTimer -= Time.fixedDeltaTime;
+                ovcPercent = ovcTimer / OverclockController.OverclockDuration;
+
                 if (ovcTimer > OverclockController.OverclockDuration)
                 {
                     ovcTimer = OverclockController.OverclockDuration;
@@ -52,8 +54,6 @@ namespace HAND_OVERCLOCKED.Components
                     }
                     EndOverclock();
                 }
-
-                ovcPercent = ovcTimer / OverclockController.OverclockDuration;
             }
         }
 
@@ -102,7 +102,6 @@ namespace HAND_OVERCLOCKED.Components
             if (!characterBody.HasBuff(HANDContent.OverclockBuff))
             {
                 characterBody.AddBuff(HANDContent.OverclockBuff.buffIndex);
-                characterBody.AddTimedBuff(HANDContent.OverclockBuff.buffIndex, 100f);
             }
         }
 
@@ -187,6 +186,7 @@ namespace HAND_OVERCLOCKED.Components
         private HANDNetworkSounds networkSounds;
         private CharacterBody characterBody;
         private HealthComponent healthComponent;
+        private CharacterMotor characterMotor;
 
         public static Sprite overclockCancelIcon;
         public static Sprite overclockIcon;

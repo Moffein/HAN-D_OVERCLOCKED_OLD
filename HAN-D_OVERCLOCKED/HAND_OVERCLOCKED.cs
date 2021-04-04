@@ -16,12 +16,14 @@ using UnityEngine.Networking;
 using HAND_OVERCLOCKED.Components.DroneProjectile;
 using Mono.Cecil;
 using R2API;
+using R2API.Utils;
 
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.13")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI))]
+    [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
@@ -80,6 +82,7 @@ namespace HAND_OVERCLOCKED
         {
             Debug.Log("\n\nSTATUS UPDATE:\n\nMACHINE ID:\t\tHAN-D\nLOCATION:\t\tAPPROACHING PETRICHOR V\nCURRENT OBJECTIVE:\tFIND AND ACTIVATE THE TELEPORTER\n\nPROVIDENCE IS DEAD.\nBLOOD IS FUEL.\nSPEED IS WAR.\n");
             CreateHAND();
+            CreateBuffs();
             HANDContent.CreateContentPack();
         }
 
@@ -169,7 +172,6 @@ namespace HAND_OVERCLOCKED
             CreateSlamEffect();
             Repair();
             SetAttributes();
-            CreateBuffs();
 
             CreateMaster();
             CreateSurvivorDef();
@@ -476,7 +478,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.activationState = new SerializableEntityStateType(typeof(Overclock));
             ovcSkill.skillNameToken = "HAND_OVERCLOCKED_UTILITY_NAME";
             ovcSkill.skillName = "Overclock";
-            ovcSkill.skillDescriptionToken = "Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>. Cancel to <style=cIsUtility>Spring</style> into the air.";
+            ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>.";
             ovcSkill.isCombatSkill = false;
             ovcSkill.cancelSprintingOnActivation = false;
             ovcSkill.canceledFromSprinting = false;

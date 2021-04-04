@@ -17,7 +17,9 @@ changelog:
 0.0.13:
 
 - Updated for Anniversary update.
-- DRONE heal reduced 10% -> 8.5%.
+- OVERCLOCK now springs you into the air if you start it while airborne.
+- OVERCLOCK smallhop force reduced 24 -> 22
+- DRONE heal reduced 10% -> 7.5%.
 - DRONE cooldown reduced 12s -> 10s.
 - DRONE cooldown reduction on melee hit increased from -1s to -1.5s.
 
