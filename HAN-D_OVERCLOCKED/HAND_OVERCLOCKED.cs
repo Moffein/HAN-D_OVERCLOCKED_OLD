@@ -21,7 +21,7 @@ using R2API.Utils;
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.13")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.15")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
@@ -55,7 +55,8 @@ namespace HAND_OVERCLOCKED
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_ENERGIZE", "<style=cKeywordName>Energize</style><style=cSub>Increase movement speed and attack speed by <style=cIsDamage>40%</style>.</style>");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
-            LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, unrewarded in all of its efforts.");
+            LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, servos pulsing with new life.");
+            LanguageAPI.Add("HAND_OVERCLOCKED_MAIN_ENDING_ESCAPE_FAILURE_FLAVOR", "..and so it vanished, unrewarded in all of its efforts.");
 
             String tldr = "<style=cMono>\r\n//--AUTO-TRANSCRIPTION FROM BASED DEPARTMENT OF UES SAFE TRAVELS--//</style>\r\n\r\n<i>*hits <color=#327FFF>Spinel Tonic</color>*</i>\n\nIs playing without the <color=#6955A6>Command</color> artifact the ultimate form of cuckoldry?\n\nI cannot think or comprehend of anything more cucked than playing without <color=#6955A6>Command</color>. Honestly, think about it rationally. You are shooting, running, jumping for like 60 minutes solely so you can get a fucking <color=#77FF16>Squid Polyp</color>. All that hard work you put into your run - dodging <style=cIsHealth>Stone Golem</style> lasers, getting annoyed by six thousand <style=cIsHealth>Lesser Wisps</color> spawning above your head, activating <color=#E5C962>Shrines of the Mountain</color> all for one simple result: your inventory is filled up with <color=#FFFFFF>Warbanners</color> and <color=#FFFFFF>Monster Tooth</color> necklaces which cost money.\n\nOn a god run? Great. A bunch of shitty items which add nothing to your run end up coming out of the <color=#E5C962>Chests</color> you buy. They get the benefit of your hard earned dosh that came from killing <style=cIsHealth>Lemurians</style>.\n\nAs a man who plays this game you are <style=cIsHealth>LITERALLY</style> dedicating two hours of your life to opening boxes and praying it's not another <color=#77FF16>Chronobauble</color>. It's the ultimate and final cuck. Think about it logically.\r\n<style=cMono>\r\nTranscriptions complete.\r\n</style>\r\n \r\n\r\n";
             LanguageAPI.Add("HAND_OVERCLOCKED_LORE", tldr);
@@ -74,6 +75,7 @@ namespace HAND_OVERCLOCKED
             item.displayPrefab = HANDDisplay;
             item.descriptionToken = "HAND_OVERCLOCKED_DESC";
             item.outroFlavorToken = "HAND_OVERCLOCKED_OUTRO_FLAVOR";
+            item.desiredSortPosition = 100f;
             HANDContent.survivorDefs.Add(item);
         }
 
@@ -128,7 +130,7 @@ namespace HAND_OVERCLOCKED
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport report)
         {
             orig(self, report);
-            if (report.victim && report.attacker && report.attackerBody && report.attackerBody.baseNameToken== ("HAND_OVERCLOCKED_BODY"))
+            if (report.victim && report.attacker && report.attackerBody && report.attackerBody.baseNameToken == ("HAND_OVERCLOCKED_NAME"))
             {
                 if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
                 {

@@ -1,6 +1,6 @@
 {
   "name": "HAND_OVERCLOCKED_BETA",
-  "version_number": "0.0.13",
+  "version_number": "0.0.15",
   "website_url": "",
   "description": "BEEP BOOP, BETA RELEASE. Adds HAN-D from Risk of Rain 1. Multiplayer-compatible, gameplay is 100% functional, just needs a lot of visual polish.",
   "dependencies": [
