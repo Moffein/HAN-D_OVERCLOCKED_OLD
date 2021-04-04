@@ -30,7 +30,7 @@ namespace EntityStates.HANDOverclocked
 
         public override void OnExit()
         {
-            Util.PlaySound("Play_MULT_m2_throw", base.gameObject);
+            Util.PlaySound("Play_HOC_Hammer", base.gameObject);
             if (this.holdChargeVfxGameObject)
             {
                 EntityState.Destroy(this.holdChargeVfxGameObject);
@@ -43,17 +43,17 @@ namespace EntityStates.HANDOverclocked
         {
             base.FixedUpdate();
 
-            if (base.characterBody && base.characterBody.isSprinting)
+            /*if (base.characterBody && base.characterBody.isSprinting)
             {
                 base.characterBody.isSprinting = false;
-            }
+            }*/
 
             if (base.fixedAge > this.minDuration && charge < chargeDuration)
             {
                 charge += Time.deltaTime * this.attackSpeedStat;
                 if (charge > chargeDuration)
                 {
-                    Util.PlaySound("Play_MULT_m2_aim", base.gameObject);
+                    Util.PlaySound("Play_HOC_StartPunch", base.gameObject);
                     charge = chargeDuration;
                     EffectManager.SpawnEffect(chargeEffectPrefab, new EffectData
                     {

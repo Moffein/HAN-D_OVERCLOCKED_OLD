@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using RoR2.UI;
-using R2API.Utils;
 
 namespace HAND_OVERCLOCKED.Components
 {
@@ -62,7 +61,7 @@ namespace HAND_OVERCLOCKED.Components
         {
             if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
             {
-                characterBody.skillLocator.special.rechargeStopwatch += 1f;
+                characterBody.skillLocator.special.rechargeStopwatch += 1.5f;
             }
         }
 
@@ -88,7 +87,7 @@ namespace HAND_OVERCLOCKED.Components
                 {
                     if (characterBody.skillLocator.utility.skillDef.skillName == "Overclock")
                     {
-                        ovcDef.SetFieldValue<Sprite>("icon", OverclockController.overclockCancelIcon);
+                        ovcDef.icon = OverclockController.overclockCancelIcon;
                     }
                 }
 
@@ -100,9 +99,10 @@ namespace HAND_OVERCLOCKED.Components
         private void CmdBeginOverclockServer()
         {
             networkSounds.RpcPlayOverclockStart();
-            if (!characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            if (!characterBody.HasBuff(HANDContent.OverclockBuff))
             {
-                characterBody.AddBuff(HAND_OVERCLOCKED.OverclockBuff);
+                characterBody.AddBuff(HANDContent.OverclockBuff.buffIndex);
+                characterBody.AddTimedBuff(HANDContent.OverclockBuff.buffIndex, 100f);
             }
         }
 
@@ -120,15 +120,15 @@ namespace HAND_OVERCLOCKED.Components
         [Command]
         private void CmdEndOverclockServer()
         {
-            if (characterBody.HasBuff(HAND_OVERCLOCKED.OverclockBuff))
+            if (characterBody.HasBuff(HANDContent.OverclockBuff))
             {
-                characterBody.RemoveBuff(HAND_OVERCLOCKED.OverclockBuff);
+                characterBody.RemoveBuff(HANDContent.OverclockBuff);
             }
             networkSounds.RpcPlayOverclockEnd();
         }
         private void RestoreOriginalIcon()
         {
-            ovcDef.SetFieldValue<Sprite>("icon", overclockIcon);
+            ovcDef.icon = overclockIcon;
         }
 
         private void ReiszeOverclockGauge()
@@ -196,7 +196,7 @@ namespace HAND_OVERCLOCKED.Components
         public static Texture2D texGaugeArrow;
         private Rect rectGauge;
         private Rect rectGaugeArrow;
-        public static float gaugeScale = 3f;
+        public static float gaugeScale = 0.3f;
         private float gaugeLeftBound;
         private float gaugeRightBound;
         private float gaugeArroyYPos;

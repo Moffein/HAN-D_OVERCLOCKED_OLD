@@ -15,9 +15,9 @@ namespace EntityStates.HANDOverclocked
             if (!this.hasSwung)
             {
                 Util.PlaySound("Play_HOC_Punch", base.gameObject);
+                this.hasSwung = true;
                 if (base.isAuthority)
                 {
-                    this.hasSwung = true;
                     EffectManager.SimpleMuzzleFlash(FullSwing.swingEffectPrefab, base.gameObject, "SwingCenter", true);
                     Vector3 directionFlat = base.GetAimRay().direction;
                     directionFlat.y = 0;
@@ -29,15 +29,15 @@ namespace EntityStates.HANDOverclocked
                         inflictor = base.gameObject,
                         teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
                         baseDamage = this.damageStat * FullSwing.damageCoefficient,
-                        position = base.transform.position + 5f * directionFlat.normalized,
-                        extents = new Vector3(4.2f, 6f, 6f),
+                        position = base.transform.position + 3f * directionFlat.normalized,
+                        extents = new Vector3(4.2f, 6f, 7f),
                         orientation = Quaternion.LookRotation(directionFlat, Vector3.up),
                         procCoefficient = 1f,
                         crit = RollCrit(),
                         force = FullSwing.forceMagnitude * directionFlat,
                         airborneHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
-                        damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HAND_OVERCLOCKED.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
+                        damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = 20f,
                         bossGroundedForceMult = 0.5f
                     }.Fire();

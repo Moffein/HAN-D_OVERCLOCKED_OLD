@@ -26,7 +26,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                 damageTicks = 0;
                 firstHit = true;
                 projectileDamage = this.gameObject.GetComponent<ProjectileDamage>();
-
+                healPerTick = totalHeal / damageTicksTotal;
                 projectileController = this.gameObject.GetComponent<ProjectileController>();
             }
         }
@@ -44,7 +44,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                     HealOrb healOrb = new HealOrb();
                     healOrb.origin = this.transform.position;
                     healOrb.target = ownerHealthComponent.body.mainHurtBox;
-                    healOrb.healValue = ownerHealthComponent.body.maxHealth * healFractionPerTick * (damageTicksTotal - damageTicks) * 0.5f;
+                    healOrb.healValue = ownerHealthComponent.body.maxHealth * healPerTick * (damageTicksTotal - damageTicks) * 0.5f;
                     healOrb.overrideDuration = 0.3f;
                     OrbManager.instance.AddOrb(healOrb);
                 }
@@ -103,7 +103,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                 HealOrb healOrb = new HealOrb();
                                 healOrb.origin = this.transform.position;
                                 healOrb.target = ownerHealthComponent.body.mainHurtBox;
-                                healOrb.healValue = ownerHealthComponent.body.maxHealth * healFractionPerTick;
+                                healOrb.healValue = ownerHealthComponent.body.maxHealth * healPerTick;
                                 healOrb.overrideDuration = 0.3f;
                                 OrbManager.instance.AddOrb(healOrb);
                             }
@@ -117,11 +117,11 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                     {
                                         if (victimHealthComponent.body.teamComponent && victimHealthComponent.body.teamComponent.teamIndex == teamIndex)
                                         {
-                                            victimHealthComponent.body.AddTimedBuff(HAND_OVERCLOCKED.DroneBoost, (float)damageTicksTotal * damageTimer);
+                                            victimHealthComponent.body.AddTimedBuff(HANDContent.DroneBuff, (float)damageTicksTotal * damageTimer);
                                         }
                                         else
                                         {
-                                            victimHealthComponent.body.AddTimedBuff(HAND_OVERCLOCKED.DroneDebuff, (float)damageTicksTotal * damageTimer);
+                                            victimHealthComponent.body.AddTimedBuff(HANDContent.DroneDebuff, (float)damageTicksTotal * damageTimer);
                                         }
                                     }
                                 }
@@ -131,7 +131,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                     HealOrb healOrb = new HealOrb();
                                     healOrb.origin = this.transform.position;
                                     healOrb.target = victimHealthComponent.body.mainHurtBox;
-                                    healOrb.healValue = victimHealthComponent.body.maxHealth * healFractionPerTick;
+                                    healOrb.healValue = victimHealthComponent.body.maxHealth * healPerTick;
                                     healOrb.overrideDuration = 0.3f;
                                     OrbManager.instance.AddOrb(healOrb);
                                 }
@@ -183,7 +183,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         public static float procCoefficient = 0.5f;
         public static float damageTimer = 0.5f;
         public static uint damageTicksTotal = 8;
-        public static float healFractionPerTick = 0.0125f;
+        public static float totalHeal = 0.085f;
         public static GameObject bleedEffectPrefab = Resources.Load<GameObject>("Prefabs/BleedEffect");
 
         private float stopwatch;
@@ -194,7 +194,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         private bool firstHit;
 
         private GameObject bleedEffect;
-
+        private float healPerTick;
         private GameObject owner;
         private TeamIndex teamIndex;
         private ProjectileController projectileController;

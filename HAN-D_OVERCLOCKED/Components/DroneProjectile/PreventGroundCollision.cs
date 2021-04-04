@@ -57,7 +57,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                         if (previousPos == this.transform.position || stuckCounter > 1)
                         {
                             stuckCounter = 0;
-                            this.transform.rotation = Quaternion.Inverse(this.transform.rotation);
+                            //this.transform.rotation = Quaternion.Inverse(this.transform.rotation);
                             intangibleStopwatch = 0.15f;
                             this.gameObject.layer = LayerIndex.entityPrecise.intVal;
 

@@ -18,7 +18,7 @@ namespace EntityStates.HANDOverclocked
                 {
                     if (base.characterMotor)
                     {
-                        base.SmallHop(base.characterMotor, 24f);
+                        base.SmallHop(base.characterMotor, 22f);
                     }
                     hc.EndOverclock();
                 }
@@ -28,6 +28,10 @@ namespace EntityStates.HANDOverclocked
                     if (base.isAuthority && characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
                     {
                         characterBody.skillLocator.utility.stock++;
+                    }
+                    if (base.characterMotor && !base.characterMotor.isGrounded)
+                    {
+                        base.SmallHop(base.characterMotor, 22f);
                     }
                 }
             }

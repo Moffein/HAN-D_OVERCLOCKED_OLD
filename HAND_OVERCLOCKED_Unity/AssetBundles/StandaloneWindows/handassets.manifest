@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1869708150
+CRC: 587241865
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c6f089d0a1381932bfd20791d2e747a5
+    Hash: 28aec58855fe7b031e8adb297ed2cd7d
   TypeTreeHash:
     serializedVersion: 2
     Hash: ea5a42e0fd8ea905efa7aa926a3b8944
@@ -14,17 +14,15 @@ ClassTypes:
 - Class: 213
   Script: {instanceID: 0}
 Assets:
-- Assets/Skill Icons/Explunge.png
-- Assets/UI/gaugeArrow.png
+- Assets/Skill Icons/Forced_Reassembly2.png
 - Assets/UI/Portrait.png
-- Assets/UI/gauge.png
-- Assets/Skill Icons/Drone.png
+- Assets/Skill Icons/Drone2.png
+- Assets/UI/gauge_bar_arrow_hd.png
+- Assets/UI/gauge_bar_hd3.png
 - Assets/Skill Icons/PassiveDrone.png
-- Assets/UI/gauge_bar_arrow.png
 - Assets/Skill Icons/Unethical_Reassembly.png
 - Assets/Skill Icons/Winch.png
-- Assets/UI/gauge_bar.png
 - Assets/Skill Icons/Hurt.png
-- Assets/Skill Icons/Forced_Reassembly.png
+- Assets/Skill Icons/Overclock_Cancel.png
 - Assets/Skill Icons/Overclock.png
 Dependencies: []
