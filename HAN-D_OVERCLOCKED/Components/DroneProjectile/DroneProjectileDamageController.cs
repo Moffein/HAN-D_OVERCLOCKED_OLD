@@ -183,7 +183,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         public static float procCoefficient = 0.5f;
         public static float damageTimer = 0.5f;
         public static uint damageTicksTotal = 8;
-        public static float totalHeal = 0.075f;
+        public static float totalHeal = 0.085f;
         public static GameObject bleedEffectPrefab = Resources.Load<GameObject>("Prefabs/BleedEffect");
 
         private float stopwatch;

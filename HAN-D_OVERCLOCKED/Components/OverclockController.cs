@@ -61,7 +61,7 @@ namespace HAND_OVERCLOCKED.Components
         {
             if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
             {
-                characterBody.skillLocator.special.rechargeStopwatch += 1.5f;
+                characterBody.skillLocator.special.rechargeStopwatch += 1.2f;
             }
         }
 

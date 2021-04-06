@@ -14,6 +14,14 @@ todo:
 - item displays
 
 changelog:
+0.0.17
+
+- DRONE heal increased 7.5% -> 8.5%
+- DRONE cooldown reduction on melee hit reduced from -1.5s to -1.2s
+
+0.0.16
+
+- Fixed HAN-D being unable to deal damage in multiplayer.
 
 0.0.15
 
