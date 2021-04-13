@@ -14,6 +14,10 @@ todo:
 - item displays
 
 changelog:
+0.0.18
+
+- Fixed for the Anniversary Hotfix update.
+
 0.0.17
 
 - DRONE heal increased 7.5% -> 8.5%
