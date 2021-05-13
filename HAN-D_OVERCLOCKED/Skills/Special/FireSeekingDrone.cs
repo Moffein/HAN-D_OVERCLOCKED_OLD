@@ -14,10 +14,6 @@ namespace EntityStates.HANDOverclocked
         public override void OnEnter()
         {
             base.OnEnter();
-            EffectManager.SpawnEffect(FireSeekingDrone.effectPrefab, new EffectData
-            {
-                origin = base.transform.position
-            }, false);
 
             hasFired = false;
             Transform modelTransform = base.GetModelTransform();
@@ -91,7 +87,6 @@ namespace EntityStates.HANDOverclocked
         public static GameObject projectilePrefab;
         public static string muzzleString;
         public static GameObject muzzleflashEffectPrefab;
-        public static GameObject effectPrefab;
         public static float baseDuration;
         public static float healPercent;
         public static float force;

@@ -7,17 +7,17 @@ using UnityEngine.Networking;
 
 namespace HAND_OVERCLOCKED.Components
 {
-    public class DroneController : NetworkBehaviour//, IOnKilledOtherServerReceiver
+    public class DroneStockController : NetworkBehaviour//, IOnKilledOtherServerReceiver
     {
         public void Start()
         {
             characterBody.skillLocator.special.RemoveAllStocks();
             if (characterBody.master)
             {
-                dronePersist = characterBody.master.gameObject.GetComponent<DronePersistComponent>();
+                dronePersist = characterBody.master.gameObject.GetComponent<DroneStockPersist>();
                 if (!dronePersist)
                 {
-                    dronePersist = characterBody.master.gameObject.AddComponent<DronePersistComponent>();
+                    dronePersist = characterBody.master.gameObject.AddComponent<DroneStockPersist>();
                 }
                 else
                 {
@@ -73,6 +73,6 @@ namespace HAND_OVERCLOCKED.Components
         }
 
         private CharacterBody characterBody;
-        private DronePersistComponent dronePersist;
+        private DroneStockPersist dronePersist;
     }
 }

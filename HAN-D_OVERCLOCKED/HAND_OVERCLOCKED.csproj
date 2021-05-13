@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\DroneProjectile\DroneProjectileRotation.cs" />
     <Compile Remove="Components\HANDHelpers.cs" />
     <Compile Remove="HANDSkillsUnused.cs" />
     <Compile Remove="Unused\HANDHelpers.cs" />
@@ -31,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Components\DroneProjectile\DroneProjectileRotation.cs" />
     <None Include="Unused\HANDHelpers.cs" />
     <None Include="Unused\HANDSkillsUnused.cs" />
   </ItemGroup>

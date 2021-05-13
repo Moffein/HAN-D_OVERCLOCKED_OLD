@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace HAND_OVERCLOCKED.Components
 {
-    public class DronePersistComponent : NetworkBehaviour
+    public class DroneStockPersist : NetworkBehaviour
     {
         public int droneCount = 0;
     }

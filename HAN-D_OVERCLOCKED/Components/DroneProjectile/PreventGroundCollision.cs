@@ -43,11 +43,11 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                     {
                         distanceTravelled += Mathf.Abs((this.transform.position - previousPos).magnitude);
                         stopwatch += Time.fixedDeltaTime;
-                        if (stopwatch > 0.15f)
+                        if (stopwatch > 0.1f)
                         {
-                            stopwatch -= 0.15f;
+                            stopwatch -= 0.1f;
                             //Debug.Log("Distance Travelled: " + distanceTravelled);
-                            if (distanceTravelled < 0.02f)
+                            if (distanceTravelled < 0.013f) //0.02 * 2/3
                             {
                                 stuckCounter++;
                             }
@@ -58,7 +58,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                         {
                             stuckCounter = 0;
                             //this.transform.rotation = Quaternion.Inverse(this.transform.rotation);
-                            intangibleStopwatch = 0.15f;
+                            intangibleStopwatch = 0.1f;
                             this.gameObject.layer = LayerIndex.entityPrecise.intVal;
 
                             stopwatch = 0f;

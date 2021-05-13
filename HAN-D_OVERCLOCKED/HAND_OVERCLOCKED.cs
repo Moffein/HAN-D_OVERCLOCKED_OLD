@@ -23,7 +23,7 @@ using RoR2.ContentManagement;
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.0.18")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
@@ -39,6 +39,8 @@ namespace HAND_OVERCLOCKED
         public SkillLocator skillLocator;
 
         public static GameObject slamEffect;
+
+        private readonly Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/hgstandard");
 
         private void RegisterLanguageTokens()
         {
@@ -141,7 +143,7 @@ namespace HAND_OVERCLOCKED
             {
                 if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
                 {
-                    DroneController hc = report.attackerBody.gameObject.GetComponent<DroneController>();
+                    DroneStockController hc = report.attackerBody.gameObject.GetComponent<DroneStockController>();
                     if (hc)
                     {
                         hc.RpcAddSpecialStock();
@@ -267,12 +269,11 @@ namespace HAND_OVERCLOCKED
             //SetRagdoll();
 
             void AddComponents() {
-                //HANDBody.AddComponent<HANDController>();
                 HANDBody.AddComponent<OverclockController>();
-                HANDBody.AddComponent<DroneController>();
+                HANDBody.AddComponent<DroneStockController>();
                 HANDBody.AddComponent<TargetingController>();
                 HANDBody.AddComponent<HANDNetworkSounds>();
-                //body = HANDBody.GetComponent<CharacterBody>();
+                HANDBody.AddComponent<DroneFollowerController>();
                 HANDBody.tag = "Player";
             }
             void SetupSFX()
@@ -527,7 +528,8 @@ namespace HAND_OVERCLOCKED
             FireSeekingDrone.force = 250f;
             FireSeekingDrone.projectilePrefab = CreateDroneProjectile();
             FireSeekingDrone.baseDuration = 0.25f;
-            FireSeekingDrone.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+
+            CreateDroneFollower();
 
             EntityStateMachine stateMachine = HANDBody.AddComponent<EntityStateMachine>();
             stateMachine.customName = "DroneLauncher";
@@ -913,9 +915,43 @@ namespace HAND_OVERCLOCKED
             
         }*/
 
+        private void CreateDroneFollower()
+        {
+            GameObject droneFollower = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"), "HANDOverclockedDroneFollower", false);
+            droneFollower.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
+            droneFollower.transform.localScale = 2f * Vector3.one;
+
+            droneFollower.layer = LayerIndex.noCollision.intVal;
+            Destroy(droneFollower.GetComponentInChildren<ParticleSystem>());
+            Destroy(droneFollower.GetComponentInChildren<Collider>());
+
+            DroneFollowerController.dronePrefab = droneFollower;
+
+            /*GameObject droneSpawnEffect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactLoaderFistSmall"), "HANDOverclockedDroneSpawnEffect", false);
+            Destroy(droneSpawnEffect.GetComponent<ShakeEmitter>());
+            droneSpawnEffect.GetComponent<EffectComponent>().soundName = "";
+            HANDContent.effectDefs.Add(new EffectDef(droneSpawnEffect));*/
+            DroneFollowerController.activateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+
+            /*GameObject droneFireEffect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/muzzleflashes/MuzzleflashEngiGrenade"), "HANDOverclockedDroneFireEffect", false);
+            droneFireEffect.GetComponent<EffectComponent>().soundName = "";
+            HANDContent.effectDefs.Add(new EffectDef(droneFireEffect));*/
+            DroneFollowerController.deactivateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+        }
+
         private GameObject CreateDroneProjectile()
         {
             GameObject droneProjectile = Resources.Load<GameObject>("prefabs/projectiles/EngiHarpoon").InstantiateClone("HANDOverclockedDroneProjectile", true);
+
+            GameObject droneProjectileGhost = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"),"HANDOverclockedDroneProjectileGhost", false);
+            droneProjectileGhost.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
+            droneProjectileGhost.AddComponent<ProjectileGhostController>();
+            droneProjectileGhost.transform.localScale = 2f * Vector3.one;
+
+            droneProjectileGhost.layer = LayerIndex.noCollision.intVal;
+            Destroy(droneProjectileGhost.GetComponentInChildren<Collider>());
+
+            droneProjectile.GetComponent<ProjectileController>().ghostPrefab = droneProjectileGhost;
 
             HANDContent.projectilePrefabs.Add(droneProjectile);
 
@@ -933,6 +969,7 @@ namespace HAND_OVERCLOCKED
             ProjectileStickOnImpact stick = droneProjectile.AddComponent<ProjectileStickOnImpact>();
             stick.ignoreWorld = true;
             stick.ignoreCharacters = false;
+            stick.alignNormals = false;
 
             droneProjectile.AddComponent<DroneProjectileDamageController>();
             droneProjectile.AddComponent<PreventGroundCollision>();

@@ -1,28 +1,64 @@
 ManifestFileVersion: 0
-CRC: 587241865
+CRC: 2846572729
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 28aec58855fe7b031e8adb297ed2cd7d
+    Hash: 58071b557594e9a74faf77b0a8479ce2
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ea5a42e0fd8ea905efa7aa926a3b8944
+    Hash: 72a65c65a5ad914b49bb16c3a3ea2912
 HashAppended: 0
 ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
 - Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
 Assets:
+- Assets/HandDrone/mat/texDroneBladesTemp.mat
+- Assets/HandDrone/mat/DroneSawTemp.mat
+- Assets/HandDrone/DroneAnimSpeenSaw.anim
+- Assets/HandDrone/DroneV06.fbx
 - Assets/Skill Icons/Forced_Reassembly2.png
+- Assets/HandDrone/mat/sparksParticles.mat
 - Assets/UI/Portrait.png
+- Assets/HandDrone/mat/DroneBodyTemp.mat
 - Assets/Skill Icons/Drone2.png
 - Assets/UI/gauge_bar_arrow_hd.png
 - Assets/UI/gauge_bar_hd3.png
 - Assets/Skill Icons/PassiveDrone.png
+- Assets/HandDrone/DronePrefab.prefab
+- Assets/HandDrone/DroneAnimSpeenBlades.anim
 - Assets/Skill Icons/Unethical_Reassembly.png
 - Assets/Skill Icons/Winch.png
+- Assets/HandDrone/mat/texDroneBlades.png
 - Assets/Skill Icons/Hurt.png
+- Assets/HandDrone/DroneAnimator.controller
 - Assets/Skill Icons/Overclock_Cancel.png
 - Assets/Skill Icons/Overclock.png
 Dependencies: []
