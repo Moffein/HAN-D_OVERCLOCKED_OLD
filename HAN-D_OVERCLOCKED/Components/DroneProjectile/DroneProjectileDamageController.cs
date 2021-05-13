@@ -48,6 +48,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                     healOrb.overrideDuration = 0.3f;
                     OrbManager.instance.AddOrb(healOrb);
                 }
+                EffectManager.SimpleEffect(expireEffectPrefab, this.transform.position, this.transform.rotation, true);
             }
         }
 
@@ -185,6 +186,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         public static uint damageTicksTotal = 8;
         public static float totalHeal = 0.085f;
         public static GameObject bleedEffectPrefab = Resources.Load<GameObject>("Prefabs/BleedEffect");
+        public static GameObject expireEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
         private float stopwatch;
         private ProjectileStickOnImpact stick;
