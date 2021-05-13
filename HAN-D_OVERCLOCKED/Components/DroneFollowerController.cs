@@ -26,21 +26,22 @@ namespace HAND_OVERCLOCKED.Components
             }
         }
 
-        public void FixedUpdate()
-        {
-            if (hasAuthority)
-            {
-                if (characterBody.skillLocator.special.stock != _droneCountServer)
-                {
+        public void FixedUpdate() {
+            if (hasAuthority) {
+                if (characterBody.skillLocator.special.stock != _droneCountServer) {
                     CmdUpdateDroneCount(characterBody.skillLocator.special.stock);
                 }
             }
+
+        }
+
+        private void Update() {
+
             UpdateMotion();
             base.transform.position += this.velocity * Time.fixedDeltaTime;
 
-            stopwatch += Time.fixedDeltaTime * (characterBody.HasBuff(HANDContent.OverclockBuff) ? 2f : 1f);
-            if (stopwatch > orbitDuration)
-            {
+            stopwatch += Time.deltaTime * (characterBody.HasBuff(HANDContent.OverclockBuff) ? 2f : 1f);
+            if (stopwatch > orbitDuration) {
                 stopwatch -= orbitDuration;
             }
         }
