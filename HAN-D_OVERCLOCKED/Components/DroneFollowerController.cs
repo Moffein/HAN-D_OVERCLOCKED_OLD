@@ -18,7 +18,7 @@ namespace HAND_OVERCLOCKED.Components
             }
 
             droneFollowers = new DroneFollower[maxFollowingDrones];
-            for (int i = 0; i < maxFollowingDrones; i++)
+            for (int i = 0; i < droneFollowers.Length; i++)
             {
                 droneFollowers[i].gameObject = Instantiate(dronePrefab);
                 droneFollowers[i].gameObject.transform.localScale = Vector3.zero;
@@ -28,11 +28,23 @@ namespace HAND_OVERCLOCKED.Components
 
         public void FixedUpdate() {
             if (hasAuthority) {
-                if (characterBody.skillLocator.special.stock != _droneCountServer) {
+                if (characterBody.skillLocator.special.stock != _droneCountServer)
+                {
                     CmdUpdateDroneCount(characterBody.skillLocator.special.stock);
                 }
             }
 
+        }
+
+        public void OnDestroy()
+        {
+            for (int i = 0; i < droneFollowers.Length; i++)
+            {
+                if (droneFollowers[i].gameObject)
+                {
+                    Destroy(droneFollowers[i].gameObject);
+                }
+            }
         }
 
         private void Update() {
