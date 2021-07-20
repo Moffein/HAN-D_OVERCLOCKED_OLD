@@ -69,6 +69,9 @@ namespace HAND_OVERCLOCKED
             LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_NAME", "FORCED_REASSEMBLY");
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_NAME", "OVERCLOCK");
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_NAME", "DRONE");
+
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "PARALLEL_COMPUTING");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsDamage>+2.5% damage</style> and <style=cIsHealing>+1 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
         }
 
         private void CreateSurvivorDef() {
@@ -110,15 +113,24 @@ namespace HAND_OVERCLOCKED
             orig(self);
             if (self)
             {
+                float origDamage = self.damage;
+                float origAtkSpd = self.attackSpeed;
+                float origMoveSpd = self.moveSpeed;
+                if (self.HasBuff(HANDContent.ParallelComputingBuff))
+                {
+                    int pcCount = self.GetBuffCount(HANDContent.ParallelComputingBuff);
+                    self.damage += origDamage * pcCount * 0.025f;
+                    self.armor += pcCount;
+                }
                 if (self.HasBuff(HANDContent.OverclockBuff))
                 {
-                    self.attackSpeed *= 1.4f;
-                    self.moveSpeed *= 1.4f;
+                    self.attackSpeed += origAtkSpd * 0.4f;
+                    self.moveSpeed += origMoveSpd * 0.4f;
                 }
                 if (self.HasBuff(HANDContent.DroneBuff))
                 {
-                    self.attackSpeed *= 1.4f;
-                    self.moveSpeed *= 1.4f;
+                    self.attackSpeed += origAtkSpd * 0.4f;
+                    self.moveSpeed += origMoveSpd * 0.4f;
                 }
                 if (self.HasBuff(HANDContent.DroneDebuff))
                 {
@@ -207,7 +219,7 @@ namespace HAND_OVERCLOCKED
 
             ShakeEmitter se = slamEffect.AddComponent<ShakeEmitter>();
             se.shakeOnStart = true;
-            se.duration = 0.5f;
+            se.duration = 0.65f;
             se.scaleShakeRadiusWithLocalScale = false;
             se.radius = 30f;
             se.wave = new Wave()
@@ -335,12 +347,12 @@ namespace HAND_OVERCLOCKED
                 body.baseRegen = 2.5f;
                 body.baseMaxShield = 0f;
                 body.baseMoveSpeed = 7f;
-                body.baseAcceleration = 40f;
+                body.baseAcceleration = 30f;
                 body.baseJumpPower = 15f;
-                body.baseDamage = 14f;
+                body.baseDamage = 12f;
                 body.baseAttackSpeed = 1f;
                 body.baseCrit = 1f;
-                body.baseArmor = 20f;
+                body.baseArmor = 12f;
                 body.baseJumpCount = 1;
 
                 //leveling stats
@@ -368,6 +380,11 @@ namespace HAND_OVERCLOCKED
         private void CreateSkills() {
             skillLocator = HANDBody.GetComponent<SkillLocator>();
 
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "HAND_OVERCLOCKED_PASSIVE_NAME";
+            skillLocator.passiveSkill.skillDescriptionToken = "HAND_OVERCLOCKED_PASSIVE_DESC";
+            skillLocator.passiveSkill.icon = HANDContent.assets.LoadAsset<Sprite>("Drone2.png");
+
             CreatePrimary();
             CreateSecondary();
             CreateUtility();
@@ -385,6 +402,7 @@ namespace HAND_OVERCLOCKED
             FullSwing.shorthopVelocityFromHit = 10f;
             FullSwing.returnToIdlePercentage = 0.443662f;
             FullSwing.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
+            FullSwing.recoilAmplitude = 6f;
 
             HANDContent.entityStates.Add(typeof(FullSwing));
 
@@ -524,7 +542,7 @@ namespace HAND_OVERCLOCKED
         }
 
         private void CreateSpecial() {
-            FireSeekingDrone.damageCoefficient = 2.3f;
+            FireSeekingDrone.damageCoefficient = 2.7f;
             FireSeekingDrone.force = 250f;
             FireSeekingDrone.projectilePrefab = CreateDroneProjectile();
             FireSeekingDrone.baseDuration = 0.25f;
@@ -540,13 +558,13 @@ namespace HAND_OVERCLOCKED
             droneSkill.activationState = new SerializableEntityStateType(typeof(FireSeekingDrone));
             droneSkill.skillNameToken = "HAND_OVERCLOCKED_SPECIAL_NAME";
             droneSkill.skillName = "Drones";
-            droneSkill.skillDescriptionToken = "Send out a drone that <style=cIsDamage>debilitates</style> enemies for <style=cIsDamage>" + FireSeekingDrone.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style> while also <style=cIsHealing>healing yourself</style>.";
-            droneSkill.skillDescriptionToken += " <style=cIsHealing>Heals</style> and <style=cIsUtility>Energizes</style> allies.";
+            droneSkill.skillDescriptionToken = "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Debilitates</style> enemies for <style=cIsDamage>"
+                + FireSeekingDrone.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style> and <style=cIsUtility>Energizes</style> allies.";
             droneSkill.skillDescriptionToken += " <style=cIsUtility>Kills and melee hits reduce cooldown</style>.";
             droneSkill.isCombatSkill = true;
             droneSkill.cancelSprintingOnActivation = false;
             droneSkill.canceledFromSprinting = false;
-            droneSkill.baseRechargeInterval = 10f;
+            droneSkill.baseRechargeInterval = 10f;  
             droneSkill.interruptPriority = EntityStates.InterruptPriority.Any;
             droneSkill.mustKeyPress = false;
             droneSkill.beginSkillCooldownOnSkillEnd = true;
@@ -575,6 +593,15 @@ namespace HAND_OVERCLOCKED
 
         private void CreateBuffs()
         {
+            BuffDef ParallelBuffDef = ScriptableObject.CreateInstance<BuffDef>();
+            ParallelBuffDef.buffColor = HANDColor;
+            ParallelBuffDef.canStack = true;
+            ParallelBuffDef.iconSprite = Resources.Load<Sprite>("textures/bufficons/texBuffOverheat");
+            ParallelBuffDef.isDebuff = false;
+            ParallelBuffDef.name = "MoffeinHANDParallelComputing";
+            HANDContent.buffDefs.Add(ParallelBuffDef);
+            HANDContent.ParallelComputingBuff = ParallelBuffDef;
+
             BuffDef OverclockBuffDef = ScriptableObject.CreateInstance<BuffDef>();
             OverclockBuffDef.buffColor = OverclockColor;
             OverclockBuffDef.canStack = false;

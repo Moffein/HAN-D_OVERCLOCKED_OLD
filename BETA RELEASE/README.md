@@ -5,15 +5,27 @@ if you want to make skins for HAN-D, the bodyname is "HANDOverclockedBody"
 todo:
 - custom anims + tweaked model
 - add a proper ragdoll
-- make DRONES get stuck less
-- Add model for DRONES
-- Add orbiting DRONES
+- Add textures to DRONES
 - Add orange OVERCLOCK glow as well as other misc vfx
 - skins
 - do minor number tweaks to the hit physics and general balance
 - item displays
 
 changelog:
+0.1.0
+
+- Base accel reduced 40 -> 30 to match MUL-T.
+- Base damage reduced 14 -> 12.
+- Base armor reduced 20 -> 12.
+- New Passive: PARALLEL_COMPUTING. Gain +2.5% damage and +1 armor for every mechanical ally on your team.
+- DRONES now orbit around HAN-D and have a unique model (needs texturing). They count towards HAN-D's passive, but do NOT count as actual allies.
+- DRONES get stuck less.
+
+- Added screenshake when using HURT.
+- Extended FORCED_REASSEMBLY screenshake duration from 0.5s -> 0.65s
+- Added a small viewkick when FORCED_REASSEMBLY finishes charging.
+- Added a small particle effect when beginning/ending OVERCLOCK.
+
 0.0.18
 
 - Fixed for the Anniversary Hotfix update.

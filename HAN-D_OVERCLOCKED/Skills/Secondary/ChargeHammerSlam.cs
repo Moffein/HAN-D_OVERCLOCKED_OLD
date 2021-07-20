@@ -30,7 +30,6 @@ namespace EntityStates.HANDOverclocked
 
         public override void OnExit()
         {
-            Util.PlaySound("Play_HOC_Hammer", base.gameObject);
             if (this.holdChargeVfxGameObject)
             {
                 EntityState.Destroy(this.holdChargeVfxGameObject);
@@ -55,6 +54,7 @@ namespace EntityStates.HANDOverclocked
                 {
                     Util.PlaySound("Play_HOC_StartPunch", base.gameObject);
                     charge = chargeDuration;
+                    base.AddRecoil(-6f, 6f, -16f, 16f);
                     EffectManager.SpawnEffect(chargeEffectPrefab, new EffectData
                     {
                         origin = base.transform.position
@@ -63,10 +63,13 @@ namespace EntityStates.HANDOverclocked
                 chargePercent = charge / chargeDuration;
             }
 
-            if (base.fixedAge >= this.minDuration && base.isAuthority && base.inputBank && !base.inputBank.skill2.down)
+            if (base.fixedAge >= this.minDuration)
             {
-                this.outer.SetNextState(new EntityStates.HANDOverclocked.Slam2() { chargePercent = chargePercent });
-                return;
+                if (base.isAuthority && base.inputBank && !base.inputBank.skill2.down)
+                {
+                    this.outer.SetNextState(new EntityStates.HANDOverclocked.Slam2() { chargePercent = chargePercent });
+                    return;
+                }
             }
         }
 
@@ -83,6 +86,9 @@ namespace EntityStates.HANDOverclocked
         private float chargePercent;
         private Animator modelAnimator;
         public static GameObject chargeEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+
+        private float shakeTimer = 0.15f;
+        private float shakeStopwatch = 0f;
 
         public static GameObject holdChargeVfxPrefab = EntityStates.Toolbot.ChargeSpear.holdChargeVfxPrefab;
         private GameObject holdChargeVfxGameObject = null;

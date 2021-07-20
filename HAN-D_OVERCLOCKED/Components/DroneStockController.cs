@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using RoR2;
 using UnityEngine;
@@ -43,6 +44,21 @@ namespace HAND_OVERCLOCKED.Components
                     }
                     dronePersist.droneCount = characterBody.skillLocator.special.stock;
                 }
+
+                int pcCount = characterBody.skillLocator.special.stock;
+                ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(characterBody.teamComponent.teamIndex);
+                foreach (TeamComponent tc in teamMembers)
+                {
+                    if (tc.body && (tc.body.bodyFlags & CharacterBody.BodyFlags.Mechanical) > 0 && tc.body != characterBody )
+                    {
+                        pcCount++;
+                    }
+                }
+                if (pcCount != oldPCCount)
+                {
+                    CmdUpdatePCBuff(pcCount);
+                }
+                oldPCCount = pcCount;
             }
         }
 
@@ -72,6 +88,26 @@ namespace HAND_OVERCLOCKED.Components
             }
         }
 
+        [Command]
+        public void CmdUpdatePCBuff(int newCount)
+        {
+            if (NetworkServer.active)
+            {
+                if (characterBody.GetBuffCount(HANDContent.ParallelComputingBuff) != newCount)
+                {
+                    while (characterBody.HasBuff(HANDContent.ParallelComputingBuff))
+                    {
+                        characterBody.RemoveBuff(HANDContent.ParallelComputingBuff);
+                    }
+                    for (int i = 0; i < newCount; i++)
+                    {
+                        characterBody.AddBuff(HANDContent.ParallelComputingBuff);
+                    }
+                }
+            }
+        }
+
+        private int oldPCCount = 0;
         private CharacterBody characterBody;
         private DroneStockPersist dronePersist;
     }

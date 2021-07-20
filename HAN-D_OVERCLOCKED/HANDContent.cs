@@ -19,6 +19,7 @@ namespace HAND_OVERCLOCKED
         public static BuffDef OverclockBuff;
         public static BuffDef DroneBuff;
         public static BuffDef DroneDebuff;
+        public static BuffDef ParallelComputingBuff;
 
         public static List<GameObject> bodyPrefabs = new List<GameObject>();
         public static List<BuffDef> buffDefs = new List<BuffDef>();

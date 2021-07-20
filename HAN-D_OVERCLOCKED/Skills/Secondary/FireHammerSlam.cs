@@ -69,7 +69,10 @@ namespace EntityStates.HANDOverclocked
         public override void OnEnter()
         {
             base.OnEnter();
+            //Util.PlaySound("Play_HOC_Hammer", base.gameObject);
+            //Util.PlaySound("Play_UI_podImpact", base.gameObject);
             Util.PlaySound("Play_parent_attack1_slam", base.gameObject);
+            Util.PlaySound("Play_UI_podImpact", base.gameObject);
             this.duration = Slam2.baseDuration / this.attackSpeedStat;
             this.minDuration = Slam2.baseMinDuration / this.attackSpeedStat;
             this.modelAnimator = base.GetModelAnimator();

@@ -16,6 +16,23 @@ namespace EntityStates.HANDOverclocked
             {
                 Util.PlaySound("Play_HOC_Punch", base.gameObject);
                 this.hasSwung = true;
+
+                switch (swingAnim)
+                {
+                    case 3: //left swing
+                        base.AddRecoil(2.7f * recoilAmplitude,
+                            2.7f * recoilAmplitude,
+                            -2.7f * recoilAmplitude,
+                            -2.7f * recoilAmplitude);
+                        break;
+                    default:
+                        base.AddRecoil(-2.7f * recoilAmplitude,
+                            -2.7f * recoilAmplitude,
+                            2.7f * recoilAmplitude,
+                            2.7f * recoilAmplitude);
+                        break;
+                }
+
                 if (base.isAuthority)
                 {
                     EffectManager.SimpleMuzzleFlash(FullSwing.swingEffectPrefab, base.gameObject, "SwingCenter", true);
@@ -78,15 +95,18 @@ namespace EntityStates.HANDOverclocked
                 {
                     base.PlayCrossfade("Gesture", "FullSwing2", "FullSwing.playbackRate", this.duration / (1f - FullSwing.returnToIdlePercentage), 0.2f);
                     secondSwing = true;
+                    swingAnim = 2;
                 }
                 else if (this.modelAnimator.GetCurrentAnimatorStateInfo(layerIndex).IsName("FullSwing2"))
                 {
                     base.PlayCrossfade("Gesture", "FullSwing3", "FullSwing.playbackRate", this.duration / (1f - FullSwing.returnToIdlePercentage), 0.2f);
+                    swingAnim = 3;  //travels left
                 }
                 else
                 {
                     base.PlayCrossfade("Gesture", "FullSwing1", "FullSwing.playbackRate", this.duration / (1f - FullSwing.returnToIdlePercentage), 0.2f);
                     firstSwing = true;
+                    swingAnim = 1;
                 }
             }
             if (base.characterBody)
@@ -182,6 +202,7 @@ namespace EntityStates.HANDOverclocked
         public static GameObject swingEffectPrefab;
         public static float airbornHorizontalForceMult;
         public static float flyingHorizontalForceMult;
+        public static float recoilAmplitude;
 
         private Transform hammerChildTransform;
         private Animator modelAnimator;
@@ -198,5 +219,7 @@ namespace EntityStates.HANDOverclocked
 
         private bool secondSwing = false;
         private bool firstSwing = false;
+
+        private int swingAnim = 0;
     }
 }

@@ -11,6 +11,11 @@ namespace EntityStates.HANDOverclocked
     {
         public override void OnEnter()
         {
+            base.AddRecoil(-6f, 6f, -16f, 16f);
+            EffectManager.SpawnEffect(effectPrefab, new EffectData
+            {
+                origin = base.transform.position
+            }, false);
             OverclockController hc = base.gameObject.GetComponent<OverclockController>();
             if (hc && base.isAuthority)
             {
@@ -41,5 +46,7 @@ namespace EntityStates.HANDOverclocked
         {
             return InterruptPriority.Any;
         }
+
+        public static GameObject effectPrefab = Resources.Load<GameObject>("prefabs/effects/smokescreeneffect");
     }
 }
