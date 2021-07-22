@@ -64,6 +64,5 @@ namespace HAND_OVERCLOCKED
         public float maxForceScale = 6f;
         public float groundedLaunchForce = 0f;
         public float airborneLaunchForce = 0f;
-        //public float squashPercent = 1f;
     }
 }

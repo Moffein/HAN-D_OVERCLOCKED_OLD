@@ -161,20 +161,6 @@ namespace HAND_OVERCLOCKED
                         hc.RpcAddSpecialStock();
                     }
                 }
-
-                if (report.attacker == report.damageInfo.inflictor)
-                {
-                    if ((report.damageInfo.damageType & DamageType.Stun1s) > 0 && (report.damageInfo.damageType & DamageType.AOE) == 0 && report.damageInfo.procCoefficient >= 1f && report.damageInfo.damage > report.attackerBody.damage * 4f)
-                    {
-                        if (report.victimBody)
-                        {
-                            if (report.victimBody.modelLocator && report.victimBody.modelLocator.modelTransform && report.victimBody.modelLocator.modelTransform.gameObject && !report.victimBody.modelLocator.modelTransform.gameObject.GetComponent<SquashedComponent>())
-                            {
-                                report.victimBody.modelLocator.modelTransform.gameObject.AddComponent<SquashedComponent>().speed = 5f;
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -286,6 +272,7 @@ namespace HAND_OVERCLOCKED
                 HANDBody.AddComponent<TargetingController>();
                 HANDBody.AddComponent<HANDNetworkSounds>();
                 HANDBody.AddComponent<DroneFollowerController>();
+                HANDBody.AddComponent<NetworkSquishManager>();
                 HANDBody.tag = "Player";
             }
             void SetupSFX()
@@ -402,7 +389,7 @@ namespace HAND_OVERCLOCKED
             FullSwing.shorthopVelocityFromHit = 10f;
             FullSwing.returnToIdlePercentage = 0.443662f;
             FullSwing.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
-            FullSwing.recoilAmplitude = 6f;
+            FullSwing.recoilAmplitude = 5f;
 
             HANDContent.entityStates.Add(typeof(FullSwing));
 
@@ -949,8 +936,14 @@ namespace HAND_OVERCLOCKED
             droneFollower.transform.localScale = 2f * Vector3.one;
 
             droneFollower.layer = LayerIndex.noCollision.intVal;
+
+            droneFollower.layer = LayerIndex.noCollision.intVal;
             Destroy(droneFollower.GetComponentInChildren<ParticleSystem>());
-            Destroy(droneFollower.GetComponentInChildren<Collider>());
+            Collider[] colliders = droneFollower.GetComponentsInChildren<Collider>();
+            foreach (Collider c in colliders)
+            {
+                Destroy(c);
+            }
 
             DroneFollowerController.dronePrefab = droneFollower;
 
@@ -1001,7 +994,11 @@ namespace HAND_OVERCLOCKED
             droneProjectile.AddComponent<DroneProjectileDamageController>();
             droneProjectile.AddComponent<PreventGroundCollision>();
 
-            Destroy(droneProjectile.GetComponent<BoxCollider>());
+            Collider[] colliders = droneProjectile.GetComponentsInChildren<Collider>();
+            foreach (Collider c in colliders)
+            {
+                Destroy(c);
+            }
             SphereCollider sc = droneProjectile.AddComponent<SphereCollider>();
             sc.radius = 0.6f;
             sc.contactOffset = 0.01f;

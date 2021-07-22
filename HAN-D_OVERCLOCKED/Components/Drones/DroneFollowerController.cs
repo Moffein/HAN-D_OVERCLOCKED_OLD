@@ -9,6 +9,7 @@ namespace HAND_OVERCLOCKED.Components
 {
     public class DroneFollowerController : NetworkBehaviour
     {
+        private float sleepTimer = 1.5f;    //Don't render drones until 1.5s after spawn.
         public void Awake()
         {
             characterBody = base.GetComponent<CharacterBody>();
@@ -33,7 +34,10 @@ namespace HAND_OVERCLOCKED.Components
                     CmdUpdateDroneCount(characterBody.skillLocator.special.stock);
                 }
             }
-
+            if (sleepTimer > 0f)
+            {
+                sleepTimer -= Time.fixedDeltaTime;
+            }
         }
 
         public void OnDestroy()
@@ -49,7 +53,10 @@ namespace HAND_OVERCLOCKED.Components
 
         private void Update() {
 
-            UpdateMotion();
+            if (sleepTimer <= 0f)
+            {
+                UpdateMotion();
+            }
             base.transform.position += this.velocity * Time.fixedDeltaTime;
 
             stopwatch += Time.deltaTime * (characterBody.HasBuff(HANDContent.OverclockBuff) ? 2f : 1f);

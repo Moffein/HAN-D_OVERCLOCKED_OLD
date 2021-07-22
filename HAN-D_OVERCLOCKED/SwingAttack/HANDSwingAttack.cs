@@ -4,6 +4,8 @@ using System.Text;
 using UnityEngine;
 using RoR2;
 using R2API.Networking;
+using UnityEngine.Networking;
+using HAND_OVERCLOCKED.Components;
 
 namespace HAND_OVERCLOCKED
 {
@@ -43,6 +45,16 @@ namespace HAND_OVERCLOCKED
             HANDSwingAttack.bestHitPoints.Clear();
             foreach (HANDSwingAttack.HitPoint hitPoint2 in array2)
             {
+                if (squish && hitPoint2.hurtBox.healthComponent.body)
+                {
+                    NetworkSquishManager nsm = this.attacker.GetComponent<NetworkSquishManager>();
+                    if (nsm)
+                    {
+                        uint netID = hitPoint2.hurtBox.healthComponent.body.masterObject.GetComponent<NetworkIdentity>().netId.Value;
+                        nsm.SquashEnemy(netID);
+                    }
+                }
+
                 DamageInfo damageInfo = new DamageInfo()
                 {
                     damage = this.baseDamage,
@@ -90,6 +102,7 @@ namespace HAND_OVERCLOCKED
         public float baseDamage;
         public Vector3 force;
         public bool crit;
+        public bool squish = false;
 
         public DamageType damageType;
         public DamageColorIndex damageColorIndex;

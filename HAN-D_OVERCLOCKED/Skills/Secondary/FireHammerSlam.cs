@@ -47,7 +47,8 @@ namespace EntityStates.HANDOverclocked
                         damageType = DamageType.Stun1s,
                         groundedLaunchForce = Mathf.Lerp(forceMagnitudeMin, forceMagnitudeMax, chargePercent),
                         hitEffectPrefab = Slam2.hitEffectPrefab,
-                        maxForceScale = 20f
+                        maxForceScale = 20f,
+                        squish = true
                     }.Fire();
                     if (base.characterMotor && !base.characterMotor.isGrounded)
                     {

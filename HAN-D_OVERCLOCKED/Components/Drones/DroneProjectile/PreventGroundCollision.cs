@@ -56,7 +56,6 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                         }
 
                         float distanceSqr = (previousPos - previousPos2).sqrMagnitude;
-                        Debug.Log(distanceSqr);
 
                         if (distanceSqr < 0.1f)
                         {

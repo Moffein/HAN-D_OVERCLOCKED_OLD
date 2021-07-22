@@ -20,14 +20,14 @@ namespace EntityStates.HANDOverclocked
                 switch (swingAnim)
                 {
                     case 3: //left swing
-                        base.AddRecoil(2.7f * recoilAmplitude,
-                            2.7f * recoilAmplitude,
+                        base.AddRecoil(1.8f * recoilAmplitude,
+                            1.8f * recoilAmplitude,
                             -2.7f * recoilAmplitude,
                             -2.7f * recoilAmplitude);
                         break;
                     default:
-                        base.AddRecoil(-2.7f * recoilAmplitude,
-                            -2.7f * recoilAmplitude,
+                        base.AddRecoil(-1.8f * recoilAmplitude,
+                            -1.8f * recoilAmplitude,
                             2.7f * recoilAmplitude,
                             2.7f * recoilAmplitude);
                         break;

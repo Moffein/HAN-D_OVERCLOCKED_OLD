@@ -20,6 +20,7 @@ changelog:
 - New Passive: PARALLEL_COMPUTING. Gain +2.5% damage and +1 armor for every mechanical ally on your team.
 - DRONES now orbit around HAN-D and have a unique model (needs texturing). They count towards HAN-D's passive, but do NOT count as actual allies.
 - DRONES get stuck less.
+- Networked FORCED_REASSEMBLY squish effect.
 
 - Added screenshake when using HURT.
 - Extended FORCED_REASSEMBLY screenshake duration from 0.5s -> 0.65s
