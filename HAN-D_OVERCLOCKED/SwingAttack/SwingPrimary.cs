@@ -35,24 +35,12 @@ namespace HAND_OVERCLOCKED
                     }
                 }
 
-                //Scale force to match mass and reset current horizontal velocity to prevent launching at high attack speeds
+                //Scale force to match mass
                 Rigidbody rb = cb.rigidbody;
                 if (rb)
                 {
-                    //Debug.Log("Mass: " + rb.mass);
                     force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
-                    //rb.velocity = new Vector3(0f, rb.velocity.y, 0f);//NEEDS TO BE FIXED IN MULTIPLAYER //nvm this is a feature now
-                    //rb.angularVelocity = new Vector3(0f, rb.angularVelocity.y, 0f);//NEEDS TO BE FIXED IN MULTIPLAYER //nvm this is a feature now
-
                 }
-                /*CharacterMotor cm = cb.characterMotor;
-                if (cm)//NEEDS TO BE FIXED IN MULTIPLAYER //nvm this is a feature now
-                {
-                    cm.velocity.x = 0f;
-                    cm.velocity.z = 0f;
-                    cm.rootMotion.x = 0f;
-                    cm.rootMotion.z = 0f;
-                }*/
             }
             return force;
         }

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2964088519
+CRC: 1562153687
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: dbf5b924ee19626e7d998e4939f7e62e
+    Hash: 516db01a91eecda27d1f9dd1baeac377
   TypeTreeHash:
     serializedVersion: 2
     Hash: c3a5cd01e64661aa25c496fea27c8b5a
@@ -56,6 +56,7 @@ Assets:
 - Assets/Skill Icons/PassiveDrone.png
 - Assets/HandDrone/DronePrefab.prefab
 - Assets/HandDrone/DroneAnimSpeenBlades.anim
+- Assets/Skill Icons/Passive.png
 - Assets/Skill Icons/Unethical_Reassembly.png
 - Assets/Skill Icons/Winch.png
 - Assets/HandDrone/mat/texDroneBlades.png

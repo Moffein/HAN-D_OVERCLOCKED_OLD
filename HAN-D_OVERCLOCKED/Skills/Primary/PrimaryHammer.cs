@@ -56,7 +56,8 @@ namespace EntityStates.HANDOverclocked
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
                         damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = 20f,
-                        bossGroundedForceMult = 0.5f
+                        bossGroundedForceMult = 0.5f,
+                        stopMomentum = true
                     }.Fire();
                     if (hitCount > 0)
                     {

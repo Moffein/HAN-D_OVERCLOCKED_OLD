@@ -13,6 +13,17 @@ namespace HAND_OVERCLOCKED
     {
         public int Fire()
         {
+            NetworkCommands networkCommands = null;
+            if (squish || stopMomentum)
+            {
+                networkCommands = this.attacker.GetComponent<NetworkCommands>();
+                if (!networkCommands)
+                {
+                    squish = false;
+                    stopMomentum = false;
+                }
+            }
+
             HealthComponent myHC = this.attacker.GetComponent<CharacterBody>().healthComponent;
             Collider[] array = Physics.OverlapBox(position, extents, orientation, LayerIndex.entityPrecise.mask);
             for (int i = 0; i < array.Length; i++)
@@ -45,13 +56,16 @@ namespace HAND_OVERCLOCKED
             HANDSwingAttack.bestHitPoints.Clear();
             foreach (HANDSwingAttack.HitPoint hitPoint2 in array2)
             {
-                if (squish && hitPoint2.hurtBox.healthComponent.body)
+                if (hitPoint2.hurtBox.healthComponent.body && (squish || stopMomentum))
                 {
-                    NetworkSquishManager nsm = this.attacker.GetComponent<NetworkSquishManager>();
-                    if (nsm)
+                    uint netID = hitPoint2.hurtBox.healthComponent.body.masterObject.GetComponent<NetworkIdentity>().netId.Value;
+                    if (squish)
                     {
-                        uint netID = hitPoint2.hurtBox.healthComponent.body.masterObject.GetComponent<NetworkIdentity>().netId.Value;
-                        nsm.SquashEnemy(netID);
+                        networkCommands.SquashEnemy(netID);
+                    }
+                    if (stopMomentum)
+                    {
+                        networkCommands.StopMomentum(netID);
                     }
                 }
 
@@ -103,7 +117,7 @@ namespace HAND_OVERCLOCKED
         public Vector3 force;
         public bool crit;
         public bool squish = false;
-
+        public bool stopMomentum = false;
         public DamageType damageType;
         public DamageColorIndex damageColorIndex;
         public ProcChainMask procChainMask;

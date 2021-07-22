@@ -270,9 +270,8 @@ namespace HAND_OVERCLOCKED
                 HANDBody.AddComponent<OverclockController>();
                 HANDBody.AddComponent<DroneStockController>();
                 HANDBody.AddComponent<TargetingController>();
-                HANDBody.AddComponent<HANDNetworkSounds>();
+                HANDBody.AddComponent<NetworkCommands>();
                 HANDBody.AddComponent<DroneFollowerController>();
-                HANDBody.AddComponent<NetworkSquishManager>();
                 HANDBody.tag = "Player";
             }
             void SetupSFX()
@@ -370,7 +369,7 @@ namespace HAND_OVERCLOCKED
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "HAND_OVERCLOCKED_PASSIVE_NAME";
             skillLocator.passiveSkill.skillDescriptionToken = "HAND_OVERCLOCKED_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = HANDContent.assets.LoadAsset<Sprite>("Drone2.png");
+            skillLocator.passiveSkill.icon = HANDContent.assets.LoadAsset<Sprite>("Passive.png");
 
             CreatePrimary();
             CreateSecondary();

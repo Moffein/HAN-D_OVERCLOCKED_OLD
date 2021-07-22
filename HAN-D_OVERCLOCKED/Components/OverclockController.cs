@@ -26,7 +26,7 @@ namespace HAND_OVERCLOCKED.Components
             ovcTimer = 0f;
             ovcActive = false;
             characterBody = base.GetComponent<CharacterBody>();
-            networkSounds = base.GetComponent<HANDNetworkSounds>();
+            networkSounds = base.GetComponent<NetworkCommands>();
             healthComponent = characterBody.healthComponent;
 
             rectGauge = new Rect();
@@ -183,7 +183,7 @@ namespace HAND_OVERCLOCKED.Components
 
         public static float OverclockDuration = 4f;
 
-        private HANDNetworkSounds networkSounds;
+        private NetworkCommands networkSounds;
         private CharacterBody characterBody;
         private HealthComponent healthComponent;
         private CharacterMotor characterMotor;

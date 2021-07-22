@@ -11,6 +11,12 @@ todo:
 - do minor number tweaks to the hit physics and general balance
 - item displays
 
+Credits:
+Coding - Moffein
+Icons - PapaZach
+DRONE models - LucidInceptor and TimeSweeper
+Additional code help - Enigma
+
 changelog:
 0.1.0
 

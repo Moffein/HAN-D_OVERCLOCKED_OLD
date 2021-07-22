@@ -25,38 +25,14 @@ namespace HAND_OVERCLOCKED
                     else
                     {
                         force += airborneLaunchForce * Vector3.up;
-                        /*if (cb.characterMotor && cb.characterMotor.velocity.y > 0f)
-                        {
-                            cb.characterMotor.velocity.y = 0f;  //NEEDS TO BE FIXED IN MULTIPLAYER
-                        }*/
                     }
-
-                    /*if (squashPercent > 0f)
-                    {
-                        if (cb.modelLocator && cb.modelLocator.modelTransform && cb.modelLocator.modelTransform.gameObject && !cb.modelLocator.modelTransform.gameObject.GetComponent<SquashedComponent>())
-                        {
-                            SquashedComponent sc = cb.modelLocator.modelTransform.gameObject.AddComponent<SquashedComponent>();
-                            sc.squashMult = squashPercent;
-                            sc.speed = 5f;
-                            sc.BeginSquash();
-                        }
-                    }*/
                 }
 
                 //Scale force to match mass
                 Rigidbody rb = cb.rigidbody;
                 if (rb)
                 {
-                    //Debug.Log("Mass: " + rb.mass);
                     force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
-                    /*if (rb.velocity.y > 0f)
-                    {
-                        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);    //NEEDS TO BE FIXED IN MULTIPLAYER
-                    }
-                    if (rb.angularVelocity.y > 0f)
-                    {
-                        rb.angularVelocity = new Vector3(rb.angularVelocity.x, 0f, rb.angularVelocity.z);   //NEEDS TO BE FIXED IN MULTIPLAYER
-                    }*/
                 }
             }
             return force;
