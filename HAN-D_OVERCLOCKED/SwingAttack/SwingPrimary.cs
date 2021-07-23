@@ -26,11 +26,19 @@ namespace HAND_OVERCLOCKED
                         {
                             force.x *= this.airborneHorizontalForceMult;
                             force.z *= this.airborneHorizontalForceMult;
+                            if (cb.isChampion) //deal less knockback against bosses if they're on the ground
+                            {
+                                force.x *= bossAirborneForceMult;
+                                force.z *= bossAirborneForceMult;
+                            }
                         }
-                        else if (cb.isChampion) //deal less knockback against bosses if they're on the ground
+                        else
                         {
-                            force.x *= bossGroundedForceMult;
-                            force.z *= bossGroundedForceMult;
+                            if (cb.isChampion) //deal less knockback against bosses if they're on the ground
+                            {
+                                force.x *= bossGroundedForceMult;
+                                force.z *= bossGroundedForceMult;
+                            }
                         }
                     }
                 }
@@ -48,5 +56,6 @@ namespace HAND_OVERCLOCKED
         public float airborneHorizontalForceMult = 1f;
         public float flyingHorizontalForceMult = 1f;
         public float bossGroundedForceMult = 1f;
+        public float bossAirborneForceMult = 1f;
     }
 }

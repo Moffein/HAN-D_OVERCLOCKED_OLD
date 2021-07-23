@@ -57,6 +57,7 @@ namespace EntityStates.HANDOverclocked
                         damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = 20f,
                         bossGroundedForceMult = 0.5f,
+                        bossAirborneForceMult = 0.85f,
                         stopMomentum = true
                     }.Fire();
                     if (hitCount > 0)

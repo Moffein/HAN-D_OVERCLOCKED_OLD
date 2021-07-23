@@ -26,7 +26,13 @@ changelog:
 - New Passive: PARALLEL_COMPUTING. Gain +2.5% damage and +1 armor for every mechanical ally on your team.
 - DRONES now orbit around HAN-D and have a unique model (needs texturing). They count towards HAN-D's passive, but do NOT count as actual allies.
 - DRONES get stuck less.
-- Networked FORCED_REASSEMBLY squish effect.
+
+- HURT now has a 0.85 force multiplier against airborne bosses.
+- HURT now resets enemy momentum on-hit to prevent multiple hits from sending them flying across the map.
+
+- Reduced FORCED_REASSEMBLY max force scaling from 2000 to 750. This will make it harder for HAN-D to splat bosses, while still allowing him to bully normal enemies.
+- Removed max force scaling when hitting grounded enemies. This will make it easier for HAN-D to launch bosses into the air.
+- Networked FORCED_REASSEMBLY squish effect and added a small grace period for triggering it.
 
 - Added screenshake when using HURT.
 - Extended FORCED_REASSEMBLY screenshake duration from 0.5s -> 0.65s

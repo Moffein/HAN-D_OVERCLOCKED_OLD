@@ -13,7 +13,7 @@ namespace HAND_OVERCLOCKED
         {
             if (go)
             {
-
+                bool upwardsForce = false;
                 //Use separate knockback values when dealing with airborne/grounded targets.
                 CharacterBody cb = go.GetComponent<CharacterBody>();
                 if (cb)
@@ -21,6 +21,7 @@ namespace HAND_OVERCLOCKED
                     if (cb.characterMotor && cb.characterMotor.isGrounded)
                     {
                         force += groundedLaunchForce * Vector3.up;
+                        upwardsForce = true;
                     }
                     else
                     {
@@ -32,7 +33,8 @@ namespace HAND_OVERCLOCKED
                 Rigidbody rb = cb.rigidbody;
                 if (rb)
                 {
-                    force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), maxForceScale);
+                    Debug.Log(rb.mass);
+                    force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), upwardsForce? Mathf.Infinity : maxForceScale);
                 }
             }
             return force;
