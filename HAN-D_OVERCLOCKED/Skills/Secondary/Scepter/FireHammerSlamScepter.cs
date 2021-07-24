@@ -33,6 +33,7 @@ namespace EntityStates.HANDOverclocked
                 if (base.isAuthority)
                 {
                     bool isCrit = base.RollCrit();
+                    Quaternion direction = Quaternion.LookRotation(directionFlat, Vector3.up);
                     int hitCount = new HAND_OVERCLOCKED.HANDSwingAttackSecondary
                     {
                         attacker = base.gameObject,
@@ -41,7 +42,7 @@ namespace EntityStates.HANDOverclocked
                         baseDamage = this.damageStat * Mathf.Lerp(damageCoefficientMin, damageCoefficientMax, chargePercent),
                         position = base.transform.position + hitRange / 2f * directionFlat.normalized - 0.5f * Vector3.up,
                         extents = new Vector3(4.2f, 7f, hitRange + 1f),
-                        orientation = Quaternion.LookRotation(directionFlat, Vector3.up),
+                        orientation = direction,
                         procCoefficient = 1f,
                         crit = isCrit,
                         force = Vector3.zero,
@@ -68,7 +69,7 @@ namespace EntityStates.HANDOverclocked
 
                         FireProjectileInfo fireProjectileInfo = default(FireProjectileInfo);
                         fireProjectileInfo.position = base.transform.position;
-                        fireProjectileInfo.rotation = Quaternion.LookRotation(directionFlat, Vector3.up);
+                        fireProjectileInfo.rotation = direction;
                         fireProjectileInfo.crit = isCrit;
                         fireProjectileInfo.damage = 1f * this.damageStat;
                         fireProjectileInfo.owner = base.gameObject;
