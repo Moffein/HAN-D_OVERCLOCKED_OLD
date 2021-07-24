@@ -19,6 +19,7 @@ using R2API;
 using R2API.Utils;
 using R2API.Networking;
 using RoR2.ContentManagement;
+using System.Runtime.CompilerServices;
 
 namespace HAND_OVERCLOCKED
 {
@@ -26,6 +27,7 @@ namespace HAND_OVERCLOCKED
     [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
+    [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
@@ -41,6 +43,8 @@ namespace HAND_OVERCLOCKED
         public static GameObject slamEffect;
 
         private readonly Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/hgstandard");
+
+        SkillDef scepterDef;
 
         private void RegisterLanguageTokens()
         {
@@ -67,6 +71,7 @@ namespace HAND_OVERCLOCKED
 
             LanguageAPI.Add("HAND_OVERCLOCKED_PRIMARY_NAME", "HURT");
             LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_NAME", "FORCED_REASSEMBLY");
+            LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_SCEPTER_NAME", "UNETHICAL_REASSEMBLY");
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_NAME", "OVERCLOCK");
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_NAME", "DRONE");
 
@@ -186,8 +191,19 @@ namespace HAND_OVERCLOCKED
             CreateSurvivorDef();
 
             RegisterLanguageTokens();
+
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            {
+                SetupScepter();
+            }
             //and lastly
             Hook();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private void SetupScepter()
+        {
+            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
         }
 
         private void CreateSlamEffect()
@@ -477,6 +493,49 @@ namespace HAND_OVERCLOCKED
 
             };
             HANDContent.skillFamilies.Add(secondarySkillFamily);
+
+            ChargeSlamScepter.baseMinDuration = ChargeSlam2.baseMinDuration;
+            ChargeSlamScepter.baseChargeDuration = ChargeSlam2.baseChargeDuration;
+            SlamScepter.baseDuration = Slam2.baseDuration;
+            SlamScepter.damageCoefficientMin = 1.5f*Slam2.damageCoefficientMin;
+            SlamScepter.damageCoefficientMax = 1.5f * Slam2.damageCoefficientMax;
+            SlamScepter.baseMinDuration = Slam2.baseMinDuration;
+            SlamScepter.forceMagnitudeMin = Slam2.forceMagnitudeMin;
+            SlamScepter.forceMagnitudeMax = Slam2.forceMagnitudeMax;
+            SlamScepter.airbornVerticalForceMin = 2f * Slam2.airbornVerticalForceMin;
+            SlamScepter.airbornVerticalForceMax = 2f * Slam2.airbornVerticalForceMax;
+            SlamScepter.shorthopVelocityFromHit = Slam2.shorthopVelocityFromHit;
+            SlamScepter.hitEffectPrefab = Slam2.hitEffectPrefab;
+            SlamScepter.impactEffectPrefab = Slam2.impactEffectPrefab;
+            SlamScepter.swingEffectPrefab = Slam2.swingEffectPrefab;
+            SlamScepter.returnToIdlePercentage = Slam2.returnToIdlePercentage;
+            SlamScepter.minRange = Slam2.minRange;
+            SlamScepter.maxRange = Slam2.maxRange;
+            HANDContent.entityStates.Add(typeof(ChargeSlamScepter));
+            HANDContent.entityStates.Add(typeof(SlamScepter));
+
+            SkillDef secondarySkillScepter = SkillDef.CreateInstance<SkillDef>();
+            secondarySkillScepter.activationState = new SerializableEntityStateType(typeof(ChargeSlamScepter));
+            secondarySkillScepter.skillNameToken = "HAND_OVERCLOCKED_SECONDARY_SCEPTER_NAME";
+            secondarySkillScepter.skillName = "ChargeSlam";
+            secondarySkillScepter.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Charge up an overwhelmingly powerful hammer slam that deals <style=cIsDamage>600%-1800% damage</style> and <style=cIsDamage>zaps</style> enemies. <style=cIsDamage>Range and knockback</style> increases with charge.";
+            secondarySkillScepter.cancelSprintingOnActivation = true;
+            secondarySkillScepter.canceledFromSprinting = false;
+            secondarySkillScepter.baseRechargeInterval = secondarySkill.baseRechargeInterval;
+            secondarySkillScepter.baseMaxStock = 1;
+            secondarySkillScepter.rechargeStock = 1;
+            secondarySkillScepter.requiredStock = 1;
+            secondarySkillScepter.stockToConsume = 1;
+            secondarySkillScepter.activationStateMachineName = "Weapon";
+            secondarySkillScepter.interruptPriority = EntityStates.InterruptPriority.Skill;
+            secondarySkillScepter.isCombatSkill = true;
+            secondarySkillScepter.mustKeyPress = false;
+            secondarySkillScepter.icon = HANDContent.assets.LoadAsset<Sprite>("Unethical_Reassembly.png");
+            secondarySkillScepter.beginSkillCooldownOnSkillEnd = true;
+            secondarySkillScepter.keywordTokens = new string[] { "KEYWORD_STUNNING", "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
+            HANDContent.skillDefs.Add(secondarySkillScepter);
+
+            scepterDef = secondarySkillScepter;
         }
 
         private void CreateUtility()
