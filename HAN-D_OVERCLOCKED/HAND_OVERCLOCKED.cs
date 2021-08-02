@@ -1027,6 +1027,13 @@ namespace HAND_OVERCLOCKED
             droneProjectileGhost.transform.localScale = 2f * Vector3.one;
 
             droneProjectileGhost.layer = LayerIndex.noCollision.intVal;
+
+            Collider[] collidersGhost = droneProjectileGhost.GetComponentsInChildren<Collider>();
+            foreach (Collider cg in collidersGhost)
+            {
+                Destroy(cg);
+            }
+
             Destroy(droneProjectileGhost.GetComponentInChildren<Collider>());
 
             droneProjectile.GetComponent<ProjectileController>().ghostPrefab = droneProjectileGhost;
