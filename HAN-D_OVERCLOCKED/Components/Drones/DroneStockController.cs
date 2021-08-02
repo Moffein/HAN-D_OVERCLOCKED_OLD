@@ -49,9 +49,12 @@ namespace HAND_OVERCLOCKED.Components
                 ReadOnlyCollection<TeamComponent> teamMembers = TeamComponent.GetTeamMembers(characterBody.teamComponent.teamIndex);
                 foreach (TeamComponent tc in teamMembers)
                 {
-                    if (tc.body && (tc.body.bodyFlags & CharacterBody.BodyFlags.Mechanical) > 0 && tc.body != characterBody )
+                    if (tc.body && tc.body != characterBody )
                     {
-                        pcCount++;
+                        if ((tc.body.bodyFlags & CharacterBody.BodyFlags.Mechanical) > 0 || CheckMechanicalBody(tc.body.baseNameToken))
+                        {
+                            pcCount++;
+                        }
                     }
                 }
                 if (pcCount != oldPCCount)
@@ -61,6 +64,21 @@ namespace HAND_OVERCLOCKED.Components
                 oldPCCount = pcCount;
             }
         }
+
+        public static bool CheckMechanicalBody(string str)
+        {
+            foreach (string name in mechanicalBodies)
+            {
+                if (str == name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        //Sniper comes with a non-ally drone that isn't counted as an ally.
+        //You can add your survivor to this list if they don't have a Mechanical bodyflag but you want them to count. Use their BaseNameToken.
+        public static List<string> mechanicalBodies = new List<string> { "SNIPERCLASSIC_BODY_NAME" };
 
         /*public void OnKilledOtherServer(DamageReport damageReport) //This seems to be called by both OnCharacterDeath and TakeDamage, resulting in it being called twice
         {
