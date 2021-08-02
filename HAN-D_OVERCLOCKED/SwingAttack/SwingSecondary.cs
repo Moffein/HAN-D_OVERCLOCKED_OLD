@@ -33,7 +33,6 @@ namespace HAND_OVERCLOCKED
                 Rigidbody rb = cb.rigidbody;
                 if (rb)
                 {
-                    Debug.Log(rb.mass);
                     force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), upwardsForce? Mathf.Infinity : maxForceScale);
                 }
             }

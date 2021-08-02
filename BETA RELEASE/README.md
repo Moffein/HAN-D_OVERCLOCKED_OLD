@@ -14,7 +14,7 @@ todo:
 Credits:
 Coding - Moffein
 Icons - PapaZach
-DRONE models - LucidInceptor and TimeSweeper
+DRONE model - LucidInceptor and TimeSweeper
 Additional code help - Enigma
 
 changelog:

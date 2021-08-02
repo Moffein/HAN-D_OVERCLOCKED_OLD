@@ -990,10 +990,8 @@ namespace HAND_OVERCLOCKED
         private void CreateDroneFollower()
         {
             GameObject droneFollower = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"), "HANDOverclockedDroneFollower", false);
-            droneFollower.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
+            //droneFollower.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
             droneFollower.transform.localScale = 2f * Vector3.one;
-
-            droneFollower.layer = LayerIndex.noCollision.intVal;
 
             droneFollower.layer = LayerIndex.noCollision.intVal;
             Destroy(droneFollower.GetComponentInChildren<ParticleSystem>());
@@ -1028,15 +1026,13 @@ namespace HAND_OVERCLOCKED
 
             droneProjectileGhost.layer = LayerIndex.noCollision.intVal;
 
-            Collider[] collidersGhost = droneProjectileGhost.GetComponentsInChildren<Collider>();
-            foreach (Collider cg in collidersGhost)
-            {
-                Destroy(cg);
-            }
-
-            Destroy(droneProjectileGhost.GetComponentInChildren<Collider>());
-
             droneProjectile.GetComponent<ProjectileController>().ghostPrefab = droneProjectileGhost;
+
+            Collider[] collidersG = droneProjectileGhost.GetComponentsInChildren<Collider>();
+            foreach (Collider cG in collidersG)
+            {
+                Destroy(cG);
+            }
 
             HANDContent.projectilePrefabs.Add(droneProjectile);
 
