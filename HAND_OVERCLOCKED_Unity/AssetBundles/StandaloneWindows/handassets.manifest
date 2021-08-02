@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2497365969
+CRC: 3618827942
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: be13bebf50332e9579878cb6049602bc
+    Hash: 0904542f73b0134f43289675b1d1484a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c18b40a16f0fe14f40f12a9e1fa78592
+    Hash: fab0e8be09f0bff129b8f582f316d6bf
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -35,8 +35,6 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 95
   Script: {instanceID: 0}
-- Class: 108
-  Script: {instanceID: 0}
 - Class: 137
   Script: {instanceID: 0}
 - Class: 198
@@ -50,7 +48,6 @@ Assets:
 - Assets/HandDrone/mat/DroneSawTemp.mat
 - Assets/HandDrone/DroneAnimSpeenSaw.anim
 - Assets/HandDrone/DroneV07.fbx
-- Assets/HandDrone/DroneV06.fbx
 - Assets/Skill Icons/Forced_Reassembly2.png
 - Assets/HandDrone/mat/sparksParticles.mat
 - Assets/UI/Portrait.png

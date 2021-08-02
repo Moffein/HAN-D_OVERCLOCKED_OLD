@@ -990,7 +990,7 @@ namespace HAND_OVERCLOCKED
         private void CreateDroneFollower()
         {
             GameObject droneFollower = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"), "HANDOverclockedDroneFollower", false);
-            //droneFollower.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
+            droneFollower.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
             droneFollower.transform.localScale = 2f * Vector3.one;
 
             droneFollower.layer = LayerIndex.noCollision.intVal;
@@ -1003,16 +1003,25 @@ namespace HAND_OVERCLOCKED
 
             DroneFollowerController.dronePrefab = droneFollower;
 
-            /*GameObject droneSpawnEffect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactLoaderFistSmall"), "HANDOverclockedDroneSpawnEffect", false);
-            Destroy(droneSpawnEffect.GetComponent<ShakeEmitter>());
-            droneSpawnEffect.GetComponent<EffectComponent>().soundName = "";
-            HANDContent.effectDefs.Add(new EffectDef(droneSpawnEffect));*/
             DroneFollowerController.activateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
-
-            /*GameObject droneFireEffect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/muzzleflashes/MuzzleflashEngiGrenade"), "HANDOverclockedDroneFireEffect", false);
-            droneFireEffect.GetComponent<EffectComponent>().soundName = "";
-            HANDContent.effectDefs.Add(new EffectDef(droneFireEffect));*/
             DroneFollowerController.deactivateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+
+            droneFollower.GetComponentInChildren<SkinnedMeshRenderer>().material = Modules.Skins.CreateMaterial("DroneBody", 3f, Color.white);
+
+            MeshRenderer[] mr = droneFollower.GetComponentsInChildren<MeshRenderer>();
+            foreach (MeshRenderer m in mr)
+            {
+                if (m.name.ToLower() == "saw")
+                {
+                    m.material.shader = hotpoo;
+                }
+            }
+
+            SkinnedMeshRenderer[] smr = droneFollower.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (SkinnedMeshRenderer m in smr)
+            {
+                m.material.shader = hotpoo;
+            }
         }
 
         private GameObject CreateDroneProjectile()
@@ -1020,13 +1029,30 @@ namespace HAND_OVERCLOCKED
             GameObject droneProjectile = Resources.Load<GameObject>("prefabs/projectiles/EngiHarpoon").InstantiateClone("HANDOverclockedDroneProjectile", true);
 
             GameObject droneProjectileGhost = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"),"HANDOverclockedDroneProjectileGhost", false);
-            droneProjectileGhost.GetComponentInChildren<MeshRenderer>().material.shader = hotpoo;
+
+            MeshRenderer[] mr = droneProjectileGhost.GetComponentsInChildren<MeshRenderer>();
+            foreach (MeshRenderer m in mr)
+            {
+                if (m.name.ToLower() == "saw")
+                {
+                    m.material.shader = hotpoo;
+                }
+            }
+
+            SkinnedMeshRenderer[] smr = droneProjectileGhost.GetComponentsInChildren<SkinnedMeshRenderer>();
+            foreach (SkinnedMeshRenderer m in smr)
+            {
+                m.material.shader = hotpoo;
+            }
+
             droneProjectileGhost.AddComponent<ProjectileGhostController>();
             droneProjectileGhost.transform.localScale = 2f * Vector3.one;
 
             droneProjectileGhost.layer = LayerIndex.noCollision.intVal;
 
             droneProjectile.GetComponent<ProjectileController>().ghostPrefab = droneProjectileGhost;
+
+            droneProjectileGhost.GetComponentInChildren<SkinnedMeshRenderer>().material = Modules.Skins.CreateMaterial("DroneBody", 3f, Color.white);
 
             Collider[] collidersG = droneProjectileGhost.GetComponentsInChildren<Collider>();
             foreach (Collider cG in collidersG)

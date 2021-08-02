@@ -6,6 +6,7 @@ using RoR2;
 using R2API.Networking;
 using UnityEngine.Networking;
 using HAND_OVERCLOCKED.Components;
+using UnityEngine.Networking.Types;
 
 namespace HAND_OVERCLOCKED
 {
@@ -56,16 +57,20 @@ namespace HAND_OVERCLOCKED
             HANDSwingAttack.bestHitPoints.Clear();
             foreach (HANDSwingAttack.HitPoint hitPoint2 in array2)
             {
-                if (hitPoint2.hurtBox.healthComponent.body && (squish || stopMomentum))
+                if ((squish || stopMomentum) && hitPoint2.hurtBox.healthComponent.body && hitPoint2.hurtBox.healthComponent.body.masterObject)
                 {
-                    uint netID = hitPoint2.hurtBox.healthComponent.body.masterObject.GetComponent<NetworkIdentity>().netId.Value;
-                    if (squish)
+                    NetworkIdentity ni = hitPoint2.hurtBox.healthComponent.body.masterObject.GetComponent<NetworkIdentity>();
+                    if (ni)
                     {
-                        networkCommands.SquashEnemy(netID);
-                    }
-                    if (stopMomentum)
-                    {
-                        networkCommands.StopMomentum(netID);
+                        uint netID = ni.netId.Value;
+                        if (squish)
+                        {
+                            networkCommands.SquashEnemy(netID);
+                        }
+                        if (stopMomentum)
+                        {
+                            networkCommands.StopMomentum(netID);
+                        }
                     }
                 }
 

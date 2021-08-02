@@ -1,15 +1,10 @@
-beta han-d mod. uploaded for multiplayer hosting purposes
-he's 100% playable, just needs lots of visual polish
+Beta HAN-D mod. Gameplay is functional and he works in multiplayer, but visual polish is needed.
 
-if you want to make skins for HAN-D, the bodyname is "HANDOverclockedBody"
+If you want to make skins for HAN-D, the bodyname is "HANDOverclockedBody"
 todo:
-- custom anims + tweaked model
-- add a proper ragdoll
-- Add textures to DRONES
-- Add orange OVERCLOCK glow as well as other misc vfx
-- skins
-- do minor number tweaks to the hit physics and general balance
-- item displays
+- New Model + Anims (Punching primary included)
+- VFX (glowing orange while in Overclock, changing swing trail based on passive stacks, etc.)
+- General polish/balancing.
 
 Credits:
 Coding - Moffein
@@ -20,19 +15,24 @@ Additional code help - Enigma
 changelog:
 0.1.0
 
+This update has some changes to HAN-D's knockback to bring him more in-line with Vanilla characters, instead of being able to easily instakill bosses as a baseline while sending them flying across the map. The goal is for him to still be able to dunk Titans into pits and manhandle flying enemies to the ground with FORCED_REASSEMBLY, just that it should take more effort to do so.
+
 - Base accel reduced 40 -> 30 to match MUL-T.
 - Base damage reduced 14 -> 12.
 - Base armor reduced 20 -> 12.
 - New Passive: PARALLEL_COMPUTING. Gain +2.5% damage and +1 armor for every mechanical ally on your team.
-- DRONES now orbit around HAN-D and have a unique model (needs texturing). They count towards HAN-D's passive, but do NOT count as actual allies.
+- DRONES now orbit around HAN-D. They count towards HAN-D's passive, but do NOT count as actual allies.
 - DRONES get stuck less.
 
-- HURT now has a 0.85 force multiplier against airborne bosses.
 - HURT now resets enemy momentum on-hit to prevent multiple hits from sending them flying across the map.
+- HURT no longer has any force limits. This will allow you to move Beetle Queens if you knock them into the air.
 
 - Reduced FORCED_REASSEMBLY max force scaling from 2000 to 750. This will make it harder for HAN-D to splat bosses, while still allowing him to bully normal enemies.
 - Removed max force scaling when hitting grounded enemies. This will make it easier for HAN-D to launch bosses into the air.
 - Networked FORCED_REASSEMBLY squish effect and added a small grace period for triggering it.
+
+- Added Scepter skill: UNETHICAL_REASSEMBLY (Replaces M2)
+- Deals bonus damage, zaps enemies, and removes all force limiters.
 
 - Added screenshake when using HURT.
 - Extended FORCED_REASSEMBLY screenshake duration from 0.5s -> 0.65s
