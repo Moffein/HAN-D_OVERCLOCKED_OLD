@@ -14,6 +14,11 @@ DRONE model - LucidInceptor and TimeSweeper
 Additional code help - Enigma
 
 changelog:
+0.1.1
+
+- Sniper's Spotter Drone now counts towards HAN-D's passive.
+- Fixed DRONE cooldown on hit/kill applying to Essence of Heresy.
+
 0.1.0
 
 This update has some changes to HAN-D's knockback to bring him more in-line with Vanilla characters, instead of being able to easily instakill bosses as a baseline while sending them flying across the map. The goal is for him to still be able to dunk Titans into pits and manhandle flying enemies to the ground with FORCED_REASSEMBLY, just that it should take more effort to do so. Feedback on the changes in this update would help a lot!

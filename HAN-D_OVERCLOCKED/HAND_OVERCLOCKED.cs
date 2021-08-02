@@ -633,6 +633,8 @@ namespace HAND_OVERCLOCKED
                 viewableNode = new ViewablesCatalog.Node(droneSkill.skillNameToken, false, null)
             };
             HANDContent.skillFamilies.Add(specialSkillFamily);
+
+            DroneStockController.droneSkill = droneSkill;
         }
         #endregion
 

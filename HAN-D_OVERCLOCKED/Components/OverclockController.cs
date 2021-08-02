@@ -59,7 +59,7 @@ namespace HAND_OVERCLOCKED.Components
 
         public void MeleeHit(int hitCount)
         {
-            if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
+            if (characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock && characterBody.skillLocator.special.skillDef == DroneStockController.droneSkill)
             {
                 characterBody.skillLocator.special.rechargeStopwatch += 1.2f;
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using RoR2.Skills;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -22,7 +23,10 @@ namespace HAND_OVERCLOCKED.Components
                 }
                 else
                 {
-                    characterBody.skillLocator.special.stock = dronePersist.droneCount;
+                    if (characterBody.skillLocator.special.skillDef == droneSkill)
+                    {
+                        characterBody.skillLocator.special.stock = dronePersist.droneCount;
+                    }
                 }
             }
         }
@@ -36,7 +40,7 @@ namespace HAND_OVERCLOCKED.Components
         {
             if (hasAuthority)
             {
-                if (dronePersist)
+                if (dronePersist && characterBody.skillLocator.special.skillDef == droneSkill)
                 {
                     if (characterBody.skillLocator.special.stock > dronePersist.droneCount)
                     {
@@ -96,7 +100,7 @@ namespace HAND_OVERCLOCKED.Components
         [ClientRpc]
         public void RpcAddSpecialStock()
         {
-            if (hasAuthority && characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock)
+            if (hasAuthority && characterBody.skillLocator.special.stock < characterBody.skillLocator.special.maxStock && characterBody.skillLocator.special.skillDef == droneSkill)
             {
                 characterBody.skillLocator.special.stock++;
                 if (characterBody.skillLocator.special.stock == characterBody.skillLocator.special.maxStock)
@@ -128,5 +132,6 @@ namespace HAND_OVERCLOCKED.Components
         private int oldPCCount = 0;
         private CharacterBody characterBody;
         private DroneStockPersist dronePersist;
+        public static SkillDef droneSkill;
     }
 }
