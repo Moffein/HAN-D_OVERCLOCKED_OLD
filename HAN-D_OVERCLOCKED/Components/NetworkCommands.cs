@@ -9,6 +9,27 @@ namespace HAND_OVERCLOCKED.Components
 {
     public class NetworkCommands : NetworkBehaviour
     {
+        private CharacterBody characterBody;
+        public void Awake()
+        {
+            characterBody = base.GetComponent<CharacterBody>();
+        }
+
+        [Server]
+        public void ResetSpecialStock()
+        {
+            if (NetworkServer.active)
+            {
+                RpcResetSpecialStock();
+            }
+        }
+
+        [ClientRpc]
+        private void RpcResetSpecialStock()
+        {
+            characterBody.skillLocator.special.stock = 0;
+        }
+
         [Client]
         public void StopMomentum(uint networkID)
         {

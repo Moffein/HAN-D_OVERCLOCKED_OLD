@@ -20,14 +20,16 @@ using R2API.Utils;
 using R2API.Networking;
 using RoR2.ContentManagement;
 using System.Runtime.CompilerServices;
+using NS_KingKombatArena;
 
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.1")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.2")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Kingpinush.KingKombatArena", BepInDependency.DependencyFlags.SoftDependency)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
         public static GameObject HANDBody = null;
@@ -43,6 +45,10 @@ namespace HAND_OVERCLOCKED
         public static GameObject slamEffect;
 
         private readonly Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/hgstandard");
+
+        public static bool arenaNerf = true;
+        public static bool arenaPluginLoaded = false;
+        public static bool arenaActive = false;
 
         SkillDef scepterDef;
 
@@ -94,10 +100,15 @@ namespace HAND_OVERCLOCKED
 
         public void Awake()
         {
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Kingpinush.KingKombatArena") && arenaNerf)
+            {
+                arenaPluginLoaded = true;
+            }
             Debug.Log("\n\nSTATUS UPDATE:\n\nMACHINE ID:\t\tHAN-D\nLOCATION:\t\tAPPROACHING PETRICHOR V\nCURRENT OBJECTIVE:\tFIND AND ACTIVATE THE TELEPORTER\n\nPROVIDENCE IS DEAD.\nBLOOD IS FUEL.\nSPEED IS WAR.\n");
             CreateHAND();
             CreateBuffs();
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
+
         }
 
         private void ContentManager_collectContentPackProviders(RoR2.ContentManagement.ContentManager.AddContentPackProviderDelegate addContentPackProvider)
@@ -110,6 +121,42 @@ namespace HAND_OVERCLOCKED
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.CharacterModel.EnableItemDisplay += CharacterModel_EnableItemDisplay;
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+            if (arenaPluginLoaded)
+            {
+                On.RoR2.Stage.Start += Stage_Start;
+                On.RoR2.CharacterBody.AddTimedBuff_BuffIndex_float += CharacterBody_AddTimedBuff_BuffIndex_float;
+            }
+        }
+
+        private void CharacterBody_AddTimedBuff_BuffIndex_float(On.RoR2.CharacterBody.orig_AddTimedBuff_BuffIndex_float orig, CharacterBody self, BuffIndex buffIndex, float duration)
+        {
+            orig(self, buffIndex, duration);
+
+            if (arenaActive && buffIndex == RoR2Content.Buffs.Immune.buffIndex && self.baseNameToken == "HAND_OVERCLOCKED_NAME" && IsSameDurationAsKingImmunity(duration))
+            {
+                NetworkCommands nc = self.gameObject.GetComponent<NetworkCommands>();
+                if (nc)
+                {
+                    nc.ResetSpecialStock();
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private bool IsSameDurationAsKingImmunity(float duration)
+        {
+            return duration == KingKombatArenaMainPlugin.AccessCurrentKombatArenaInstance().GetKombatArenaRules().duelStartImmunityTime;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private void SetArena()
+        {
+            HAND_OVERCLOCKED.arenaActive = KingKombatArenaMainPlugin.s_GAME_MODE_ACTIVE;
+        }
+        private void Stage_Start(On.RoR2.Stage.orig_Start orig, Stage self)
+        {
+            orig(self);
+            SetArena();
         }
         #region Hooks
 
@@ -139,7 +186,10 @@ namespace HAND_OVERCLOCKED
                 }
                 if (self.HasBuff(HANDContent.DroneDebuff))
                 {
-                    self.moveSpeed *= 0.4f;
+                    if (!arenaActive)
+                    {
+                        self.moveSpeed *= 0.4f;
+                    }
                     self.damage *= 0.7f;
                 }
             }

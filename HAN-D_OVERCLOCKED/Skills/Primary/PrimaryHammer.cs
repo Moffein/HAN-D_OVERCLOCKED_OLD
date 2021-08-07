@@ -54,7 +54,9 @@ namespace EntityStates.HANDOverclocked
                         force = FullSwing.forceMagnitude * directionFlat,
                         airborneHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
-                        damageType = ((base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff) && (secondSwing || (firstSwing && Util.CheckRoll(30f)))) ? DamageType.Stun1s : DamageType.Generic),
+                        damageType = ((!HAND_OVERCLOCKED.HAND_OVERCLOCKED.arenaActive
+                        && (base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff)
+                        && (secondSwing || (firstSwing && Util.CheckRoll(30f))))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = Mathf.Infinity,
                         bossGroundedForceMult = 0.5f,
                         bossAirborneForceMult = 1f,

@@ -68,6 +68,9 @@
     <Reference Include="HGUnityUtils">
       <HintPath>libs\HGUnityUtils.dll</HintPath>
     </Reference>
+    <Reference Include="KingKombatArena">
+      <HintPath>libs\KingKombatArena.dll</HintPath>
+    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\plugins\R2API\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>

@@ -14,6 +14,12 @@ DRONE model - LucidInceptor and TimeSweeper
 Additional code help - Enigma
 
 changelog:
+0.1.2
+
+- Disabled OVERCLOCK stun when King's Kombat Arena is active.
+- Disabled DRONE slow when King's Kombat Arena is active.
+- DRONE count now resets to 0 on round start in King's Kombat Arena.
+
 0.1.1
 
 - Sniper's Spotter Drone now counts towards HAN-D's passive.
