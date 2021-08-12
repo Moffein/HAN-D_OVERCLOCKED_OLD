@@ -27,13 +27,13 @@ namespace HAND_OVERCLOCKED
                     {
                         force += airborneLaunchForce * Vector3.up;
                     }
-                }
 
-                //Scale force to match mass
-                Rigidbody rb = cb.rigidbody;
-                if (rb)
-                {
-                    force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), upwardsForce? Mathf.Infinity : maxForceScale);
+                    //Scale force to match mass
+                    Rigidbody rb = cb.rigidbody;
+                    if (rb)
+                    {
+                        force *= Mathf.Min(Mathf.Max(rb.mass / 100f, 1f), upwardsForce ? Mathf.Infinity : maxForceScale);
+                    }
                 }
             }
             return force;
