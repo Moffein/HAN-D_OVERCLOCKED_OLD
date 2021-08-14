@@ -268,7 +268,7 @@ namespace HAND_OVERCLOCKED
             debris.gameObject.SetActive(false);
             debris2.gameObject.SetActive(false);
             sphere.gameObject.SetActive(false);
-
+            
             ShakeEmitter se = slamEffect.AddComponent<ShakeEmitter>();
             se.shakeOnStart = true;
             se.duration = 0.65f;
