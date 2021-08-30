@@ -11,7 +11,6 @@ namespace EntityStates.HANDOverclocked
     {
         public override void OnEnter()
         {
-            base.AddRecoil(-6f, 6f, -12f, 12f);
             EffectManager.SpawnEffect(effectPrefab, new EffectData
             {
                 origin = base.transform.position

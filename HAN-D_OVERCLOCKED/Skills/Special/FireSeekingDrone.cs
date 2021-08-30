@@ -24,7 +24,7 @@ namespace EntityStates.HANDOverclocked
                 this.initialOrbTarget = targetingController.GetTrackingTarget();
                 //handController.CmdHeal();
             }
-            this.duration = baseDuration / this.attackSpeedStat;
+            this.duration = baseDuration; /// this.attackSpeedStat;
             if (base.characterBody)
             {
                 base.characterBody.SetAimTimer(this.duration + 1f);

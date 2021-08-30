@@ -25,8 +25,8 @@ using NS_KingKombatArena;
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.2")]
-    [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI))]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.5")]
+    [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Kingpinush.KingKombatArena", BepInDependency.DependencyFlags.SoftDependency)]
@@ -46,6 +46,7 @@ namespace HAND_OVERCLOCKED
 
         private readonly Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/hgstandard");
 
+        public static GameObject handSwingTrail;
         public static bool arenaNerf = true;
         public static bool arenaPluginLoaded = false;
         public static bool arenaActive = false;
@@ -120,12 +121,12 @@ namespace HAND_OVERCLOCKED
             On.RoR2.CameraRigController.OnEnable += CameraRigController_OnEnable;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.CharacterModel.EnableItemDisplay += CharacterModel_EnableItemDisplay;
-            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
             if (arenaPluginLoaded)
             {
                 On.RoR2.Stage.Start += Stage_Start;
                 On.RoR2.CharacterBody.AddTimedBuff_BuffIndex_float += CharacterBody_AddTimedBuff_BuffIndex_float;
             }
+            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
         }
 
         private void CharacterBody_AddTimedBuff_BuffIndex_float(On.RoR2.CharacterBody.orig_AddTimedBuff_BuffIndex_float orig, CharacterBody self, BuffIndex buffIndex, float duration)
@@ -160,38 +161,28 @@ namespace HAND_OVERCLOCKED
         }
         #region Hooks
 
-        private void CharacterBody_RecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
         {
-            orig(self);
-            if (self)
+            if (sender.HasBuff(HANDContent.ParallelComputingBuff))
             {
-                float origDamage = self.damage;
-                float origAtkSpd = self.attackSpeed;
-                float origMoveSpd = self.moveSpeed;
-                if (self.HasBuff(HANDContent.ParallelComputingBuff))
-                {
-                    int pcCount = self.GetBuffCount(HANDContent.ParallelComputingBuff);
-                    self.damage += origDamage * pcCount * 0.025f;
-                    self.armor += pcCount;
-                }
-                if (self.HasBuff(HANDContent.OverclockBuff))
-                {
-                    self.attackSpeed += origAtkSpd * 0.4f;
-                    self.moveSpeed += origMoveSpd * 0.4f;
-                }
-                if (self.HasBuff(HANDContent.DroneBuff))
-                {
-                    self.attackSpeed += origAtkSpd * 0.4f;
-                    self.moveSpeed += origMoveSpd * 0.4f;
-                }
-                if (self.HasBuff(HANDContent.DroneDebuff))
-                {
-                    if (!arenaActive)
-                    {
-                        self.moveSpeed *= 0.4f;
-                    }
-                    self.damage *= 0.7f;
-                }
+                int pcCount = sender.GetBuffCount(HANDContent.ParallelComputingBuff);
+                args.damageMultAdd += pcCount * 0.025f;
+                args.armorAdd += pcCount;
+            }
+            if (sender.HasBuff(HANDContent.OverclockBuff))
+            {
+                args.attackSpeedMultAdd += 0.4f;
+                args.moveSpeedMultAdd += 0.4f;
+            }
+            if (sender.HasBuff(HANDContent.DroneBuff))
+            {
+                args.attackSpeedMultAdd += 0.4f;
+                args.moveSpeedMultAdd += 0.4f;
+            }
+            if (!arenaActive && sender.HasBuff(HANDContent.DroneDebuff))
+            {
+                args.moveSpeedReductionMultAdd += 0.6f;
+                args.damageMultAdd -= 0.3f;
             }
         }
 
@@ -346,7 +337,8 @@ namespace HAND_OVERCLOCKED
                 sfx.landingSound = "play_char_land";
                 sfx.fallDamageSound = "Play_MULT_shift_hit";
             }
-            void FixSetStateOnHurt() {
+            void FixSetStateOnHurt()
+            {
                 SetStateOnHurt ssoh = HANDBody.AddComponent<SetStateOnHurt>();
                 ssoh.canBeStunned = false;
                 ssoh.canBeHitStunned = false;
@@ -354,25 +346,14 @@ namespace HAND_OVERCLOCKED
                 ssoh.hitThreshold = 5;
 
                 //Ice Fix Credits: SushiDev
-                int i = 0;
-                EntityStateMachine[] esmr = new EntityStateMachine[2];
                 foreach (EntityStateMachine esm in HANDBody.GetComponentsInChildren<EntityStateMachine>())
                 {
-                    switch (esm.customName)
+                    if (esm.customName == "Body")
                     {
-                        case "Body":
-                            ssoh.targetStateMachine = esm;
-                            break;
-                        default:
-                            if (i < 2)
-                            {
-                                esmr[i] = esm;
-                            }
-                            i++;
-                            break;
+                        ssoh.targetStateMachine = esm;
+                        break;
                     }
                 }
-
             }
             void SetDeathBehavior() {
                 CharacterDeathBehavior handCDB = HANDBody.GetComponent<CharacterDeathBehavior>();
@@ -453,8 +434,7 @@ namespace HAND_OVERCLOCKED
             FullSwing.flyingHorizontalForceMult = 0.5f;
             FullSwing.shorthopVelocityFromHit = 10f;
             FullSwing.returnToIdlePercentage = 0.443662f;
-            FullSwing.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
-            FullSwing.recoilAmplitude = 5f;
+            FullSwing.swingEffectPrefab = handSwingTrail;
 
             HANDContent.entityStates.Add(typeof(FullSwing));
 
@@ -505,7 +485,7 @@ namespace HAND_OVERCLOCKED
             Slam2.shorthopVelocityFromHit = 24f;
             Slam2.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
             Slam2.impactEffectPrefab = slamEffect;//Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
-            Slam2.swingEffectPrefab = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
+            Slam2.swingEffectPrefab = handSwingTrail;
             Slam2.returnToIdlePercentage = 0.443662f;
             Slam2.minRange = 9;
             Slam2.maxRange = 22;
@@ -846,8 +826,8 @@ namespace HAND_OVERCLOCKED
         //Credits to Enigma
         private void RepairSwingEffect()
         {
-            GameObject HANDSwingTrail = Resources.Load<GameObject>("prefabs/effects/handslamtrail");
-            Transform HANDSwingTrailTransform = HANDSwingTrail.transform.Find("SlamTrail");
+            handSwingTrail = Resources.Load<GameObject>("prefabs/effects/handslamtrail").InstantiateClone("HANDOCSwingTrail", false);
+            Transform HANDSwingTrailTransform = handSwingTrail.transform.Find("SlamTrail");
 
             var HANDrenderer = HANDSwingTrailTransform.GetComponent<Renderer>();
 
@@ -855,6 +835,22 @@ namespace HAND_OVERCLOCKED
             {
                 HANDrenderer.material = Resources.Load<GameObject>("prefabs/effects/LemurianBiteTrail").transform.Find("SwingTrail").GetComponent<Renderer>().material;
             }
+
+            ShakeEmitter se = handSwingTrail.AddComponent<ShakeEmitter>();
+            se.shakeOnEnable = false;
+            se.shakeOnStart = true;
+            se.duration = 0.25f;
+            se.radius = 20f;
+            se.scaleShakeRadiusWithLocalScale = false;
+            se.amplitudeTimeDecay = true;
+            se.wave = new Wave()
+            {
+                amplitude = 3f,
+                cycleOffset = 0f,
+                frequency = 4f
+            };
+
+            HANDContent.effectDefs.Add(new EffectDef(handSwingTrail));
         }
         #endregion
         private void CreateMaster()

@@ -17,22 +17,6 @@ namespace EntityStates.HANDOverclocked
                 Util.PlaySound("Play_HOC_Punch", base.gameObject);
                 this.hasSwung = true;
 
-                switch (swingAnim)
-                {
-                    case 3: //left swing
-                        base.AddRecoil(1.8f * recoilAmplitude,
-                            1.8f * recoilAmplitude,
-                            -2.7f * recoilAmplitude,
-                            -2.7f * recoilAmplitude);
-                        break;
-                    default:
-                        base.AddRecoil(-1.8f * recoilAmplitude,
-                            -1.8f * recoilAmplitude,
-                            2.7f * recoilAmplitude,
-                            2.7f * recoilAmplitude);
-                        break;
-                }
-
                 if (base.isAuthority)
                 {
                     EffectManager.SimpleMuzzleFlash(FullSwing.swingEffectPrefab, base.gameObject, "SwingCenter", true);
@@ -206,7 +190,6 @@ namespace EntityStates.HANDOverclocked
         public static GameObject swingEffectPrefab;
         public static float airbornHorizontalForceMult;
         public static float flyingHorizontalForceMult;
-        public static float recoilAmplitude;
 
         private Transform hammerChildTransform;
         private Animator modelAnimator;

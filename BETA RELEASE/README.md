@@ -14,6 +14,19 @@ DRONE model - LucidInceptor and TimeSweeper
 Additional code help - Enigma
 
 changelog:
+0.1.5
+
+- DRONE firerate is no longer affected by attack speed, to allow for better control.
+
+0.1.4
+
+- Changed M1 screenshake method to prevent your view from getting messed up at high attack speed.
+- Moved debuffs over to RecalculateStatsAPI for better cross-mod compatibility.
+
+0.1.3
+
+- Fixed directional audio.
+
 0.1.2
 
 - Disabled OVERCLOCK stun when King's Kombat Arena is active.

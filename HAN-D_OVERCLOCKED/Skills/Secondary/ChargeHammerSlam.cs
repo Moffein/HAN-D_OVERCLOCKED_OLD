@@ -54,7 +54,6 @@ namespace EntityStates.HANDOverclocked
                 {
                     Util.PlaySound("Play_HOC_StartPunch", base.gameObject);
                     charge = chargeDuration;
-                    base.AddRecoil(-6f, 6f, -12f, 12f);
                     EffectManager.SpawnEffect(chargeEffectPrefab, new EffectData
                     {
                         origin = base.transform.position
