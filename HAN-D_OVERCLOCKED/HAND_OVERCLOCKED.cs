@@ -1,31 +1,29 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using EntityStates;
 using EntityStates.HANDOverclocked;
 using HAND_OVERCLOCKED.Components;
-using RoR2.Projectile;
+using HAND_OVERCLOCKED.Components.DroneProjectile;
+using HAND_OVERCLOCKED.Hooks;
+using HAND_OVERCLOCKED.Hooks.Arena;
+using R2API;
+using R2API.Networking;
+using R2API.Utils;
 using RoR2;
 using RoR2.CharacterAI;
+using RoR2.ContentManagement;
+using RoR2.Projectile;
 using RoR2.Skills;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.Networking;
-using HAND_OVERCLOCKED.Components.DroneProjectile;
-using Mono.Cecil;
-using R2API;
-using R2API.Utils;
-using R2API.Networking;
-using RoR2.ContentManagement;
 using System.Runtime.CompilerServices;
-using NS_KingKombatArena;
+using UnityEngine;
 
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.5")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.6")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
@@ -50,6 +48,8 @@ namespace HAND_OVERCLOCKED
         public static bool arenaNerf = true;
         public static bool arenaPluginLoaded = false;
         public static bool arenaActive = false;
+
+        public static bool changeSortOrder = false;
 
         SkillDef scepterDef;
 
@@ -94,13 +94,18 @@ namespace HAND_OVERCLOCKED
             item.displayPrefab = HANDDisplay;
             item.descriptionToken = "HAND_OVERCLOCKED_DESC";
             item.outroFlavorToken = "HAND_OVERCLOCKED_OUTRO_FLAVOR";
-            item.desiredSortPosition = 100f;
+            item.desiredSortPosition = changeSortOrder ? 5.4f : 100f;
             HANDContent.survivorDefs.Add(item);
         }
 
+        public void ReadConfig()
+        {
+            changeSortOrder = base.Config.Bind<bool>(new ConfigDefinition("00 - General", "Change Sort Order"), false, new ConfigDescription("Sorts HAN-D among the vanilla survivors based on unlock condition.")).Value; ;
+        }
 
         public void Awake()
         {
+            ReadConfig();
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Kingpinush.KingKombatArena") && arenaNerf)
             {
                 arenaPluginLoaded = true;
@@ -117,110 +122,19 @@ namespace HAND_OVERCLOCKED
             addContentPackProvider(new HANDContent());
         }
 
-        private void Hook() {
-            On.RoR2.CameraRigController.OnEnable += CameraRigController_OnEnable;
-            On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
-            On.RoR2.CharacterModel.EnableItemDisplay += CharacterModel_EnableItemDisplay;
+        private void AddHooks()
+        {
+            new DisableFade();
+            new OnCharacterDeath();
+            new FixBearDisplay();
             if (arenaPluginLoaded)
             {
-                On.RoR2.Stage.Start += Stage_Start;
-                On.RoR2.CharacterBody.AddTimedBuff_BuffIndex_float += CharacterBody_AddTimedBuff_BuffIndex_float;
+                new Stage_Start();
+                new AddTimedBuff();
             }
-            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            new GetStatCoefficients();
+            new StealBuffVisuals();
         }
-
-        private void CharacterBody_AddTimedBuff_BuffIndex_float(On.RoR2.CharacterBody.orig_AddTimedBuff_BuffIndex_float orig, CharacterBody self, BuffIndex buffIndex, float duration)
-        {
-            orig(self, buffIndex, duration);
-
-            if (arenaActive && buffIndex == RoR2Content.Buffs.Immune.buffIndex && self.baseNameToken == "HAND_OVERCLOCKED_NAME" && IsSameDurationAsKingImmunity(duration))
-            {
-                NetworkCommands nc = self.gameObject.GetComponent<NetworkCommands>();
-                if (nc)
-                {
-                    nc.ResetSpecialStock();
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private bool IsSameDurationAsKingImmunity(float duration)
-        {
-            return duration == KingKombatArenaMainPlugin.AccessCurrentKombatArenaInstance().GetKombatArenaRules().duelStartImmunityTime;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private void SetArena()
-        {
-            HAND_OVERCLOCKED.arenaActive = KingKombatArenaMainPlugin.s_GAME_MODE_ACTIVE;
-        }
-        private void Stage_Start(On.RoR2.Stage.orig_Start orig, Stage self)
-        {
-            orig(self);
-            SetArena();
-        }
-        #region Hooks
-
-        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
-        {
-            if (sender.HasBuff(HANDContent.ParallelComputingBuff))
-            {
-                int pcCount = sender.GetBuffCount(HANDContent.ParallelComputingBuff);
-                args.damageMultAdd += pcCount * 0.025f;
-                args.armorAdd += pcCount;
-            }
-            if (sender.HasBuff(HANDContent.OverclockBuff))
-            {
-                args.attackSpeedMultAdd += 0.4f;
-                args.moveSpeedMultAdd += 0.4f;
-            }
-            if (sender.HasBuff(HANDContent.DroneBuff))
-            {
-                args.attackSpeedMultAdd += 0.4f;
-                args.moveSpeedMultAdd += 0.4f;
-            }
-            if (!arenaActive && sender.HasBuff(HANDContent.DroneDebuff))
-            {
-                args.moveSpeedReductionMultAdd += 0.6f;
-                args.damageMultAdd -= 0.3f;
-            }
-        }
-
-        private void CharacterModel_EnableItemDisplay(On.RoR2.CharacterModel.orig_EnableItemDisplay orig, CharacterModel self, ItemIndex itemIndex)
-        {
-            if ((itemIndex != RoR2Content.Items.Bear.itemIndex) || self.name != "mdlHAND")
-            {
-                orig(self, itemIndex);
-            }
-        }
-
-        private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport report)
-        {
-            orig(self, report);
-            if (report.victim && report.attacker && report.attackerBody && report.attackerBody.baseNameToken == ("HAND_OVERCLOCKED_NAME"))
-            {
-                if (Util.CheckRoll(report.victim.globalDeathEventChanceCoefficient * 100f, report.attackerBody.master ? report.attackerBody.master.luck : 0f, null))
-                {
-                    DroneStockController hc = report.attackerBody.gameObject.GetComponent<DroneStockController>();
-                    if (hc)
-                    {
-                        hc.RpcAddSpecialStock();
-                    }
-                }
-            }
-        }
-
-        private void CameraRigController_OnEnable(On.RoR2.CameraRigController.orig_OnEnable orig, CameraRigController self)
-        {
-            //prevents null refs when loading into TestScene as it has no scenedef
-            var def = SceneCatalog.GetSceneDefForCurrentScene();
-            if (def && def.baseSceneName.Equals("lobby"))
-            {
-                self.enableFading = false;
-            }
-            orig(self);
-        }
-        #endregion
 
         private void CreateHAND() {
             SetBody();
@@ -237,8 +151,7 @@ namespace HAND_OVERCLOCKED
             {
                 SetupScepter();
             }
-            //and lastly
-            Hook();
+            AddHooks();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]

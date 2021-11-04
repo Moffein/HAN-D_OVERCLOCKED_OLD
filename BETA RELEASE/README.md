@@ -14,6 +14,12 @@ DRONE model - LucidInceptor and TimeSweeper
 Additional code help - Enigma
 
 changelog:
+
+0.1.6
+
+- Now has a visual overlay when using OVERCLOCK.
+- Added config option to sort HAN-D among the default survivors based on his planned unlock condition (disabled by default).
+
 0.1.5
 
 - DRONE firerate is no longer affected by attack speed, to allow for better control.

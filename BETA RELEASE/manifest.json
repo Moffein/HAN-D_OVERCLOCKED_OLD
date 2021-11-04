@@ -1,6 +1,6 @@
 {
   "name": "HAND_OVERCLOCKED_BETA",
-  "version_number": "0.1.5",
+  "version_number": "0.1.6",
   "website_url": "",
   "description": "Beta Release. Adds HAN-D from Risk of Rain 1. Multiplayer-compatible! Fully functional, just needs polish.",
   "dependencies": [
