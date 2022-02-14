@@ -16,6 +16,7 @@ using RoR2.Projectile;
 using RoR2.Skills;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -489,6 +490,8 @@ namespace HAND_OVERCLOCKED
             stateMachine.customName = "Overclock";
             stateMachine.initialStateType = new SerializableEntityStateType(typeof(EntityStates.BaseBodyAttachmentState));
             stateMachine.mainStateType = new SerializableEntityStateType(typeof(EntityStates.BaseBodyAttachmentState));
+            NetworkStateMachine nsm = HANDBody.GetComponent<NetworkStateMachine>();
+            nsm.stateMachines = nsm.stateMachines.Append(stateMachine).ToArray();
 
             SkillDef ovcSkill = SkillDef.CreateInstance<SkillDef>();
             ovcSkill.activationState = new SerializableEntityStateType(typeof(Overclock));
@@ -541,6 +544,8 @@ namespace HAND_OVERCLOCKED
             stateMachine.customName = "DroneLauncher";
             stateMachine.initialStateType = new SerializableEntityStateType(typeof(EntityStates.BaseBodyAttachmentState));
             stateMachine.mainStateType = new SerializableEntityStateType(typeof(EntityStates.BaseBodyAttachmentState));
+            NetworkStateMachine nsm = HANDBody.GetComponent<NetworkStateMachine>();
+            nsm.stateMachines = nsm.stateMachines.Append(stateMachine).ToArray();
 
             SkillDef droneSkill = SkillDef.CreateInstance<SkillDef>();
             droneSkill.activationState = new SerializableEntityStateType(typeof(FireSeekingDrone));

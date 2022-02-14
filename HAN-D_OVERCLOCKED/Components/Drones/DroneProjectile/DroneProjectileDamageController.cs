@@ -138,7 +138,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                 }
                                 else
                                 {
-                                    victimHealthComponent.TakeDamage(new DamageInfo
+                                    DamageInfo droneDamage = new DamageInfo
                                     {
                                         attacker = owner,
                                         inflictor = owner,
@@ -151,22 +151,9 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                         position = this.transform.position,
                                         procChainMask = default(ProcChainMask),
                                         procCoefficient = procCoefficient
-                                    });
-
-                                    GlobalEventManager.instance.OnHitEnemy(new DamageInfo
-                                    {
-                                        attacker = owner,
-                                        inflictor = owner,
-                                        damage = projectileDamage.damage / (float)damageTicksTotal,
-                                        damageColorIndex = DamageColorIndex.Default,
-                                        damageType = DamageType.Generic,
-                                        crit = projectileDamage.crit,
-                                        dotIndex = DotController.DotIndex.None,
-                                        force = projectileDamage.force * Vector3.down,
-                                        position = this.transform.position,
-                                        procChainMask = default(ProcChainMask),
-                                        procCoefficient = procCoefficient
-                                    }, victimHealthComponent.gameObject);
+                                    };
+                                    victimHealthComponent.TakeDamage(droneDamage);
+                                    GlobalEventManager.instance.OnHitEnemy(droneDamage, victimHealthComponent.gameObject);
                                 }
                             }
 
