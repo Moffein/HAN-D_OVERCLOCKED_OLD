@@ -11,7 +11,7 @@ namespace HAND_OVERCLOCKED.Modules
 {
     public class HANDBuffs
     {
-        public static bool initialized = false;
+        private static bool initialized = false;
 
         public static BuffDef OverclockBuff;
         public static BuffDef DroneBuff;
