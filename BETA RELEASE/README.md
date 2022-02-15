@@ -19,6 +19,7 @@ changelog:
 - Fixed OVERCRLOCK and DRONES state machines not being networked.
 	- Not sure if this actually changes anything.
 - Fixed SkillDefs not having a ScriptableObject name.
+- Reduced size in the Character Select screen.
 - OVERCLOCK
 	- Meter is now hidden while in Command/Scrapper menus.
 - DRONES

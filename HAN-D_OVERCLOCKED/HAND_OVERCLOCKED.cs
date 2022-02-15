@@ -53,7 +53,8 @@ namespace HAND_OVERCLOCKED
         public static SkillDef scepterDef;
 
         private void CreateSurvivorDef() {
-            GameObject HANDDisplay = HANDBody.GetComponent<ModelLocator>().modelTransform.gameObject;
+            GameObject HANDDisplay = HANDBody.GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
+            HANDDisplay.transform.localScale *= 0.8f;
             HANDDisplay.AddComponent<MenuAnimComponent>();
             SurvivorDef item = ScriptableObject.CreateInstance<SurvivorDef>();
             item.bodyPrefab = HANDBody;
