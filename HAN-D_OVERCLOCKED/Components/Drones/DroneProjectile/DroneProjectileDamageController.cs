@@ -6,17 +6,12 @@ using RoR2.Orbs;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
+using HAND_OVERCLOCKED.Modules;
 
 namespace HAND_OVERCLOCKED.Components.DroneProjectile
 {
-    class DroneProjectileDamageController : NetworkBehaviour
+    class DroneProjectileDamageController : MonoBehaviour
     {
-        [ClientRpc]
-        private void RpcPlayDrillSound()
-        {
-            Util.PlaySound("Play_HOC_Drill", this.gameObject);
-        }
-
         public void Awake()
         {
             if (NetworkServer.active)
@@ -98,7 +93,6 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                 Destroy(this.gameObject);
                             }
 
-                            RpcPlayDrillSound();
                             if (ownerHealthComponent)
                             {
                                 HealOrb healOrb = new HealOrb();
@@ -118,11 +112,11 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                     {
                                         if (victimHealthComponent.body.teamComponent && victimHealthComponent.body.teamComponent.teamIndex == teamIndex)
                                         {
-                                            victimHealthComponent.body.AddTimedBuff(HANDContent.DroneBuff, (float)damageTicksTotal * damageTimer);
+                                            victimHealthComponent.body.AddTimedBuff(HANDBuffs.DroneBuff, (float)damageTicksTotal * damageTimer);
                                         }
                                         else
                                         {
-                                            victimHealthComponent.body.AddTimedBuff(HANDContent.DroneDebuff, (float)damageTicksTotal * damageTimer);
+                                            victimHealthComponent.body.AddTimedBuff(HANDBuffs.DroneDebuff, (float)damageTicksTotal * damageTimer);
                                         }
                                     }
                                 }

@@ -39,7 +39,7 @@ namespace EntityStates.HANDOverclocked
                         airborneHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
                         damageType = ((!HAND_OVERCLOCKED.HAND_OVERCLOCKED.arenaActive
-                        && (base.characterBody.HasBuff(HAND_OVERCLOCKED.HANDContent.OverclockBuff)
+                        && (base.characterBody.HasBuff(HAND_OVERCLOCKED.Modules.HANDBuffs.OverclockBuff)
                         && (secondSwing || (firstSwing && Util.CheckRoll(30f))))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = Mathf.Infinity,
                         bossGroundedForceMult = 0.5f,
@@ -179,17 +179,14 @@ namespace EntityStates.HANDOverclocked
             return InterruptPriority.Skill;
         }
 
-        public static float baseDuration;
-        public static float returnToIdlePercentage;
-        public static float damageCoefficient;
-        public static float forceMagnitude;
-        public static float pullAngle;
-        public static float pullForce;
-        public static float pullDistance;
-        public static float airbornVerticalForce;
+        public static float baseDuration = 1f;
+        public static float returnToIdlePercentage = 0.443662f;
+        public static float damageCoefficient = 3.9f;
+        public static float forceMagnitude = 1400f;
+        public static float airbornVerticalForce = 0f;
         public static GameObject swingEffectPrefab;
-        public static float airbornHorizontalForceMult;
-        public static float flyingHorizontalForceMult;
+        public static float airbornHorizontalForceMult = 1.8f;
+        public static float flyingHorizontalForceMult = 0.5f;
 
         private Transform hammerChildTransform;
         private Animator modelAnimator;
@@ -202,7 +199,7 @@ namespace EntityStates.HANDOverclocked
         private bool enteredHitPause = false;
         private bool exitedHitPause = false;
 
-        public static float shorthopVelocityFromHit;
+        public static float shorthopVelocityFromHit = 10f;
 
         private bool secondSwing = false;
         private bool firstSwing = false;

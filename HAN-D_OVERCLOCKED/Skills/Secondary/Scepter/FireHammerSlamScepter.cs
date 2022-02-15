@@ -185,21 +185,21 @@ namespace EntityStates.HANDOverclocked
             this.exitedHitPause = true;
         }
 
-        public static float baseDuration;
-        public static float baseMinDuration;
-        public static float returnToIdlePercentage;
-        public static float damageCoefficientMin;
-        public static float damageCoefficientMax;
-        public static float forceMagnitudeMin;
-        public static float forceMagnitudeMax;
-        public static float airbornVerticalForceMin;
-        public static float airbornVerticalForceMax;
-        public static float minRange;
-        public static float maxRange;
+        public static float baseDuration = 0.6f;
+        public static float baseMinDuration = 0.4f;
+        public static float returnToIdlePercentage = 0.443662f;
+        public static float damageCoefficientMin = 6f;
+        public static float damageCoefficientMax = 18f;
+        public static float forceMagnitudeMin = 2000f;
+        public static float forceMagnitudeMax = 2000f;
+        public static float airbornVerticalForceMin = -4800f;
+        public static float airbornVerticalForceMax = -6400f;
+        public static float minRange = 9f;
+        public static float maxRange = 22f;
 
         public static GameObject zapConePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/LoaderZapCone");
         public static GameObject impactEffectPrefab;
-        public static GameObject hitEffectPrefab;
+        public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
         public static GameObject swingEffectPrefab;
         private Transform hammerChildTransform;
         private Animator modelAnimator;
@@ -213,7 +213,7 @@ namespace EntityStates.HANDOverclocked
         private bool enteredHitPause = false;
         private bool exitedHitPause = false;
 
-        public static float shorthopVelocityFromHit;
+        public static float shorthopVelocityFromHit = 24f;
 
         public float chargePercent;
     }

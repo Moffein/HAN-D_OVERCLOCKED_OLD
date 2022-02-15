@@ -9,17 +9,12 @@ using Mono.Cecil.Cil;
 using RoR2.ContentManagement;
 using System.Collections;
 
-namespace HAND_OVERCLOCKED
+namespace HAND_OVERCLOCKED.Modules
 {
     class HANDContent : IContentPackProvider
     {
         public static AssetBundle assets;
         internal static ContentPack contentPack = new ContentPack();
-
-        public static BuffDef OverclockBuff;
-        public static BuffDef DroneBuff;
-        public static BuffDef DroneDebuff;
-        public static BuffDef ParallelComputingBuff;
 
         public static List<GameObject> bodyPrefabs = new List<GameObject>();
         public static List<BuffDef> buffDefs = new List<BuffDef>();

@@ -6,6 +6,7 @@ using RoR2.Skills;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
+using HAND_OVERCLOCKED.Modules;
 
 namespace HAND_OVERCLOCKED.Components
 {
@@ -115,15 +116,15 @@ namespace HAND_OVERCLOCKED.Components
         {
             if (NetworkServer.active)
             {
-                if (characterBody.GetBuffCount(HANDContent.ParallelComputingBuff) != newCount)
+                if (characterBody.GetBuffCount(HANDBuffs.ParallelComputingBuff) != newCount)
                 {
-                    while (characterBody.HasBuff(HANDContent.ParallelComputingBuff))
+                    while (characterBody.HasBuff(HANDBuffs.ParallelComputingBuff))
                     {
-                        characterBody.RemoveBuff(HANDContent.ParallelComputingBuff);
+                        characterBody.RemoveBuff(HANDBuffs.ParallelComputingBuff);
                     }
                     for (int i = 0; i < newCount; i++)
                     {
-                        characterBody.AddBuff(HANDContent.ParallelComputingBuff);
+                        characterBody.AddBuff(HANDBuffs.ParallelComputingBuff);
                     }
                 }
             }

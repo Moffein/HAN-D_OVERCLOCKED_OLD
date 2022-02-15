@@ -83,13 +83,12 @@ namespace EntityStates.HANDOverclocked
         private bool hasFired;
 
 
-        public static float damageCoefficient;
+        public static float damageCoefficient = 2.7f;
         public static GameObject projectilePrefab;
         public static string muzzleString;
         public static GameObject muzzleflashEffectPrefab;
-        public static float baseDuration;
-        public static float healPercent;
-        public static float force;
+        public static float baseDuration = 0.25f;
+        public static float force = 250f;
 
         private float duration;
         protected bool isCrit;

@@ -78,8 +78,8 @@ namespace EntityStates.HANDOverclocked
             return InterruptPriority.PrioritySkill;
         }
 
-        public static float baseMinDuration;
-        public static float baseChargeDuration;
+        public static float baseMinDuration = 0.4f;
+        public static float baseChargeDuration = 0.6f;
         private float minDuration;
         private float chargeDuration;
         private float charge;

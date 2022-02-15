@@ -15,6 +15,17 @@ Additional code help - Enigma
 
 changelog:
 
+0.2.0
+- Fixed OVERCRLOCK and DRONES state machines not being networked.
+	- Not sure if this actually changes anything.
+- Fixed SkillDefs not having a ScriptableObject name.
+- OVERCLOCK
+	- Meter is now hidden while in Command/Scrapper menus.
+- DRONES
+	- Now gives +50 armor to allies instead of +40% AtkSpd/Move Speed
+	- Removed on-hit sound.
+*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed ended up throwing off the timing of allies who would suddenly receive it, so DRONES now give armor instead to assist with their healing.*
+
 0.1.6
 
 - Now has a visual overlay when using OVERCLOCK.

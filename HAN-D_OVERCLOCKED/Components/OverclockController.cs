@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using RoR2.UI;
+using HAND_OVERCLOCKED.Modules;
 
 namespace HAND_OVERCLOCKED.Components
 {
@@ -99,9 +100,9 @@ namespace HAND_OVERCLOCKED.Components
         private void CmdBeginOverclockServer()
         {
             networkSounds.RpcPlayOverclockStart();
-            if (!characterBody.HasBuff(HANDContent.OverclockBuff))
+            if (!characterBody.HasBuff(HANDBuffs.OverclockBuff))
             {
-                characterBody.AddBuff(HANDContent.OverclockBuff.buffIndex);
+                characterBody.AddBuff(HANDBuffs.OverclockBuff.buffIndex);
             }
         }
 
@@ -119,9 +120,9 @@ namespace HAND_OVERCLOCKED.Components
         [Command]
         private void CmdEndOverclockServer()
         {
-            if (characterBody.HasBuff(HANDContent.OverclockBuff))
+            if (characterBody.HasBuff(HANDBuffs.OverclockBuff))
             {
-                characterBody.RemoveBuff(HANDContent.OverclockBuff);
+                characterBody.RemoveBuff(HANDBuffs.OverclockBuff);
             }
             networkSounds.RpcPlayOverclockEnd();
         }
@@ -146,7 +147,7 @@ namespace HAND_OVERCLOCKED.Components
         }
         private void OnGUI()
         {
-            if (this.hasAuthority && ovcActive && !RoR2.PauseManager.isPaused && healthComponent && healthComponent.alive)
+            if (this.hasAuthority && ovcActive && !menuActive && !RoR2.PauseManager.isPaused && healthComponent && healthComponent.alive)
             {
                 GUI.DrawTexture(rectGauge, texGauge, ScaleMode.StretchToFill, true, 0f);
 
@@ -203,5 +204,7 @@ namespace HAND_OVERCLOCKED.Components
 
         private float initialOverclockCooldown;
         private float ovcPercent;
+
+        public bool menuActive = false;
     }
 }

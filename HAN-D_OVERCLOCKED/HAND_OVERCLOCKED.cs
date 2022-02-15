@@ -20,11 +20,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using HAND_OVERCLOCKED.Modules;
 
 namespace HAND_OVERCLOCKED
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.1.6")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
@@ -33,8 +34,8 @@ namespace HAND_OVERCLOCKED
     {
         public static GameObject HANDBody = null;
         GameObject HANDMonsterMaster = null;
-        Color HANDColor = new Color(0.556862745f, 0.682352941f, 0.690196078f);
-        Color OverclockColor = new Color(1.0f, 0.45f, 0f);
+        public static Color HANDColor = new Color(0.556862745f, 0.682352941f, 0.690196078f);
+        public static Color OverclockColor = new Color(1.0f, 0.45f, 0f);
 
         String HANDBodyName = "";
 
@@ -68,7 +69,6 @@ namespace HAND_OVERCLOCKED
 
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>Spring upwards when using this skill.</style>");
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_DEBILITATE", "<style=cKeywordName>Debilitate</style><style=cSub>Reduce damage by <style=cIsDamage>30%</style>. Reduce movement speed by <style=cIsDamage>60%</style>.</style>");
-            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_ENERGIZE", "<style=cKeywordName>Energize</style><style=cSub>Increase movement speed and attack speed by <style=cIsDamage>40%</style>.</style>");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
             LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, servos pulsing with new life.");
@@ -77,11 +77,21 @@ namespace HAND_OVERCLOCKED
             String tldr = "<style=cMono>\r\n//--AUTO-TRANSCRIPTION FROM BASED DEPARTMENT OF UES SAFE TRAVELS--//</style>\r\n\r\n<i>*hits <color=#327FFF>Spinel Tonic</color>*</i>\n\nIs playing without the <color=#6955A6>Command</color> artifact the ultimate form of cuckoldry?\n\nI cannot think or comprehend of anything more cucked than playing without <color=#6955A6>Command</color>. Honestly, think about it rationally. You are shooting, running, jumping for like 60 minutes solely so you can get a fucking <color=#77FF16>Squid Polyp</color>. All that hard work you put into your run - dodging <style=cIsHealth>Stone Golem</style> lasers, getting annoyed by six thousand <style=cIsHealth>Lesser Wisps</color> spawning above your head, activating <color=#E5C962>Shrines of the Mountain</color> all for one simple result: your inventory is filled up with <color=#FFFFFF>Warbanners</color> and <color=#FFFFFF>Monster Tooth</color> necklaces which cost money.\n\nOn a god run? Great. A bunch of shitty items which add nothing to your run end up coming out of the <color=#E5C962>Chests</color> you buy. They get the benefit of your hard earned dosh that came from killing <style=cIsHealth>Lemurians</style>.\n\nAs a man who plays this game you are <style=cIsHealth>LITERALLY</style> dedicating two hours of your life to opening boxes and praying it's not another <color=#77FF16>Chronobauble</color>. It's the ultimate and final cuck. Think about it logically.\r\n<style=cMono>\r\nTranscriptions complete.\r\n</style>\r\n \r\n\r\n";
             LanguageAPI.Add("HAND_OVERCLOCKED_LORE", tldr);
 
+            
             LanguageAPI.Add("HAND_OVERCLOCKED_PRIMARY_NAME", "HURT");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PRIMARY_DESC", "Swing your hammer in a wide arc, hurting enemies for <style=cIsDamage>390% damage</style>.");
+
             LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_NAME", "FORCED_REASSEMBLY");
+            LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_DESC", "<style=cIsUtility>Springy</style>. Charge up a powerful hammer slam for <style=cIsDamage>400%-1200% damage</style>. <style=cIsDamage>Range and knockback</style> increases with charge.");
+            
             LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_SCEPTER_NAME", "UNETHICAL_REASSEMBLY");
+            LanguageAPI.Add("HAND_OVERCLOCKED_SECONDARY_SCEPTER_DESC", "<style=cIsUtility>Springy</style>. Charge up an overwhelmingly powerful hammer slam that deals <style=cIsDamage>600%-1800% damage</style> and <style=cIsDamage>zaps</style> enemies. <style=cIsDamage>Range and knockback</style> increases with charge.");
+
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_NAME", "OVERCLOCK");
+            LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_DESC", "<style=cIsUtility>Springy</style>. Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>.");
+
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_NAME", "DRONE");
+            LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_DESC", "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Debilitates</style> enemies for <style=cIsDamage>270% damage</style> and <style=cIsHealing>heals</style> allies. <style=cIsUtility>Kills and melee hits reduce cooldown</style>.");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "PARALLEL_COMPUTING");
             LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsDamage>+2.5% damage</style> and <style=cIsHealing>+1 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
@@ -113,9 +123,7 @@ namespace HAND_OVERCLOCKED
             }
             Debug.Log("\n\nSTATUS UPDATE:\n\nMACHINE ID:\t\tHAN-D\nLOCATION:\t\tAPPROACHING PETRICHOR V\nCURRENT OBJECTIVE:\tFIND AND ACTIVATE THE TELEPORTER\n\nPROVIDENCE IS DEAD.\nBLOOD IS FUEL.\nSPEED IS WAR.\n");
             CreateHAND();
-            CreateBuffs();
             ContentManager.collectContentPackProviders += ContentManager_collectContentPackProviders;
-
         }
 
         private void ContentManager_collectContentPackProviders(RoR2.ContentManagement.ContentManager.AddContentPackProviderDelegate addContentPackProvider)
@@ -133,8 +141,7 @@ namespace HAND_OVERCLOCKED
                 new Stage_Start();
                 new AddTimedBuff();
             }
-            new GetStatCoefficients();
-            new StealBuffVisuals();
+            new FixMenuUI();
         }
 
         private void CreateHAND() {
@@ -142,7 +149,7 @@ namespace HAND_OVERCLOCKED
             CreateSlamEffect();
             Repair();
             SetAttributes();
-
+            HANDBuffs.Init();
             CreateMaster();
             CreateSurvivorDef();
 
@@ -338,16 +345,7 @@ namespace HAND_OVERCLOCKED
             CreateSpecial();
         }
 
-
         private void CreatePrimary() {
-            FullSwing.damageCoefficient = 3.9f;
-            FullSwing.baseDuration = 1f;
-            FullSwing.airbornVerticalForce = 0f;
-            FullSwing.forceMagnitude = 1400f;
-            FullSwing.airbornHorizontalForceMult = 1.8f;
-            FullSwing.flyingHorizontalForceMult = 0.5f;
-            FullSwing.shorthopVelocityFromHit = 10f;
-            FullSwing.returnToIdlePercentage = 0.443662f;
             FullSwing.swingEffectPrefab = handSwingTrail;
 
             HANDContent.entityStates.Add(typeof(FullSwing));
@@ -356,7 +354,7 @@ namespace HAND_OVERCLOCKED
             primarySkill.activationState = new SerializableEntityStateType(typeof(FullSwing));
             primarySkill.skillNameToken = "HAND_OVERCLOCKED_PRIMARY_NAME";
             primarySkill.skillName = "FullSwing";
-            primarySkill.skillDescriptionToken = "Swing your hammer in a wide arc, hurting enemies for <style=cIsDamage>" + FullSwing.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style>.";
+            primarySkill.skillDescriptionToken = "HAND_OVERCLOCKED_PRIMARY_DESC";
             primarySkill.cancelSprintingOnActivation = true;
             primarySkill.canceledFromSprinting = false;
             primarySkill.baseRechargeInterval = 0f;
@@ -371,6 +369,7 @@ namespace HAND_OVERCLOCKED
             primarySkill.requiredStock = 1;
             primarySkill.stockToConsume = 1;
             primarySkill.keywordTokens = new string[] {};
+            FixScriptableObjectName(primarySkill);
             HANDContent.skillDefs.Add(primarySkill);
 
             SkillFamily primarySkillFamily = skillLocator.primary.skillFamily;
@@ -386,23 +385,8 @@ namespace HAND_OVERCLOCKED
         }
 
         private void CreateSecondary() {
-            ChargeSlam2.baseMinDuration = 0.6f;
-            ChargeSlam2.baseChargeDuration = 1.4f;
-            Slam2.baseDuration = 0.6f;
-            Slam2.damageCoefficientMin = 4f;
-            Slam2.damageCoefficientMax = 12f;
-            Slam2.baseMinDuration = 0.4f;
-            Slam2.forceMagnitudeMin = 2000f;
-            Slam2.forceMagnitudeMax = 2000f;
-            Slam2.airbornVerticalForceMin = -2400f;
-            Slam2.airbornVerticalForceMax = -3200f;
-            Slam2.shorthopVelocityFromHit = 24f;
-            Slam2.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
-            Slam2.impactEffectPrefab = slamEffect;//Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
+            Slam2.impactEffectPrefab = slamEffect;
             Slam2.swingEffectPrefab = handSwingTrail;
-            Slam2.returnToIdlePercentage = 0.443662f;
-            Slam2.minRange = 9;
-            Slam2.maxRange = 22;
             HANDContent.entityStates.Add(typeof(ChargeSlam2));
             HANDContent.entityStates.Add(typeof(Slam2));
 
@@ -410,7 +394,7 @@ namespace HAND_OVERCLOCKED
             secondarySkill.activationState = new SerializableEntityStateType(typeof(ChargeSlam2));
             secondarySkill.skillNameToken = "HAND_OVERCLOCKED_SECONDARY_NAME";
             secondarySkill.skillName = "ChargeSlam";
-            secondarySkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Charge up a powerful hammer slam for <style=cIsDamage>400%-1200% damage</style>. <style=cIsDamage>Range and knockback</style> increases with charge.";
+            secondarySkill.skillDescriptionToken = "HAND_OVERCLOCKED_SECONDARY_DESC";
             secondarySkill.cancelSprintingOnActivation = true;
             secondarySkill.canceledFromSprinting = false;
             secondarySkill.baseRechargeInterval = 5f;
@@ -425,6 +409,7 @@ namespace HAND_OVERCLOCKED
             secondarySkill.icon = HANDContent.assets.LoadAsset<Sprite>("Forced_Reassembly2.png");
             secondarySkill.beginSkillCooldownOnSkillEnd = true;
             secondarySkill.keywordTokens = new string[] { "KEYWORD_STUNNING", "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
+            FixScriptableObjectName(secondarySkill);
             HANDContent.skillDefs.Add(secondarySkill);
 
             SkillFamily secondarySkillFamily = skillLocator.secondary.skillFamily;
@@ -438,23 +423,9 @@ namespace HAND_OVERCLOCKED
             };
             HANDContent.skillFamilies.Add(secondarySkillFamily);
 
-            ChargeSlamScepter.baseMinDuration = ChargeSlam2.baseMinDuration;
-            ChargeSlamScepter.baseChargeDuration = ChargeSlam2.baseChargeDuration;
-            SlamScepter.baseDuration = Slam2.baseDuration;
-            SlamScepter.damageCoefficientMin = 1.5f*Slam2.damageCoefficientMin;
-            SlamScepter.damageCoefficientMax = 1.5f * Slam2.damageCoefficientMax;
-            SlamScepter.baseMinDuration = Slam2.baseMinDuration;
-            SlamScepter.forceMagnitudeMin = Slam2.forceMagnitudeMin;
-            SlamScepter.forceMagnitudeMax = Slam2.forceMagnitudeMax;
-            SlamScepter.airbornVerticalForceMin = 2f * Slam2.airbornVerticalForceMin;
-            SlamScepter.airbornVerticalForceMax = 2f * Slam2.airbornVerticalForceMax;
-            SlamScepter.shorthopVelocityFromHit = Slam2.shorthopVelocityFromHit;
             SlamScepter.hitEffectPrefab = Slam2.hitEffectPrefab;
-            SlamScepter.impactEffectPrefab = Slam2.impactEffectPrefab;
             SlamScepter.swingEffectPrefab = Slam2.swingEffectPrefab;
-            SlamScepter.returnToIdlePercentage = Slam2.returnToIdlePercentage;
-            SlamScepter.minRange = Slam2.minRange;
-            SlamScepter.maxRange = Slam2.maxRange;
+
             HANDContent.entityStates.Add(typeof(ChargeSlamScepter));
             HANDContent.entityStates.Add(typeof(SlamScepter));
 
@@ -462,7 +433,7 @@ namespace HAND_OVERCLOCKED
             secondarySkillScepter.activationState = new SerializableEntityStateType(typeof(ChargeSlamScepter));
             secondarySkillScepter.skillNameToken = "HAND_OVERCLOCKED_SECONDARY_SCEPTER_NAME";
             secondarySkillScepter.skillName = "ChargeSlam";
-            secondarySkillScepter.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Charge up an overwhelmingly powerful hammer slam that deals <style=cIsDamage>600%-1800% damage</style> and <style=cIsDamage>zaps</style> enemies. <style=cIsDamage>Range and knockback</style> increases with charge.";
+            secondarySkillScepter.skillDescriptionToken = "HAND_OVERCLOCKED_SECONDARY_SCEPTER_DESC";
             secondarySkillScepter.cancelSprintingOnActivation = true;
             secondarySkillScepter.canceledFromSprinting = false;
             secondarySkillScepter.baseRechargeInterval = secondarySkill.baseRechargeInterval;
@@ -477,6 +448,7 @@ namespace HAND_OVERCLOCKED
             secondarySkillScepter.icon = HANDContent.assets.LoadAsset<Sprite>("Unethical_Reassembly.png");
             secondarySkillScepter.beginSkillCooldownOnSkillEnd = true;
             secondarySkillScepter.keywordTokens = new string[] { "KEYWORD_STUNNING", "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
+            FixScriptableObjectName(secondarySkillScepter);
             HANDContent.skillDefs.Add(secondarySkillScepter);
 
             scepterDef = secondarySkillScepter;
@@ -497,7 +469,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.activationState = new SerializableEntityStateType(typeof(Overclock));
             ovcSkill.skillNameToken = "HAND_OVERCLOCKED_UTILITY_NAME";
             ovcSkill.skillName = "Overclock";
-            ovcSkill.skillDescriptionToken = "<style=cIsUtility>Springy</style>. Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>.";
+            ovcSkill.skillDescriptionToken = "HAND_OVERCLOCKED_UTILITY_DESC";
             ovcSkill.isCombatSkill = false;
             ovcSkill.cancelSprintingOnActivation = false;
             ovcSkill.canceledFromSprinting = false;
@@ -513,6 +485,7 @@ namespace HAND_OVERCLOCKED
             ovcSkill.icon = HANDContent.assets.LoadAsset<Sprite>("Overclock.png");
             ovcSkill.activationStateMachineName = "Overclock";
             ovcSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
+            FixScriptableObjectName(ovcSkill);
             HANDContent.skillDefs.Add(ovcSkill);
 
             SkillFamily utilitySkillFamily = skillLocator.utility.skillFamily;
@@ -533,10 +506,7 @@ namespace HAND_OVERCLOCKED
         }
 
         private void CreateSpecial() {
-            FireSeekingDrone.damageCoefficient = 2.7f;
-            FireSeekingDrone.force = 250f;
             FireSeekingDrone.projectilePrefab = CreateDroneProjectile();
-            FireSeekingDrone.baseDuration = 0.25f;
 
             CreateDroneFollower();
 
@@ -551,9 +521,7 @@ namespace HAND_OVERCLOCKED
             droneSkill.activationState = new SerializableEntityStateType(typeof(FireSeekingDrone));
             droneSkill.skillNameToken = "HAND_OVERCLOCKED_SPECIAL_NAME";
             droneSkill.skillName = "Drones";
-            droneSkill.skillDescriptionToken = "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Debilitates</style> enemies for <style=cIsDamage>"
-                + FireSeekingDrone.damageCoefficient.ToString("P0").Replace(" ", "") + " damage</style> and <style=cIsUtility>Energizes</style> allies.";
-            droneSkill.skillDescriptionToken += " <style=cIsUtility>Kills and melee hits reduce cooldown</style>.";
+            droneSkill.skillDescriptionToken = "HAND_OVERCLOCKED_SPECIAL_DESC";
             droneSkill.isCombatSkill = true;
             droneSkill.cancelSprintingOnActivation = false;
             droneSkill.canceledFromSprinting = false;
@@ -568,7 +536,8 @@ namespace HAND_OVERCLOCKED
             droneSkill.stockToConsume = 1;
             droneSkill.icon = HANDContent.assets.LoadAsset<Sprite>("Drone2.png");
             droneSkill.activationStateMachineName = "DroneLauncher";
-            droneSkill.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_DEBILITATE", "KEYWORD_HANDOVERCLOCKED_ENERGIZE" };
+            droneSkill.keywordTokens = new string[] {"KEYWORD_HANDOVERCLOCKED_DEBILITATE"};
+            FixScriptableObjectName(droneSkill);
             HANDContent.entityStates.Add(typeof(FireSeekingDrone));
 
             SkillFamily specialSkillFamily = skillLocator.special.skillFamily;
@@ -586,44 +555,6 @@ namespace HAND_OVERCLOCKED
         }
         #endregion
 
-        private void CreateBuffs()
-        {
-            BuffDef ParallelBuffDef = ScriptableObject.CreateInstance<BuffDef>();
-            ParallelBuffDef.buffColor = HANDColor;
-            ParallelBuffDef.canStack = true;
-            ParallelBuffDef.iconSprite = Resources.Load<Sprite>("textures/bufficons/texBuffOverheat");
-            ParallelBuffDef.isDebuff = false;
-            ParallelBuffDef.name = "MoffeinHANDParallelComputing";
-            HANDContent.buffDefs.Add(ParallelBuffDef);
-            HANDContent.ParallelComputingBuff = ParallelBuffDef;
-
-            BuffDef OverclockBuffDef = ScriptableObject.CreateInstance<BuffDef>();
-            OverclockBuffDef.buffColor = OverclockColor;
-            OverclockBuffDef.canStack = false;
-            OverclockBuffDef.iconSprite = Resources.Load<Sprite>("Textures/BuffIcons/texBuffTeslaIcon");
-            OverclockBuffDef.isDebuff = false;
-            OverclockBuffDef.name = "MoffeinHANDOverclock";
-            HANDContent.buffDefs.Add(OverclockBuffDef);
-            HANDContent.OverclockBuff = OverclockBuffDef;
-
-            BuffDef DroneBoostDef = ScriptableObject.CreateInstance<BuffDef>();
-            DroneBoostDef.buffColor = OverclockColor;
-            DroneBoostDef.canStack = false;
-            DroneBoostDef.iconSprite = Resources.Load<Sprite>("Textures/BuffIcons/texWarcryBuffIcon");
-            DroneBoostDef.isDebuff = false;
-            DroneBoostDef.name = "MoffeinHANDDroneBoost";
-            HANDContent.buffDefs.Add(DroneBoostDef);
-            HANDContent.DroneBuff = DroneBoostDef;
-
-            BuffDef DroneDebuffDef = ScriptableObject.CreateInstance<BuffDef>();
-            DroneDebuffDef.buffColor = HANDColor;
-            DroneDebuffDef.canStack = false;
-            DroneDebuffDef.iconSprite = Resources.Load<Sprite>("Textures/BuffIcons/texBuffWeakIcon");
-            DroneDebuffDef.isDebuff = true;
-            DroneDebuffDef.name = "MoffeinHANDDroneDebuff";
-            HANDContent.buffDefs.Add(DroneDebuffDef);
-            HANDContent.DroneDebuff = DroneDebuffDef;
-        }
 
         public static Color hexToColor(string hex)
         {
@@ -1066,6 +997,12 @@ namespace HAND_OVERCLOCKED
             droneProjectile.GetComponent<ProjectileController>().ghostPrefab = droneProjectileGhost;*/
 
             return droneProjectile;
+        }
+
+
+        private void FixScriptableObjectName(SkillDef sk)
+        {
+            (sk as ScriptableObject).name = sk.skillName;
         }
     }
 }

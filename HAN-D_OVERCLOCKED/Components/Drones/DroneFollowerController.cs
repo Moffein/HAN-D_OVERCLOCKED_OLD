@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using HAND_OVERCLOCKED.Modules;
 
 namespace HAND_OVERCLOCKED.Components
 {
@@ -59,7 +60,7 @@ namespace HAND_OVERCLOCKED.Components
             }
             base.transform.position += this.velocity * Time.fixedDeltaTime;
 
-            stopwatch += Time.deltaTime * (characterBody.HasBuff(HANDContent.OverclockBuff) ? 2f : 1f);
+            stopwatch += Time.deltaTime * (characterBody.HasBuff(HANDBuffs.OverclockBuff) ? 2f : 1f);
             if (stopwatch > orbitDuration) {
                 stopwatch -= orbitDuration;
             }
