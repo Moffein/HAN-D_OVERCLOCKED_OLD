@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using HAND_OVERCLOCKED.Modules;
+using HandPlugin.Modules;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class DroneFollowerController : NetworkBehaviour
     {

@@ -7,7 +7,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace HAND_OVERCLOCKED.Components.DroneProjectile
+namespace HandPlugin.Components.DroneProjectile
 {
     class PreventGroundCollision : NetworkBehaviour
     {

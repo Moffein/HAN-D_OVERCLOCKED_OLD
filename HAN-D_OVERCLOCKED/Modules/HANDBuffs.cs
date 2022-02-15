@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace HAND_OVERCLOCKED.Modules
+namespace HandPlugin.Modules
 {
     public class HANDBuffs
     {

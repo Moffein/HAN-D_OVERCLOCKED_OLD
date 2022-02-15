@@ -6,9 +6,9 @@ using RoR2.Skills;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
-using HAND_OVERCLOCKED.Modules;
+using HandPlugin.Modules;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class DroneStockController : NetworkBehaviour//, IOnKilledOtherServerReceiver
     {

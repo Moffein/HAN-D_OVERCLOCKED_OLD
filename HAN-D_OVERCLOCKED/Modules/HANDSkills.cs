@@ -1,7 +1,7 @@
 ﻿using EntityStates;
 using EntityStates.HANDOverclocked;
-using HAND_OVERCLOCKED.Components;
-using HAND_OVERCLOCKED.Components.DroneProjectile;
+using HandPlugin.Components;
+using HandPlugin.Components.DroneProjectile;
 using R2API;
 using RoR2;
 using RoR2.Projectile;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace HAND_OVERCLOCKED.Modules
+namespace HandPlugin.Modules
 {
     public class HANDSkills
     {

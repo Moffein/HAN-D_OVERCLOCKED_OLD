@@ -3,7 +3,7 @@ using UnityEngine;
 using RoR2.CharacterAI;
 using R2API;
 
-namespace HAND_OVERCLOCKED.Modules
+namespace HandPlugin.Modules
 {
     public class HANDMaster
     {

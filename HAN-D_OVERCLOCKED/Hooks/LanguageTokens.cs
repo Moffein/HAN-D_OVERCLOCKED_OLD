@@ -1,6 +1,6 @@
 ﻿using R2API;
 
-namespace HAND_OVERCLOCKED.Hooks
+namespace HandPlugin.Hooks
 {
     //TODO: CONVERT TO A PROPER LANGUAGE FILE
     public class LanguageTokens

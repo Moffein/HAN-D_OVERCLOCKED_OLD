@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 using RoR2;
 
-namespace HAND_OVERCLOCKED
+namespace HandPlugin
 {
     public class HANDSwingAttackPrimary : HANDSwingAttack
     {

@@ -7,7 +7,7 @@ using UnityEngine;
 
 //https://github.com/GnomeModder/EnforcerMod/blob/master/EnforcerMod_VS/Nemesis/SquashedComponent.cs
 //Credits to the EnforcerGang for lending me this code!
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class SquashedComponent : MonoBehaviour
     {

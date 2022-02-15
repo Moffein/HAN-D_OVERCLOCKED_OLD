@@ -1,6 +1,6 @@
 ﻿using RoR2;
 
-namespace HAND_OVERCLOCKED.Hooks
+namespace HandPlugin.Hooks
 {
     public class DisableFade
     {

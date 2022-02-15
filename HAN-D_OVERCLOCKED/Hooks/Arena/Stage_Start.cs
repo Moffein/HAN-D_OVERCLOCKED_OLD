@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace HAND_OVERCLOCKED.Hooks.Arena
+namespace HandPlugin.Hooks.Arena
 {
     public class Stage_Start
     {

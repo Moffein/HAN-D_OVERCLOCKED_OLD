@@ -8,9 +8,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using RoR2.UI;
-using HAND_OVERCLOCKED.Modules;
+using HandPlugin.Modules;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class OverclockController : NetworkBehaviour
     {

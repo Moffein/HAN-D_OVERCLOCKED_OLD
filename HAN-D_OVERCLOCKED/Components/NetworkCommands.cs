@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class NetworkCommands : NetworkBehaviour
     {

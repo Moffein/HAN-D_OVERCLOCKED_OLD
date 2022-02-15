@@ -6,9 +6,9 @@ using RoR2.Orbs;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
-using HAND_OVERCLOCKED.Modules;
+using HandPlugin.Modules;
 
-namespace HAND_OVERCLOCKED.Components.DroneProjectile
+namespace HandPlugin.Components.DroneProjectile
 {
     class DroneProjectileDamageController : MonoBehaviour
     {

@@ -5,10 +5,10 @@ using UnityEngine;
 using RoR2;
 using R2API.Networking;
 using UnityEngine.Networking;
-using HAND_OVERCLOCKED.Components;
+using HandPlugin.Components;
 using UnityEngine.Networking.Types;
 
-namespace HAND_OVERCLOCKED
+namespace HandPlugin
 {
     public class HANDSwingAttack
     {

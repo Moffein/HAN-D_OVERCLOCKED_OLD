@@ -9,7 +9,7 @@ using Mono.Cecil.Cil;
 using RoR2.ContentManagement;
 using System.Collections;
 
-namespace HAND_OVERCLOCKED.Modules
+namespace HandPlugin.Modules
 {
     class HANDContent : IContentPackProvider
     {

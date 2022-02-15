@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HAND_OVERCLOCKED.Components;
+using HandPlugin.Components;
 using RoR2;
 using UnityEngine;
 

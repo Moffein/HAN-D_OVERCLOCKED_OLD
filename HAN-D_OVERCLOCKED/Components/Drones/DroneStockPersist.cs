@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine.Networking;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class DroneStockPersist : NetworkBehaviour
     {

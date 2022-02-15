@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RoR2;
 using UnityEngine;
-using HAND_OVERCLOCKED;
+using HandPlugin;
 
 namespace EntityStates.HANDOverclocked
 {

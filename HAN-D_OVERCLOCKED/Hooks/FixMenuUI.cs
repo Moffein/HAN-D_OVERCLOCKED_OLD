@@ -1,9 +1,9 @@
-﻿using HAND_OVERCLOCKED.Components;
+﻿using HandPlugin.Components;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HAND_OVERCLOCKED.Hooks
+namespace HandPlugin.Hooks
 {
     public class FixMenuUI
     {

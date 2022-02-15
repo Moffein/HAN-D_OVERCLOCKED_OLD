@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HAND_OVERCLOCKED;
-using HAND_OVERCLOCKED.Components;
+using HandPlugin;
+using HandPlugin.Components;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;

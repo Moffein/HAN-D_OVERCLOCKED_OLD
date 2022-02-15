@@ -1,7 +1,7 @@
-﻿using HAND_OVERCLOCKED.Components;
+﻿using HandPlugin.Components;
 using RoR2;
 
-namespace HAND_OVERCLOCKED.Hooks
+namespace HandPlugin.Hooks
 {
     public class OnCharacterDeath
     {

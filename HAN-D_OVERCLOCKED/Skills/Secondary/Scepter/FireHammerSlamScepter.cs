@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using RoR2;
 using UnityEngine;
-using HAND_OVERCLOCKED;
-using HAND_OVERCLOCKED.Components;
+using HandPlugin;
+using HandPlugin.Components;
 using RoR2.Projectile;
 
 namespace EntityStates.HANDOverclocked
@@ -34,7 +34,7 @@ namespace EntityStates.HANDOverclocked
                 {
                     bool isCrit = base.RollCrit();
                     Quaternion direction = Quaternion.LookRotation(directionFlat, Vector3.up);
-                    int hitCount = new HAND_OVERCLOCKED.HANDSwingAttackSecondary
+                    int hitCount = new HandPlugin.HANDSwingAttackSecondary
                     {
                         attacker = base.gameObject,
                         inflictor = base.gameObject,

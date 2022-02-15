@@ -1,9 +1,9 @@
-﻿using HAND_OVERCLOCKED.Components;
+﻿using HandPlugin.Components;
 using NS_KingKombatArena;
 using RoR2;
 using System.Runtime.CompilerServices;
 
-namespace HAND_OVERCLOCKED.Hooks.Arena
+namespace HandPlugin.Hooks.Arena
 {
     public class AddTimedBuff
     {

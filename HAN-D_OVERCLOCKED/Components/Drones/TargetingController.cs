@@ -5,7 +5,7 @@ using UnityEngine;
 using RoR2;
 using System.Linq;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class TargetingController : MonoBehaviour
     {

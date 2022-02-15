@@ -2,10 +2,10 @@
 using BepInEx.Configuration;
 using EntityStates;
 using EntityStates.HANDOverclocked;
-using HAND_OVERCLOCKED.Components;
-using HAND_OVERCLOCKED.Components.DroneProjectile;
-using HAND_OVERCLOCKED.Hooks;
-using HAND_OVERCLOCKED.Hooks.Arena;
+using HandPlugin.Components;
+using HandPlugin.Components.DroneProjectile;
+using HandPlugin.Hooks;
+using HandPlugin.Hooks.Arena;
 using R2API;
 using R2API.Networking;
 using R2API.Utils;
@@ -20,9 +20,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
-using HAND_OVERCLOCKED.Modules;
+using HandPlugin.Modules;
 
-namespace HAND_OVERCLOCKED
+namespace HandPlugin
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.0")]

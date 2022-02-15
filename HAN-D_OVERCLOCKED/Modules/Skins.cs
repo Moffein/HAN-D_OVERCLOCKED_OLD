@@ -3,7 +3,7 @@ using UnityEngine;
 using RoR2;
 using System.Collections.Generic;
 
-namespace HAND_OVERCLOCKED.Modules
+namespace HandPlugin.Modules
 {
     public static class Skins   //TODO: FIX THIS LATER
     {

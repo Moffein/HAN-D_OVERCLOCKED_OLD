@@ -1,10 +1,10 @@
-﻿using HAND_OVERCLOCKED;
+﻿using HandPlugin;
 using System;
 using UnityEngine;
 using RoR2;
 using System.Collections.Generic;
 using System.Text;
-using HAND_OVERCLOCKED.Components;
+using HandPlugin.Components;
 
 namespace EntityStates.HANDOverclocked
 {
@@ -38,8 +38,8 @@ namespace EntityStates.HANDOverclocked
                         force = FullSwing.forceMagnitude * directionFlat,
                         airborneHorizontalForceMult = FullSwing.airbornHorizontalForceMult,
                         flyingHorizontalForceMult = FullSwing.flyingHorizontalForceMult,
-                        damageType = ((!HAND_OVERCLOCKED.HAND_OVERCLOCKED.arenaActive
-                        && (base.characterBody.HasBuff(HAND_OVERCLOCKED.Modules.HANDBuffs.OverclockBuff)
+                        damageType = ((!HandPlugin.HAND_OVERCLOCKED.arenaActive
+                        && (base.characterBody.HasBuff(HandPlugin.Modules.HANDBuffs.OverclockBuff)
                         && (secondSwing || (firstSwing && Util.CheckRoll(30f))))) ? DamageType.Stun1s : DamageType.Generic),
                         maxForceScale = Mathf.Infinity,
                         bossGroundedForceMult = 0.5f,

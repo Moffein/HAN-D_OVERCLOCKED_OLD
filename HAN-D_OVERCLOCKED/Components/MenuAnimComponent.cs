@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace HAND_OVERCLOCKED.Components
+namespace HandPlugin.Components
 {
     public class MenuAnimComponent : MonoBehaviour
     {
