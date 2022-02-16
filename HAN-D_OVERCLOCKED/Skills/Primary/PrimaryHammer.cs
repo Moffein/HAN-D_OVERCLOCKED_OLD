@@ -130,7 +130,7 @@ namespace EntityStates.HANDOverclocked
             }
             if (!base.isGrounded)
             {
-                base.SmallHop(base.characterMotor, FullSwing.shorthopVelocityFromHit);
+                base.SmallHop(base.characterMotor, FullSwing.shorthopVelocityFromHit/this.attackSpeedStat);
             }
             this.exitedHitPause = true;
         }
@@ -203,7 +203,7 @@ namespace EntityStates.HANDOverclocked
         private bool enteredHitPause = false;
         private bool exitedHitPause = false;
 
-        public static float shorthopVelocityFromHit = 0f;   //was 10f
+        public static float shorthopVelocityFromHit = 10f;   //was 10f
 
         private bool secondSwing = false;
         private bool firstSwing = false;

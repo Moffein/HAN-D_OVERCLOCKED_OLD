@@ -24,12 +24,27 @@ changelog:
 	- Not sure if this actually changes anything.
 - Fixed SkillDefs not having a ScriptableObject name.
 - Reduced size in the Character Select screen.
+
+- Passive
+	- No longer affects damage.
+	- Now gives +2 armor.
+
+*Wanted a bigger impact per drone. Didn't like how the drone passive could unexpectedly affect the # of hits to kill things.*
+
+- Base Stats
+	- Base damage increased 12 -> 14
+	- Base armor reduced 12 -> 0
+	
+*These changes have been made to account for the Passive changes.*
+	
 - OVERCLOCK
 	- Meter is now hidden while in Command/Scrapper menus.
+	
 - DRONES
 	- Now gives +50 armor to allies instead of +40% AtkSpd/Move Speed
-	- Removed on-hit sound.
-*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed ended up throwing off the timing of allies who would suddenly receive it, so DRONES now give armor instead to assist with their healing.*
+	- On-hit sound now only plays on the first hit.
+	
+*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead.*
 
 0.1.6
 
