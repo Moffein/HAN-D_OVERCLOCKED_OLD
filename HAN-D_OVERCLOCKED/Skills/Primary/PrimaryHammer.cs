@@ -119,6 +119,10 @@ namespace EntityStates.HANDOverclocked
         {
             this.hitPauseTimer = 0f;
             base.characterMotor.velocity = this.storedVelocity;
+            if (base.characterMotor.velocity.y < 0f)
+            {
+                base.characterMotor.velocity.y = 0f;
+            }
             this.storedVelocity = Vector3.zero;
             if (this.modelAnimator)
             {
@@ -199,7 +203,7 @@ namespace EntityStates.HANDOverclocked
         private bool enteredHitPause = false;
         private bool exitedHitPause = false;
 
-        public static float shorthopVelocityFromHit = 10f;
+        public static float shorthopVelocityFromHit = 0f;   //was 10f
 
         private bool secondSwing = false;
         private bool firstSwing = false;

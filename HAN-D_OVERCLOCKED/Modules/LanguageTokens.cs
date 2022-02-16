@@ -1,6 +1,6 @@
 ﻿using R2API;
 
-namespace HandPlugin.Hooks
+namespace HandPlugin.Modules
 {
     //TODO: CONVERT TO A PROPER LANGUAGE FILE
     public class LanguageTokens
@@ -48,7 +48,7 @@ namespace HandPlugin.Hooks
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_DESC", "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Debilitates</style> enemies for <style=cIsDamage>270% damage</style> and <style=cIsHealing>heals</style> allies. <style=cIsUtility>Kills and melee hits reduce cooldown</style>.");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "PARALLEL_COMPUTING");
-            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsDamage>+2.5% damage</style> and <style=cIsHealing>+1 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsHealing>+2 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
         }
     }
 }

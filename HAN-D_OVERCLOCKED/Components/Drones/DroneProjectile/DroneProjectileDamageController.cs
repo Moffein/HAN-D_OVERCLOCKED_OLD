@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using HandPlugin.Modules;
 using RoR2;
 using RoR2.Orbs;
 using RoR2.Projectile;
 using UnityEngine;
 using UnityEngine.Networking;
-using HandPlugin.Modules;
 
-namespace HandPlugin.Components.DroneProjectile
+namespace HAND_OVERCLOCKED.Components.DroneProjectile
 {
-    class DroneProjectileDamageController : MonoBehaviour
+    public class DroneProjectileDamageController : NetworkBehaviour
     {
+        private bool playedHitSound = false;
+
+        [ClientRpc]
+        private void RpcPlayDrillSound()
+        {
+            Util.PlaySound("Play_HOC_Drill", this.gameObject);
+        }
+
         public void Awake()
         {
             if (NetworkServer.active)
@@ -93,6 +101,12 @@ namespace HandPlugin.Components.DroneProjectile
                                 Destroy(this.gameObject);
                             }
 
+                            if (!playedHitSound)
+                            {
+                                playedHitSound = true;
+                                RpcPlayDrillSound();
+                            }
+
                             if (ownerHealthComponent)
                             {
                                 HealOrb healOrb = new HealOrb();
@@ -157,7 +171,7 @@ namespace HandPlugin.Components.DroneProjectile
                     else
                     {
                         Destroy(this.gameObject);
-                    }    
+                    }
                 }
             }
         }

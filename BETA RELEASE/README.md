@@ -8,9 +8,13 @@ todo:
 - General polish/balancing.
 
 Credits:
+
 Coding - Moffein
+
 Icons - PapaZach
+
 DRONE model - LucidInceptor and TimeSweeper
+
 Additional code help - Enigma
 
 changelog:

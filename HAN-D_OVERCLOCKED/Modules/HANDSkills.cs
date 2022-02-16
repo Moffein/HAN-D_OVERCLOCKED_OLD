@@ -1,5 +1,6 @@
 ﻿using EntityStates;
 using EntityStates.HANDOverclocked;
+using HAND_OVERCLOCKED.Components.DroneProjectile;
 using HandPlugin.Components;
 using HandPlugin.Components.DroneProjectile;
 using R2API;

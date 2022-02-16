@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" SchemaVersion="89">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_HOC_StartPunch" ID="{D7BF5C09-7AFD-42AE-849F-308BA3AAA9CB}">
+					<ChildrenList>
+						<Action Name="" ID="{756D28CD-01CB-4261-8D21-B14E36E1B5C3}" ShortID="749817916">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot1 1" ID="{21058B5F-7D88-4CC9-AAA3-BA9CA3BC6E18}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_Punch" ID="{C2CE9FF4-558F-49FC-96DB-3052C9BE5688}">
+					<ChildrenList>
+						<Action Name="" ID="{D9F6A1B0-04E2-4736-B7DC-98CB9CB1CBDD}" ShortID="475208893">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot1 2" ID="{29CA4A0F-44B4-4810-9636-1720A246CD14}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_DroneGain" ID="{C57632A0-11F3-4903-87AA-62A21DF11E2A}">
+					<ChildrenList>
+						<Action Name="" ID="{0DF45AC1-E63A-43AC-BFE7-595AC4059B21}" ShortID="976962047">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot2 1" ID="{FF8E5383-18A0-45E9-9BC9-70FE05BAAE87}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_Drone" ID="{F8B3C466-B82E-48C1-BA3F-5CB0831FC608}">
+					<ChildrenList>
+						<Action Name="" ID="{16257DF5-F68D-4C41-91DE-5A8B11814CC7}" ShortID="1058317430">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot2 2" ID="{32393277-926E-4837-9552-0DA0034992A0}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_StartHammer" ID="{F41C9FAA-B9C1-4F14-BB76-C853E1CDBCDD}">
+					<ChildrenList>
+						<Action Name="" ID="{BA44ABB0-0B9D-4E1D-A95C-DF94C36A8359}" ShortID="692541077">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot4 1" ID="{6003B240-D7BB-4BFC-83B6-DC9BFE7CAB17}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_Hammer" ID="{858A263C-084E-435C-A37B-76BC509AFF81}">
+					<ChildrenList>
+						<Action Name="" ID="{CF3F0ABE-4FD7-456A-9E6D-0BF4C3856486}" ShortID="611837620">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wJanitorShoot4 2" ID="{ABBB5292-5B06-47ED-B35C-A2EF7434560B}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_Drill" ID="{995825FD-63D1-4384-955F-2FB92F5771DD}">
+					<ChildrenList>
+						<Action Name="" ID="{C389581A-8B04-40B0-82BA-88C517EAB4FB}" ShortID="1060778274">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wDrill" ID="{DC563123-75F7-4F51-A894-B121825F2729}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_HOC_DroneHit" ID="{5DF2FE57-9222-438C-A519-46D2BBDF3B84}">
+					<ChildrenList>
+						<Action Name="" ID="{509BC180-724B-4252-9D40-2FE7881C449E}" ShortID="333524021">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="wLizardHit" ID="{45051540-BD17-4915-AB99-F819DD1EE2E6}" WorkUnitID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

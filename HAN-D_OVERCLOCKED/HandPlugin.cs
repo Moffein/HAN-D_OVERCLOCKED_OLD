@@ -53,8 +53,8 @@ namespace HandPlugin
         public static SkillDef scepterDef;
 
         private void CreateSurvivorDef() {
-            GameObject HANDDisplay = HANDBody.GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
-            HANDDisplay.transform.localScale *= 0.8f;
+            GameObject HANDDisplay = Resources.Load<GameObject>("prefabs/characterbodies/handbody").GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
+            HANDDisplay.transform.localScale *= 0.9f;
             HANDDisplay.AddComponent<MenuAnimComponent>();
             SurvivorDef item = ScriptableObject.CreateInstance<SurvivorDef>();
             item.bodyPrefab = HANDBody;
@@ -223,10 +223,10 @@ namespace HandPlugin
                 body.baseMoveSpeed = 7f;
                 body.baseAcceleration = 30f;
                 body.baseJumpPower = 15f;
-                body.baseDamage = 12f;
+                body.baseDamage = 14f;
                 body.baseAttackSpeed = 1f;
                 body.baseCrit = 1f;
-                body.baseArmor = 12f;
+                body.baseArmor = 0f;
                 body.baseJumpCount = 1;
 
                 //leveling stats
