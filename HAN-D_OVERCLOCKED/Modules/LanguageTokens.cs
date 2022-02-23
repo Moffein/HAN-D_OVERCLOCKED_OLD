@@ -43,11 +43,14 @@ namespace HandPlugin.Modules
 
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_NAME", "OVERCLOCK");
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_DESC", "<style=cIsUtility>Springy</style>. Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>.");
+            
+            LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_CANCEL_NAME", "CANCEL");
+            LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_CANCEL_DESC", "<style=cIsUtility>Springy</style>. Ends <style=cIsDamage>OVERCLOCK</style>.");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_NAME", "DRONE");
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_DESC", "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Drills</style> enemies for <style=cIsDamage>270% damage</style> and <style=cIsHealing>heals</style> allies. <style=cIsUtility>Kills and melee hits reduce cooldown</style>.");
 
-            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "SWARM");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "SWARM_ARMOR");
             LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsHealing>+3 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
         }
     }

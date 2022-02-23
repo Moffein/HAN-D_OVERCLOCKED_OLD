@@ -29,22 +29,28 @@ changelog:
 	- No longer affects damage.
 	- Now gives +3 armor per drone.
 
-*Wanted a bigger impact per drone. Didn't like how the drone passive affecting damage felt.*
+	*Wanted a bigger impact per drone. Didn't like how the drone passive affecting damage felt.*
 
 - Base Stats
 	- Base damage increased 12 -> 14
 	- Base armor reduced 12 -> 0
 	
-*These changes have been made to account for the Passive changes. HAN-D is squishier without his drones, but can reach higher armor amounts if he holds on to them.*
+	*These changes have been made to account for the Passive changes. HAN-D is squishier without his drones, but can reach higher armor amounts if he holds on to them.*
+	
+- HURT
+	- Shorthop velocity is is reduced with Attack Speed like Vanilla melee attacks.
+	
+	*This will prevent HAN-D from launching himself out of reach from enemies at high attack speeds.*
 	
 - OVERCLOCK
+	- Rewrote skill code.
 	- Meter is now hidden while in Command/Scrapper menus.
 	
 - DRONES
 	- Now gives +100 armor to allies instead of +40% AtkSpd/Move Speed
 	- On-hit sound now only plays on the first hit.
 	
-*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead. The ally armor bonus is high since the buff only lasts for a short duration and is hard to consistently maintain.*
+	*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead. The ally armor bonus is high since the buff only lasts for a short duration and is hard to consistently maintain.*
 
 0.1.6
 

@@ -142,7 +142,8 @@ namespace HandPlugin.Modules
 
         private static void CreateUtility(SkillLocator skillLocator, GameObject HANDBody)
         {
-            HANDContent.entityStates.Add(typeof(Overclock));
+            HANDContent.entityStates.Add(typeof(BeginOverclock));
+            HANDContent.entityStates.Add(typeof(CancelOverclock));
 
             EntityStateMachine stateMachine = HANDBody.AddComponent<EntityStateMachine>();
             stateMachine.customName = "Overclock";
@@ -152,15 +153,15 @@ namespace HandPlugin.Modules
             nsm.stateMachines = nsm.stateMachines.Append(stateMachine).ToArray();
 
             SkillDef ovcSkill = SkillDef.CreateInstance<SkillDef>();
-            ovcSkill.activationState = new SerializableEntityStateType(typeof(Overclock));
+            ovcSkill.activationState = new SerializableEntityStateType(typeof(BeginOverclock));
             ovcSkill.skillNameToken = "HAND_OVERCLOCKED_UTILITY_NAME";
-            ovcSkill.skillName = "Overclock";
+            ovcSkill.skillName = "BeginOverclock";
             ovcSkill.skillDescriptionToken = "HAND_OVERCLOCKED_UTILITY_DESC";
             ovcSkill.isCombatSkill = false;
             ovcSkill.cancelSprintingOnActivation = false;
             ovcSkill.canceledFromSprinting = false;
             ovcSkill.baseRechargeInterval = 7f;
-            ovcSkill.interruptPriority = EntityStates.InterruptPriority.PrioritySkill;
+            ovcSkill.interruptPriority = EntityStates.InterruptPriority.Any;
             ovcSkill.mustKeyPress = true;
             ovcSkill.beginSkillCooldownOnSkillEnd = false;
             ovcSkill.baseMaxStock = 1;
@@ -174,6 +175,33 @@ namespace HandPlugin.Modules
             FixScriptableObjectName(ovcSkill);
             HANDContent.skillDefs.Add(ovcSkill);
 
+            SkillDef ovcCancelDef = SkillDef.CreateInstance<SkillDef>();
+            ovcCancelDef.activationState = new SerializableEntityStateType(typeof(CancelOverclock));
+            ovcCancelDef.activationStateMachineName = "Overclock";
+            ovcCancelDef.baseMaxStock = 1;
+            ovcCancelDef.baseRechargeInterval = 7f;
+            ovcCancelDef.beginSkillCooldownOnSkillEnd = true;
+            ovcCancelDef.canceledFromSprinting = false;
+            ovcCancelDef.dontAllowPastMaxStocks = true;
+            ovcCancelDef.forceSprintDuringState = false;
+            ovcCancelDef.fullRestockOnAssign = true;
+            ovcCancelDef.icon = HANDContent.assets.LoadAsset<Sprite>("Overclock_Cancel.png");
+            ovcCancelDef.interruptPriority = InterruptPriority.Skill;
+            ovcCancelDef.isCombatSkill = false;
+            ovcCancelDef.keywordTokens = new string[] { "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
+            ovcCancelDef.mustKeyPress = true;
+            ovcCancelDef.cancelSprintingOnActivation = false;
+            ovcCancelDef.rechargeStock = 1;
+            ovcCancelDef.requiredStock = 0;
+            ovcCancelDef.skillName = "CancelOverclock";
+            ovcCancelDef.skillNameToken = "HAND_OVERCLOCKED_UTILITY_CANCEL_NAME";
+            ovcCancelDef.skillDescriptionToken = "HAND_OVERCLOCKED_UTILITY_CANCEL_DESCRIPTION";
+            ovcCancelDef.stockToConsume = 0;
+            FixScriptableObjectName(ovcCancelDef);
+            HANDContent.skillDefs.Add(ovcCancelDef);
+            BeginOverclock.cancelSkillDef = ovcCancelDef;
+
+
             SkillFamily utilitySkillFamily = skillLocator.utility.skillFamily;
 
             utilitySkillFamily.variants[0] = new SkillFamily.Variant
@@ -186,8 +214,6 @@ namespace HandPlugin.Modules
 
             OverclockController.texGauge = HANDContent.assets.LoadAsset<Texture2D>("gauge_bar_hd3.png");
             OverclockController.texGaugeArrow = HANDContent.assets.LoadAsset<Texture2D>("gauge_bar_arrow_hd.png");
-            OverclockController.overclockCancelIcon = HANDContent.assets.LoadAsset<Sprite>("Overclock_Cancel.png");
-            OverclockController.overclockIcon = HANDContent.assets.LoadAsset<Sprite>("Overclock.png");
             OverclockController.ovcDef = ovcSkill;
         }
 

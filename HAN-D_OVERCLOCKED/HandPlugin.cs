@@ -231,15 +231,7 @@ namespace HandPlugin
 
                 //leveling stats
                 body.autoCalculateLevelStats = true;
-                body.levelMaxHealth = body.baseMaxHealth * 0.3f;
-                body.levelRegen = body.baseRegen * 0.2f;
-                body.levelMaxShield = 0f;
-                body.levelMoveSpeed = 0f;
-                body.levelJumpPower = 0f;
-                body.levelDamage = body.baseDamage * 0.2f;
-                body.levelAttackSpeed = 0f;
-                body.levelCrit = 0f;
-                body.levelArmor = 0f;
+                body.PerformAutoCalculateLevelStats();
 
                 body.spreadBloomDecayTime = 1f;
                 body.preferredPodPrefab = Resources.Load<GameObject>("prefabs/networkedobjects/robocratepod");

@@ -1,51 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HandPlugin.Components;
+﻿using HandPlugin.Components;
 using RoR2;
+using RoR2.Skills;
 using UnityEngine;
 
 namespace EntityStates.HANDOverclocked
 {
-    public class Overclock : BaseState
+    public class BeginOverclock : BaseState
     {
-        public override void OnEnter()
+		public override void OnEnter()
         {
-            EffectManager.SpawnEffect(effectPrefab, new EffectData
+			base.OnEnter();
+			this.overclockController = base.gameObject.GetComponent<OverclockController>();
+			if (base.isAuthority)
+			{
+				if (base.characterMotor && !base.characterMotor.isGrounded)
+				{
+					base.SmallHop(base.characterMotor, BeginOverclock.shortHopVelocity);
+				}
+				if (this.overclockController)
+				{
+					this.overclockController.BeginOverclock();
+				}
+			}
+
+			this.skillSlot = (base.skillLocator ? base.skillLocator.utility : null);
+			if (this.skillSlot)
             {
-                origin = base.transform.position
-            }, false);
-            OverclockController hc = base.gameObject.GetComponent<OverclockController>();
-            if (hc && base.isAuthority)
-            {
-                if (hc.ovcActive)
-                {
-                    if (base.characterMotor)
-                    {
-                        base.SmallHop(base.characterMotor, 22f);
-                    }
-                    hc.EndOverclock();
-                }
-                else
-                {
-                    hc.BeginOverclock();
-                    if (base.isAuthority && characterBody.skillLocator.utility.stock < characterBody.skillLocator.utility.maxStock)
-                    {
-                        characterBody.skillLocator.utility.stock++;
-                    }
-                    if (base.characterMotor && !base.characterMotor.isGrounded)
-                    {
-                        base.SmallHop(base.characterMotor, 22f);
-                    }
-                }
-            }
-            this.outer.SetNextStateToMain();
-        }
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.Any;
+				startStocks = this.skillSlot.stock;
+				this.skillSlot.SetSkillOverride(this, BeginOverclock.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+				this.skillSlot.stock = Mathf.Min(skillSlot.maxStock, startStocks + 1);
+			}
+		}
+
+        public override void OnExit()
+		{
+			if (this.skillSlot)
+			{
+				this.skillSlot.UnsetSkillOverride(this, BeginOverclock.cancelSkillDef, GenericSkill.SkillOverridePriority.Contextual);
+				this.skillSlot.stock = startStocks;
+				//this.skillSlot.DeductStock(1);
+			}
+			base.OnExit();
         }
 
-        public static GameObject effectPrefab = Resources.Load<GameObject>("prefabs/effects/smokescreeneffect");
-    }
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+			if ((!this.skillSlot || this.skillSlot.stock == 0) || (!overclockController || !overclockController.ovcActive))
+			{
+				this.beginExit = true;
+			}
+			if (this.beginExit)
+			{
+				this.timerSinceComplete += Time.fixedDeltaTime;
+				if (this.timerSinceComplete > BeginOverclock.baseExitDuration)
+				{
+					this.outer.SetNextStateToMain();
+				}
+			}
+		}
+
+		public override InterruptPriority GetMinimumInterruptPriority()
+		{
+			return InterruptPriority.Skill;
+		}
+
+		private float timerSinceComplete = 0f;
+		private bool beginExit;
+		private int startStocks = 0;
+
+		public static float baseExitDuration = 0.3f;
+        public static float shortHopVelocity = 22f;
+		private OverclockController overclockController;
+		private GenericSkill skillSlot;
+		public static SkillDef cancelSkillDef;
+	}
+
+    public class CancelOverclock : BaseState
+    {
+		public override void OnEnter()
+		{
+			base.OnEnter();
+			overclockController = base.gameObject.GetComponent<OverclockController>();
+			if (base.isAuthority)
+			{
+				if (base.characterMotor)	//Manually exiting will always trigger the shorthop regardless of grounded status.
+				{
+					base.SmallHop(base.characterMotor, BeginOverclock.shortHopVelocity);
+				}
+				if (overclockController)
+				{
+					overclockController.EndOverclock();
+				}
+				this.outer.SetNextStateToMain();
+			}
+		}
+
+		public override InterruptPriority GetMinimumInterruptPriority()
+		{
+			return InterruptPriority.PrioritySkill;
+		}
+
+		private OverclockController overclockController;
+	}
 }

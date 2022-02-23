@@ -14,14 +14,6 @@ namespace HandPlugin.Components
 {
     public class OverclockController : NetworkBehaviour
     {
-        public void OnDestroy()
-        {
-            if (hasAuthority)
-            {
-                RestoreOriginalIcon();
-            }
-        }
-
         public void Awake()
         {
             ovcTimer = 0f;
@@ -84,14 +76,6 @@ namespace HandPlugin.Components
                 ovcActive = true;
                 initialOverclockCooldown = characterBody.skillLocator.utility.rechargeStopwatch;
 
-                if (characterBody)
-                {
-                    if (characterBody.skillLocator.utility.skillDef.skillName == "Overclock")
-                    {
-                        ovcDef.icon = OverclockController.overclockCancelIcon;
-                    }
-                }
-
                 CmdBeginOverclockServer();
             }
         }
@@ -112,7 +96,6 @@ namespace HandPlugin.Components
             {
                 ovcActive = false;
                 ovcTimer = 0;
-                RestoreOriginalIcon();
                 CmdEndOverclockServer();
             }
         }
@@ -125,10 +108,6 @@ namespace HandPlugin.Components
                 characterBody.RemoveBuff(HANDBuffs.OverclockBuff);
             }
             networkSounds.RpcPlayOverclockEnd();
-        }
-        private void RestoreOriginalIcon()
-        {
-            ovcDef.icon = overclockIcon;
         }
 
         private void ReiszeOverclockGauge()
@@ -189,8 +168,6 @@ namespace HandPlugin.Components
         private HealthComponent healthComponent;
         private CharacterMotor characterMotor;
 
-        public static Sprite overclockCancelIcon;
-        public static Sprite overclockIcon;
         public static SkillDef ovcDef;
 
         public static Texture2D texGauge;
