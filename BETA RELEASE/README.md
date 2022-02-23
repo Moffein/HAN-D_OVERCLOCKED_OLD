@@ -13,7 +13,7 @@ Coding - Moffein
 
 Icons - PapaZach
 
-DRONE model - LucidInceptor and TimeSweeper
+HAN-D DRONE model - LucidInceptor and TimeSweeper
 
 Additional code help - Enigma
 
@@ -27,24 +27,24 @@ changelog:
 
 - Passive
 	- No longer affects damage.
-	- Now gives +2 armor.
+	- Now gives +3 armor per drone.
 
-*Wanted a bigger impact per drone. Didn't like how the drone passive could unexpectedly affect the # of hits to kill things.*
+*Wanted a bigger impact per drone. Didn't like how the drone passive affecting damage felt.*
 
 - Base Stats
 	- Base damage increased 12 -> 14
 	- Base armor reduced 12 -> 0
 	
-*These changes have been made to account for the Passive changes.*
+*These changes have been made to account for the Passive changes. HAN-D is squishier without his drones, but can reach higher armor amounts if he holds on to them.*
 	
 - OVERCLOCK
 	- Meter is now hidden while in Command/Scrapper menus.
 	
 - DRONES
-	- Now gives +50 armor to allies instead of +40% AtkSpd/Move Speed
+	- Now gives +100 armor to allies instead of +40% AtkSpd/Move Speed
 	- On-hit sound now only plays on the first hit.
 	
-*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead.*
+*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead. The ally armor bonus is high since the buff only lasts for a short duration and is hard to consistently maintain.*
 
 0.1.6
 

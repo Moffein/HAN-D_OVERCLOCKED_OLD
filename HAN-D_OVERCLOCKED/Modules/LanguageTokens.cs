@@ -22,7 +22,7 @@ namespace HandPlugin.Modules
             LanguageAPI.Add("HAND_OVERCLOCKED_SUBTITLE", "Lean, Mean, Cleaning Machine");
 
             LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_SPRINGY", "<style=cKeywordName>Springy</style><style=cSub>Spring upwards when using this skill.</style>");
-            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_DEBILITATE", "<style=cKeywordName>Debilitate</style><style=cSub>Reduce damage by <style=cIsDamage>30%</style>. Reduce movement speed by <style=cIsDamage>60%</style>.</style>");
+            LanguageAPI.Add("KEYWORD_HANDOVERCLOCKED_DEBILITATE", "<style=cKeywordName>Drill</style><style=cSub>Reduce damage by <style=cIsDamage>30%</style>. Reduce movement speed by <style=cIsDamage>60%</style>.</style>");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_NAME", "HAN-D");
             LanguageAPI.Add("HAND_OVERCLOCKED_OUTRO_FLAVOR", "..and so it left, servos pulsing with new life.");
@@ -45,10 +45,10 @@ namespace HandPlugin.Modules
             LanguageAPI.Add("HAND_OVERCLOCKED_UTILITY_DESC", "<style=cIsUtility>Springy</style>. Increase <style=cIsUtility>movement speed</style> and <style=cIsDamage>attack speed</style> by <style=cIsDamage>40%</style>, and gain <style=cIsDamage>50% stun chance</style>. <style=cIsUtility>Hit enemies to increase duration</style>.");
 
             LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_NAME", "DRONE");
-            LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_DESC", "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Debilitates</style> enemies for <style=cIsDamage>270% damage</style> and <style=cIsHealing>heals</style> allies. <style=cIsUtility>Kills and melee hits reduce cooldown</style>.");
+            LanguageAPI.Add("HAND_OVERCLOCKED_SPECIAL_DESC", "<style=cIsHealing>Heal 8.5% HP</style>. Fire a drone that <style=cIsDamage>Drills</style> enemies for <style=cIsDamage>270% damage</style> and <style=cIsHealing>heals</style> allies. <style=cIsUtility>Kills and melee hits reduce cooldown</style>.");
 
-            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "PARALLEL_COMPUTING");
-            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsHealing>+2 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_NAME", "SWARM");
+            LanguageAPI.Add("HAND_OVERCLOCKED_PASSIVE_DESC", "Gain <style=cIsHealing>+3 armor</style> for every <style=cIsUtility>drone ally on your team</style>.");
         }
     }
 }

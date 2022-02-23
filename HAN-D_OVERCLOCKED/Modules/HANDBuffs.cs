@@ -82,7 +82,7 @@ namespace HandPlugin.Modules
             }
             if (sender.HasBuff(DroneBuff))
             {
-                args.armorAdd += 50f;
+                args.armorAdd += 100f;
             }
             if (!HAND_OVERCLOCKED.arenaActive && sender.HasBuff(DroneDebuff))
             {

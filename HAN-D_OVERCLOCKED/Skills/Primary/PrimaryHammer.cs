@@ -105,6 +105,7 @@ namespace EntityStates.HANDOverclocked
 
         private void BeginHitPause()
         {
+            this.hitEnemyWhileAirborne = true;
             this.enteredHitPause = true;
             this.storedVelocity = base.characterMotor.velocity;
             base.characterMotor.velocity = Vector3.zero;
@@ -130,7 +131,7 @@ namespace EntityStates.HANDOverclocked
             }
             if (!base.isGrounded)
             {
-                base.SmallHop(base.characterMotor, FullSwing.shorthopVelocityFromHit/this.attackSpeedStat);
+                base.SmallHop(base.characterMotor, FullSwing.shorthopVelocityFromHit / Mathf.Sqrt(this.attackSpeedStat));
             }
             this.exitedHitPause = true;
         }
@@ -145,18 +146,21 @@ namespace EntityStates.HANDOverclocked
                     this.DealDamage();
                 }
             }
-            if (base.fixedAge >= this.duration && base.isAuthority)
+            if (base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
-                return;
-            }
-            if (base.isAuthority && this.enteredHitPause && this.hitPauseTimer > 0f)
-            {
-                this.hitPauseTimer -= Time.fixedDeltaTime;
-                base.characterMotor.velocity = Vector3.zero;
-                if (this.hitPauseTimer <= 0f)
+                if (base.fixedAge >= this.duration)
                 {
-                    this.ExitHitPause();
+                    this.outer.SetNextStateToMain();
+                    return;
+                }
+                if (this.enteredHitPause && this.hitPauseTimer > 0f)
+                {
+                    this.hitPauseTimer -= Time.fixedDeltaTime;
+                    base.characterMotor.velocity = Vector3.zero;
+                    if (this.hitPauseTimer <= 0f)
+                    {
+                        this.ExitHitPause();
+                    }
                 }
             }
         }
@@ -203,7 +207,9 @@ namespace EntityStates.HANDOverclocked
         private bool enteredHitPause = false;
         private bool exitedHitPause = false;
 
-        public static float shorthopVelocityFromHit = 10f;   //was 10f
+        private bool hitEnemyWhileAirborne = false;
+
+        public static float shorthopVelocityFromHit = 10f;
 
         private bool secondSwing = false;
         private bool firstSwing = false;
