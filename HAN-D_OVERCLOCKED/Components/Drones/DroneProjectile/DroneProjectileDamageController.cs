@@ -15,9 +15,17 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         private bool playedHitSound = false;
 
         [ClientRpc]
-        private void RpcPlayDrillSound()
+        private void RpcPlayHitSound()
         {
-            Util.PlaySound("Play_HOC_Drill", this.gameObject);
+            if (!playedHitSound)
+            {
+                playedHitSound = true;
+                Util.PlaySound("Play_HOC_Drill", this.gameObject);
+            }
+            else
+            {
+                Util.PlaySound("Play_HOC_DroneHit", this.gameObject);
+            }
         }
 
         public void Awake()
@@ -101,11 +109,7 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
                                 Destroy(this.gameObject);
                             }
 
-                            if (!playedHitSound)
-                            {
-                                playedHitSound = true;
-                                RpcPlayDrillSound();
-                            }
+                            RpcPlayHitSound();
 
                             if (ownerHealthComponent)
                             {
