@@ -116,9 +116,18 @@ namespace HandPlugin.Components
         {
             if (NetworkServer.active)
             {
-                if (characterBody.GetBuffCount(HANDBuffs.ParallelComputingBuff) != newCount)
+                int buffCount = characterBody.GetBuffCount(HANDBuffs.ParallelComputingBuff);
+                if (buffCount < newCount)
                 {
-                    while (characterBody.HasBuff(HANDBuffs.ParallelComputingBuff))
+                    int diff = newCount - buffCount;
+                    for (int i = 0; i < diff; i++)
+                    {
+                        characterBody.AddBuff(HANDBuffs.ParallelComputingBuff);
+                    }
+                }
+                else if (buffCount > newCount)
+                {
+                    for (int i = 0; i < buffCount; i++)
                     {
                         characterBody.RemoveBuff(HANDBuffs.ParallelComputingBuff);
                     }
@@ -127,6 +136,8 @@ namespace HandPlugin.Components
                         characterBody.AddBuff(HANDBuffs.ParallelComputingBuff);
                     }
                 }
+
+
             }
         }
 
