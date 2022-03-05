@@ -21,7 +21,7 @@ namespace HandPlugin.Modules
         }
         private static void CreateSlamEffect()
         {
-            GameObject slamEffect = Resources.Load<GameObject>("prefabs/effects/impacteffects/ParentSlamEffect").InstantiateClone("HANDOVerclockedSlamImpactEffect", false);
+            GameObject slamEffect = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/ParentSlamEffect").InstantiateClone("HANDOVerclockedSlamImpactEffect", false);
 
             var particleParent = slamEffect.transform.Find("Particles");
             var debris = particleParent.Find("Debris, 3D");
@@ -56,14 +56,14 @@ namespace HandPlugin.Modules
         //Credits to Enigma
         private static void RepairSwingEffect()
         {
-            GameObject handSwingTrail = Resources.Load<GameObject>("prefabs/effects/handslamtrail").InstantiateClone("HANDOCSwingTrail", false);
+            GameObject handSwingTrail = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/handslamtrail").InstantiateClone("HANDOCSwingTrail", false);
             Transform HANDSwingTrailTransform = handSwingTrail.transform.Find("SlamTrail");
 
             var HANDrenderer = HANDSwingTrailTransform.GetComponent<Renderer>();
 
             if (HANDrenderer)
             {
-                HANDrenderer.material = Resources.Load<GameObject>("prefabs/effects/LemurianBiteTrail").transform.Find("SwingTrail").GetComponent<Renderer>().material;
+                HANDrenderer.material = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/LemurianBiteTrail").transform.Find("SwingTrail").GetComponent<Renderer>().material;
             }
 
             ShakeEmitter se = handSwingTrail.AddComponent<ShakeEmitter>();

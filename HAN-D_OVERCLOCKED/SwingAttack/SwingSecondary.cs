@@ -18,7 +18,7 @@ namespace HandPlugin
                 CharacterBody cb = go.GetComponent<CharacterBody>();
                 if (cb)
                 {
-                    if (cb.characterMotor && cb.characterMotor.isGrounded)
+                    if (cb.characterMotor != null && cb.characterMotor.isGrounded)
                     {
                         force += groundedLaunchForce * Vector3.up;
                         upwardsForce = true;

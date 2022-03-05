@@ -84,7 +84,7 @@ namespace EntityStates.HANDOverclocked
 			overclockController = base.gameObject.GetComponent<OverclockController>();
 			if (base.isAuthority)
 			{
-				if (base.characterMotor)	//Manually exiting will always trigger the shorthop regardless of grounded status.
+				if (base.characterMotor != null)	//Manually exiting will always trigger the shorthop regardless of grounded status.
 				{
 					base.SmallHop(base.characterMotor, BeginOverclock.shortHopVelocity);
 				}

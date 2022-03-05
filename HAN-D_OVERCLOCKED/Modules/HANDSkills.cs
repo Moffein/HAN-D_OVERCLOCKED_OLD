@@ -290,8 +290,8 @@ namespace HandPlugin.Modules
 
             DroneFollowerController.dronePrefab = droneFollower;
 
-            DroneFollowerController.activateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
-            DroneFollowerController.deactivateEffect = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+            DroneFollowerController.activateEffect = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+            DroneFollowerController.deactivateEffect = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
             droneFollower.GetComponentInChildren<SkinnedMeshRenderer>().material = Modules.Skins.CreateMaterial("DroneBody", 3f, Color.white);
 
@@ -313,7 +313,7 @@ namespace HandPlugin.Modules
 
         private static GameObject CreateDroneProjectile()
         {
-            GameObject droneProjectile = Resources.Load<GameObject>("prefabs/projectiles/EngiHarpoon").InstantiateClone("HANDOverclockedDroneProjectile", true);
+            GameObject droneProjectile = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/EngiHarpoon").InstantiateClone("HANDOverclockedDroneProjectile", true);
 
             GameObject droneProjectileGhost = PrefabAPI.InstantiateClone(HANDContent.assets.LoadAsset<GameObject>("DronePrefab.prefab"), "HANDOverclockedDroneProjectileGhost", false);
 

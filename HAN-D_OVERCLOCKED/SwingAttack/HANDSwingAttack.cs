@@ -111,7 +111,7 @@ namespace HandPlugin
             public Vector3 hitPosition;
             public Vector3 hitNormal;
         }
-        public GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/omniimpactvfx");
+        public GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/omniimpactvfx");
         public GameObject attacker;
         public GameObject inflictor;
         public TeamIndex teamIndex;

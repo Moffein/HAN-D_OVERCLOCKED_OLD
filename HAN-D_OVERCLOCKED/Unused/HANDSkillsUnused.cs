@@ -1,5 +1,5 @@
 #region graveyard
-/*EntityStates.HANDOverclocked.BlastOff.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
+/*EntityStates.HANDOverclocked.BlastOff.effectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
 EntityStates.HANDOverclocked.BlastOff.jumpForce = 27f;
 EntityStates.HANDOverclocked.BlastOff.forceMagnitude = 16f;
 EntityStates.HANDOverclocked.BlastOff.damageCoefficient = 2.5f;
@@ -24,11 +24,11 @@ EntityStates.HANDOverclocked.SpinAttack.groundVelocity = 24f;*/
 /*EntityStates.HANDOverclocked.Overheat.damageCoefficient = 2.3f;
             EntityStates.HANDOverclocked.Overheat.radius = 9f;
             EntityStates.HANDOverclocked.Overheat.healPercent = 0.1f;
-            EntityStates.HANDOverclocked.Overheat.effectPrefab = Resources.Load<GameObject>("prefabs/effects/WilloWispExplosion");
+            EntityStates.HANDOverclocked.Overheat.effectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/WilloWispExplosion");
             EntityStates.HANDOverclocked.Overheat.baseDuration = 0.25f;
             EntityStates.HANDOverclocked.Overheat.soundString = "Play_clayboss_M1_explo";*/
 
-/*EntityStates.HANDOverclocked.FireRocketSmash.effectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
+/*EntityStates.HANDOverclocked.FireRocketSmash.effectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/omniexplosionvfx");
 EntityStates.HANDOverclocked.FireRocketSmash.jumpForce = 27f;
 EntityStates.HANDOverclocked.FireRocketSmash.forceMagnitude = 3000f;
 EntityStates.HANDOverclocked.FireRocketSmash.damageCoefficientMin = 3f;
@@ -44,8 +44,8 @@ EntityStates.HANDOverclocked.Slam.baseMinDuration = 0.4f;
 EntityStates.HANDOverclocked.Slam.forceMagnitude = 2000f;
 EntityStates.HANDOverclocked.Slam.airbornVerticalForce = -2400f;
 EntityStates.HANDOverclocked.Slam.shorthopVelocityFromHit = 24f;
-EntityStates.HANDOverclocked.Slam.hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
-EntityStates.HANDOverclocked.Slam.impactEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
+EntityStates.HANDOverclocked.Slam.hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
+EntityStates.HANDOverclocked.Slam.impactEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/PodGroundImpact");
 EntityStates.HANDOverclocked.Slam.swingEffectPrefab = null;
 EntityStates.HANDOverclocked.Slam.returnToIdlePercentage = 0.443662f;
 LoadoutAPI.AddSkill(typeof(EntityStates.HANDOverclocked.ChargeSlam));
@@ -537,7 +537,7 @@ namespace EntityStates.HANDOverclocked
         public static float baseChargePartDuration;
         public static int baseSpinCount;
         public static int maxSpinCount;
-        public static GameObject chargeEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+        public static GameObject chargeEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
         private float charge;
         private float chargePartDuration;
@@ -764,14 +764,14 @@ namespace EntityStates.HANDOverclocked
         }
 
         public static float baseChargeDuration;
-        public static GameObject chargeEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+        public static GameObject chargeEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
         private float charge;
         private float chargeDuration;
         private float chargePercent;
 
         private GameObject defaultCrosshairPrefab;
-        private GameObject specialCrosshairPrefab = Resources.Load<GameObject>("prefabs/crosshair/LoaderCrosshair");
+        private GameObject specialCrosshairPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/crosshair/LoaderCrosshair");
     }
 
     public class FireRocketSmash : BaseState    //Hitbox was poorly done, but the ultimate reason why this was cut was because it was too similar to BlastOff.

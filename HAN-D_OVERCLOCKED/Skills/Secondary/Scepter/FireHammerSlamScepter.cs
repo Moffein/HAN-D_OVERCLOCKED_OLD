@@ -53,7 +53,7 @@ namespace EntityStates.HANDOverclocked
                         maxForceScale = Mathf.Infinity,
                         squish = true
                     }.Fire();
-                    if (base.characterMotor && !base.characterMotor.isGrounded)
+                    if (base.characterMotor != null && !base.characterMotor.isGrounded)
                     {
                         base.SmallHop(base.characterMotor, shorthopVelocityFromHit);
                     }
@@ -197,9 +197,9 @@ namespace EntityStates.HANDOverclocked
         public static float minRange = 9f;
         public static float maxRange = 22f;
 
-        public static GameObject zapConePrefab = Resources.Load<GameObject>("Prefabs/Projectiles/LoaderZapCone");
+        public static GameObject zapConePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/LoaderZapCone");
         public static GameObject impactEffectPrefab;
-        public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
+        public static GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
         public static GameObject swingEffectPrefab;
         private Transform hammerChildTransform;
         private Animator modelAnimator;

@@ -20,7 +20,7 @@ namespace HandPlugin
                         force.x *= this.flyingHorizontalForceMult;
                         force.z *= this.flyingHorizontalForceMult;
                     }
-                    else if (cb.characterMotor)
+                    else if (cb.characterMotor != null)
                     {
                         if (!cb.characterMotor.isGrounded)    //Multiply launched enemy force
                         {

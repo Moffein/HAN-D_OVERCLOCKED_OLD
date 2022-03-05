@@ -59,7 +59,7 @@ namespace HandPlugin.Components
                                 cb.rigidbody.velocity = new Vector3(0f, cb.rigidbody.velocity.y, 0f);
                                 cb.rigidbody.angularVelocity = new Vector3(0f, cb.rigidbody.angularVelocity.y, 0f);
                             }
-                            if (cb.characterMotor)
+                            if (cb.characterMotor != null)
                             {
                                 cb.characterMotor.velocity.x = 0f;
                                 cb.characterMotor.velocity.z = 0f;

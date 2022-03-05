@@ -56,7 +56,7 @@ namespace HAND_OVERCLOCKED
         private void Awake()
         {
             //fetch components in awake, it's the only safe way
-            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
+            this.indicator = new Indicator(base.gameObject, LegacyResourcesAPI.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
             this.body = base.GetComponent<CharacterBody>();
             this.input = base.GetComponent<InputBankTest>();
             this.team = base.GetComponent<TeamComponent>();
@@ -473,7 +473,7 @@ namespace HAND_OVERCLOCKED
 
         private void Awake()
         {
-            this.indicator = new Indicator(base.gameObject, Resources.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
+            this.indicator = new Indicator(base.gameObject, LegacyResourcesAPI.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"));
         }
 
         public HurtBox GetTrackingTarget()

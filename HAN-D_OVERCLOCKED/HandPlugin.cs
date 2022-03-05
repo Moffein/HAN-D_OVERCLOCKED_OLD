@@ -42,7 +42,7 @@ namespace HandPlugin
         public CharacterBody body;
         public SkillLocator skillLocator;
 
-        public static Shader hotpoo = Resources.Load<Shader>("Shaders/Deferred/hgstandard");
+        public static Shader hotpoo = LegacyResourcesAPI.Load<Shader>("Shaders/Deferred/hgstandard");
 
         public static bool arenaNerf = true;
         public static bool arenaPluginLoaded = false;
@@ -53,7 +53,7 @@ namespace HandPlugin
         public static SkillDef scepterDef;
 
         private void CreateSurvivorDef() {
-            GameObject HANDDisplay = Resources.Load<GameObject>("prefabs/characterbodies/handbody").GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
+            GameObject HANDDisplay = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/handbody").GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
             HANDDisplay.transform.localScale *= 0.9f;
             HANDDisplay.AddComponent<MenuAnimComponent>();
             SurvivorDef item = ScriptableObject.CreateInstance<SurvivorDef>();
@@ -92,11 +92,11 @@ namespace HandPlugin
             new DisableFade();
             new OnCharacterDeath();
             new FixBearDisplay();
-            if (arenaPluginLoaded)
+            /*if (arenaPluginLoaded)
             {
                 new Stage_Start();
                 new AddTimedBuff();
-            }
+            }*/
             new FixMenuUI();
         }
 
@@ -110,18 +110,18 @@ namespace HandPlugin
 
             LanguageTokens.Init();
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            /*if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
                 SetupScepter();
-            }
+            }*/
             AddHooks();
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        /*[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void SetupScepter()
         {
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
-        }
+        }*/
 
         private void LoadAssets()
         {
@@ -145,7 +145,7 @@ namespace HandPlugin
         {
             if (HANDBody == null)
             {
-                HANDBody = Resources.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
+                HANDBody = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
                 HANDBodyName = HANDBody.name;
                 LoadAssets();
                 HANDBody.GetComponent<CharacterBody>().portraitIcon = HANDContent.assets.LoadAsset<Texture2D>("Portrait.png");
@@ -198,20 +198,20 @@ namespace HandPlugin
             }
             void SetDeathBehavior() {
                 CharacterDeathBehavior handCDB = HANDBody.GetComponent<CharacterDeathBehavior>();
-                handCDB.deathState = Resources.Load<GameObject>("prefabs/characterbodies/WispBody").GetComponent<CharacterDeathBehavior>().deathState;
+                handCDB.deathState = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/WispBody").GetComponent<CharacterDeathBehavior>().deathState;
             }
 
             void SetCameraAttributes() {
                 CameraTargetParams cameraTargetParams = HANDBody.GetComponent<CameraTargetParams>();
-                cameraTargetParams.idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
-                cameraTargetParams.cameraParams = Resources.Load<GameObject>("prefabs/characterbodies/toolbotbody").GetComponent<CameraTargetParams>().cameraParams;
+                //cameraTargetParams.idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
+                cameraTargetParams.cameraParams = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/toolbotbody").GetComponent<CameraTargetParams>().cameraParams;
             }
 
             void SetCharacterBodyAttributes() {
                 body = HANDBody.GetComponent<CharacterBody>();
                 body.bodyFlags = CharacterBody.BodyFlags.ImmuneToExecutes | CharacterBody.BodyFlags.Mechanical;
                 body.subtitleNameToken = "HAND_OVERCLOCKED_SUBTITLE";
-                body.crosshairPrefab = Resources.Load<GameObject>("prefabs/crosshair/simpledotcrosshair");
+                body._defaultCrosshairPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/crosshair/simpledotcrosshair");
                 body.hideCrosshair = false;
                 body.bodyColor = HANDColor;
                 body.baseNameToken = "HAND_OVERCLOCKED_NAME";
@@ -234,7 +234,7 @@ namespace HandPlugin
                 body.PerformAutoCalculateLevelStats();
 
                 body.spreadBloomDecayTime = 1f;
-                body.preferredPodPrefab = Resources.Load<GameObject>("prefabs/networkedobjects/robocratepod");
+                body.preferredPodPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/networkedobjects/robocratepod");
             }
 
             HANDBody.GetComponent<ModelLocator>().modelTransform.localScale *= 1.2f;

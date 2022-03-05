@@ -184,8 +184,8 @@ namespace HAND_OVERCLOCKED.Components.DroneProjectile
         public static float damageTimer = 0.5f;
         public static uint damageTicksTotal = 8;
         public static float totalHeal = 0.085f;
-        public static GameObject bleedEffectPrefab = Resources.Load<GameObject>("Prefabs/BleedEffect");
-        public static GameObject expireEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+        public static GameObject bleedEffectPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/BleedEffect");
+        public static GameObject expireEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
         private float stopwatch;
         private ProjectileStickOnImpact stick;

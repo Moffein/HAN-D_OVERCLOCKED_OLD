@@ -1,11 +1,11 @@
 ﻿using HandPlugin.Components;
-using NS_KingKombatArena;
+//using NS_KingKombatArena;
 using RoR2;
 using System.Runtime.CompilerServices;
 
 namespace HandPlugin.Hooks.Arena
 {
-    public class AddTimedBuff
+    /*public class AddTimedBuff
     {
         public AddTimedBuff()
         {
@@ -30,5 +30,5 @@ namespace HandPlugin.Hooks.Arena
         {
             return duration == KingKombatArenaMainPlugin.AccessCurrentKombatArenaInstance().GetKombatArenaRules().duelStartImmunityTime;
         }
-    }
+    }*/
 }

@@ -1,13 +1,14 @@
-Beta HAN-D mod. Gameplay is functional and he works in multiplayer, but visual polish is needed.
+Adds HAN-D as a returning survivor from Risk of Rain 1.
 
 If you want to make skins for HAN-D, the bodyname is "HANDOverclockedBody"
-todo:
+
+## TODO
+
 - New Model + Anims (Punching primary included)
-- VFX (glowing orange while in Overclock, changing swing trail based on passive stacks, etc.)
 - Item Displays
 - General polish/balancing.
 
-Credits:
+## Credits
 
 Coding - Moffein
 
@@ -17,19 +18,21 @@ HAN-D DRONE model - LucidInceptor and TimeSweeper
 
 Additional code help - Enigma
 
-changelog:
+## Changelog
 
 0.2.0
+
 - Fixed OVERCRLOCK and DRONES state machines not being networked.
 	- Not sure if this actually changes anything.
 - Fixed SkillDefs not having a ScriptableObject name.
 - Reduced size in the Character Select screen.
+- Temporarily disabled Scepter/King Kombat Arena compatibilities.
 
 - Passive
 	- No longer affects damage.
 	- Now gives +3 armor per drone.
 
-	*Wanted a bigger impact per drone. Didn't like how the drone passive affecting damage felt.*
+	*Wanted a bigger impact per drone. Didn't like how the drone passive affected the amount of swings needed to kill things earlygame.*
 
 - Base Stats
 	- Base damage increased 12 -> 14
@@ -48,9 +51,9 @@ changelog:
 	
 - DRONES
 	- Now gives +100 armor to allies instead of +40% AtkSpd/Move Speed
-	- On-hit sound now only plays on the first hit.
+	- Changed sound to hopefully be less obnoxious.
 	
-	*The DRONE sound ended up being pretty obnoxious. The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead. The ally armor bonus is high since the buff only lasts for a short duration and is hard to consistently maintain.*
+	*The change to AtkSpd/Move Speed was throwing off the input timing of allies since they would usually receive it unexpectedly, so DRONES now give temporary armor instead. The ally armor bonus is high since the buff only lasts for a short duration and is hard to consistently maintain.*
 
 0.1.6
 

@@ -186,7 +186,7 @@ namespace EntityStates.HANDOverclocked
         public static float maxRange = 22f;
 
         public static GameObject impactEffectPrefab;
-        public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
+        public static GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/ImpactToolbotDashLarge");
         public static GameObject swingEffectPrefab;
         private Transform hammerChildTransform;
         private Animator modelAnimator;

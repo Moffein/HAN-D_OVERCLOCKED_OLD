@@ -84,7 +84,7 @@ namespace EntityStates.HANDOverclocked
         private float charge;
         private float chargePercent;
         private Animator modelAnimator;
-        public static GameObject chargeEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
+        public static GameObject chargeEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXLoader");
 
         private float shakeTimer = 0.15f;
         private float shakeStopwatch = 0f;

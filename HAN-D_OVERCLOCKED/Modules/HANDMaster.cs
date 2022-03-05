@@ -13,7 +13,7 @@ namespace HandPlugin.Modules
             if (initialized) return;
             initialized = true;
 
-            HAND_OVERCLOCKED.HANDMonsterMaster = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/charactermasters/commandomonstermaster"), "HANDOverclockedMonsterMaster", true);
+            HAND_OVERCLOCKED.HANDMonsterMaster = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/charactermasters/commandomonstermaster"), "HANDOverclockedMonsterMaster", true);
             HANDContent.masterPrefabs.Add(HAND_OVERCLOCKED.HANDMonsterMaster);
 
             CharacterMaster cm = HAND_OVERCLOCKED.HANDMonsterMaster.GetComponent<CharacterMaster>();
