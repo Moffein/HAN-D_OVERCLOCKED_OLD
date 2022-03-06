@@ -28,16 +28,19 @@ namespace HandPlugin.Modules
 
         public string identifier => "HAND_OVERCLOCKED.content";
 
+        //TODO: UNCOMMENT
         public IEnumerator LoadStaticContentAsync(LoadStaticContentAsyncArgs args)
         {
-            contentPack.bodyPrefabs.Add(bodyPrefabs.ToArray());
+            Debug.Log("1");
+            //contentPack.bodyPrefabs.Add(bodyPrefabs.ToArray());
+            Debug.Log("2");
             contentPack.buffDefs.Add(buffDefs.ToArray());
             contentPack.effectDefs.Add(effectDefs.ToArray());
             contentPack.entityStateTypes.Add(entityStates.ToArray());
-            contentPack.masterPrefabs.Add(masterPrefabs.ToArray());
-            contentPack.projectilePrefabs.Add(projectilePrefabs.ToArray());
+            //contentPack.masterPrefabs.Add(masterPrefabs.ToArray());
+            //contentPack.projectilePrefabs.Add(projectilePrefabs.ToArray());
             contentPack.skillDefs.Add(skillDefs.ToArray());
-            contentPack.survivorDefs.Add(survivorDefs.ToArray());
+            //contentPack.survivorDefs.Add(survivorDefs.ToArray());
             yield break;
         }
 

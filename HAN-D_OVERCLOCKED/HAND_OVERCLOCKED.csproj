@@ -8,8 +8,6 @@
   <ItemGroup>
     <Compile Remove="Components\HANDHelpers.cs" />
     <Compile Remove="HANDSkillsUnused.cs" />
-    <Compile Remove="Unused\HANDHelpers.cs" />
-    <Compile Remove="Unused\HANDSkillsUnused.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,11 +25,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="HAND_Overclocked_Soundbank.bnk" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Unused\HANDHelpers.cs" />
-    <None Include="Unused\HANDSkillsUnused.cs" />
   </ItemGroup>
 
   <ItemGroup>

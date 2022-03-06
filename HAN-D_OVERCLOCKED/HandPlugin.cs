@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using HandPlugin.Modules;
+using UnityEngine.Networking;
 
 namespace HandPlugin
 {
@@ -145,8 +146,11 @@ namespace HandPlugin
         {
             if (HANDBody == null)
             {
+                //PrefabAPI errors here
                 HANDBody = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
                 HANDBodyName = HANDBody.name;
+                PrefabAPI.RegisterNetworkPrefab(HANDBody);
+
                 LoadAssets();
                 HANDBody.GetComponent<CharacterBody>().portraitIcon = HANDContent.assets.LoadAsset<Texture2D>("Portrait.png");
                 HANDContent.bodyPrefabs.Add(HANDBody);
