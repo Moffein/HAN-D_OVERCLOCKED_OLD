@@ -139,8 +139,6 @@ namespace HandPlugin
                     byte[] array = new byte[manifestResourceStream2.Length];
                     manifestResourceStream2.Read(array, 0, array.Length);
                     SoundAPI.SoundBanks.Add(array);
-
-                    Debug.Log("HAN-D sounds loaded");
                 }
             }
         }
