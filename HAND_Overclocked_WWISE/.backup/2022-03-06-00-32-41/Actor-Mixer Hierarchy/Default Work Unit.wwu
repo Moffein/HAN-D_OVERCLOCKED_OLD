@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}" SchemaVersion="89">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}" PersistMode="Standalone">
+			<ChildrenList>
+				<ActorMixer Name="SFX Mixer" ID="{DBB84050-3C2E-4017-98A4-2A680CE3C0F5}" ShortID="880428818">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{C2B7229B-76F9-462B-8352-9CF711F59773}" ShortID="171116239">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="Volume_SFX" ID="{6EFDD301-BA67-4E58-AD3A-E9FD8D9059DA}" WorkUnitID="{4B183DE7-6DCC-4081-92D0-8DDFAA1CCCCC}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{C0CBCFF4-ED9E-4ADB-9AAA-84976C57F789}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<ActorMixer Name="HAND_Sounds" ID="{80EE769E-552F-45F1-B09A-F80F3A9BC123}" ShortID="587821278">
+							<PropertyList>
+								<Property Name="3DSpatialization" Type="int16" Value="2"/>
+								<Property Name="OverridePositioning" Type="bool" Value="True"/>
+								<Property Name="Volume" Type="Real64">
+									<ValueList>
+										<Value>-8</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Attenuation">
+									<ObjectRef Name="SFX Attenuation" ID="{F9396884-2261-4E19-B224-5A74C2D3831D}" WorkUnitID="{6ECD5312-4D05-4984-8AA6-DBB51A87EB27}"/>
+								</Reference>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="wJanitorShoot1 1" ID="{21058B5F-7D88-4CC9-AAA3-BA9CA3BC6E18}" ShortID="147997572">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot1 1" ID="{87F2CF57-A895-4E29-B162-A498A7A2E0B5}" ShortID="28592980">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot1 1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot1 1" ID="{87F2CF57-A895-4E29-B162-A498A7A2E0B5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="wJanitorShoot1 2" ID="{29CA4A0F-44B4-4810-9636-1720A246CD14}" ShortID="742020337">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot1 2" ID="{862D64FF-A440-4E74-9E21-898FAD811C67}" ShortID="940683805">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot1 2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot1 2" ID="{862D64FF-A440-4E74-9E21-898FAD811C67}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="wJanitorShoot2 1" ID="{FF8E5383-18A0-45E9-9BC9-70FE05BAAE87}" ShortID="223420546">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot2 1" ID="{0C78CB97-D647-4A61-A419-507957E6F1E3}" ShortID="415114961">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot2 1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot2 1" ID="{0C78CB97-D647-4A61-A419-507957E6F1E3}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="wJanitorShoot4 1" ID="{6003B240-D7BB-4BFC-83B6-DC9BFE7CAB17}" ShortID="72068221">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot4 1" ID="{632AA539-0955-40F7-B17F-765465EBCA09}" ShortID="306440750">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot4 1.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot4 1" ID="{632AA539-0955-40F7-B17F-765465EBCA09}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="wJanitorShoot2 2" ID="{32393277-926E-4837-9552-0DA0034992A0}" ShortID="866452600">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot2 2" ID="{C5461FAF-41A8-49D8-962B-B45F25DAB9DE}" ShortID="407884217">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot2 2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot2 2" ID="{C5461FAF-41A8-49D8-962B-B45F25DAB9DE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="wJanitorShoot4 2" ID="{ABBB5292-5B06-47ED-B35C-A2EF7434560B}" ShortID="810319722">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="wJanitorShoot4 2" ID="{8A74084F-A87C-46E8-8375-63BD9D2B4064}" ShortID="115842647">
+											<Language>SFX</Language>
+											<AudioFile>wJanitorShoot4 2.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="wJanitorShoot4 2" ID="{8A74084F-A87C-46E8-8375-63BD9D2B4064}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<ActorMixer Name="Drone_Sounds" ID="{9820558F-E168-441B-9159-4C69A7B050B5}" ShortID="707527557">
+									<PropertyList>
+										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Attenuation">
+											<ObjectRef Name="Drone Attenuation" ID="{2E822DCC-B6F3-4D53-B34D-C988AF660B06}" WorkUnitID="{6ECD5312-4D05-4984-8AA6-DBB51A87EB27}"/>
+										</Reference>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="wDrill" ID="{DC563123-75F7-4F51-A894-B121825F2729}" ShortID="438080120">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>6</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="SFX Attenuation" ID="{F9396884-2261-4E19-B224-5A74C2D3831D}" WorkUnitID="{6ECD5312-4D05-4984-8AA6-DBB51A87EB27}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="wDrill" ID="{1AC2A85E-DC0F-4024-85D9-00E402268C66}" ShortID="199100726">
+													<Language>SFX</Language>
+													<AudioFile>wDrill.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="wDrill" ID="{1AC2A85E-DC0F-4024-85D9-00E402268C66}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="wLizardHit" ID="{45051540-BD17-4915-AB99-F819DD1EE2E6}" ShortID="556785617">
+											<PropertyList>
+												<Property Name="3DSpatialization" Type="int16" Value="1"/>
+												<Property Name="Pitch" Type="int32">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{88BF5812-05AB-47C5-9B46-6208D9AF6A75}">
+																<PropertyList>
+																	<Property Name="Enabled" Type="bool" Value="True"/>
+																	<Property Name="Max" Type="Real64" Value="60"/>
+																	<Property Name="Min" Type="Real64" Value="-60"/>
+																</PropertyList>
+															</Modifier>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>7</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Attenuation">
+													<ObjectRef Name="SFX Attenuation" ID="{F9396884-2261-4E19-B224-5A74C2D3831D}" WorkUnitID="{6ECD5312-4D05-4984-8AA6-DBB51A87EB27}"/>
+												</Reference>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{9ABFC28C-F9CE-4070-B4DF-0A3FFE7A6911}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{F13B7F92-F854-4213-A72F-8692113DBAF5}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="wLizardHit" ID="{1F3AFA14-1566-471A-BA67-0D001AA88A8B}" ShortID="863164524">
+													<Language>SFX</Language>
+													<AudioFile>wLizardHit.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="wLizardHit" ID="{1F3AFA14-1566-471A-BA67-0D001AA88A8B}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</ActorMixer>
+							</ChildrenList>
+						</ActorMixer>
+					</ChildrenList>
+				</ActorMixer>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

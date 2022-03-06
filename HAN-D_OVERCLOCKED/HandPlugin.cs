@@ -111,18 +111,18 @@ namespace HandPlugin
 
             LanguageTokens.Init();
 
-            /*if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
                 SetupScepter();
-            }*/
+            }
             AddHooks();
         }
 
-        /*[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void SetupScepter()
         {
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
-        }*/
+        }
 
         private void LoadAssets()
         {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{11CAC90E-E8A6-4F2D-A59A-62B43355BEFA}" SchemaVersion="89">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{11CAC90E-E8A6-4F2D-A59A-62B43355BEFA}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="HAND_Overclocked_Soundbank" ID="{D6B7C4B8-37A8-48BB-94F6-E75F77A4C535}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Play_HOC_StartPunch" ID="{D7BF5C09-7AFD-42AE-849F-308BA3AAA9CB}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_Hammer" ID="{858A263C-084E-435C-A37B-76BC509AFF81}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_Drill" ID="{995825FD-63D1-4384-955F-2FB92F5771DD}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_DroneHit" ID="{5DF2FE57-9222-438C-A519-46D2BBDF3B84}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_Drone" ID="{F8B3C466-B82E-48C1-BA3F-5CB0831FC608}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_DroneGain" ID="{C57632A0-11F3-4903-87AA-62A21DF11E2A}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_Punch" ID="{C2CE9FF4-558F-49FC-96DB-3052C9BE5688}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Play_HOC_StartHammer" ID="{F41C9FAA-B9C1-4F14-BB76-C853E1CDBCDD}" WorkUnitID="{38978FD5-8D2C-4C2D-9894-9E7B04E034AF}" Filter="7" Origin="Manual"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

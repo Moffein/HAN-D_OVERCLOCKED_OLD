@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="132">
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="135">
 	<RootPaths>
 		<ProjectRoot>C:\Users\Node\RoR2 Mods\HAN-D_OVERCLOCKED\HAND_Overclocked_WWISE\</ProjectRoot>
 		<SourceFilesRoot>C:\Users\Node\RoR2 Mods\HAN-D_OVERCLOCKED\HAND_Overclocked_WWISE\.cache\Windows\</SourceFilesRoot>
@@ -11,56 +11,81 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="1029746374" Language="SFX">
+		<SoundBank Id="1029746374" Language="SFX" Hash="2857746951">
 			<ObjectPath>\SoundBanks\Default Work Unit\HAND_Overclocked_Soundbank</ObjectPath>
 			<ShortName>HAND_Overclocked_Soundbank</ShortName>
 			<Path>HAND_Overclocked_Soundbank.bnk</Path>
 			<IncludedEvents>
-				<Event Id="3923719566" Name="Play_HOC_Drill" ObjectPath="\Events\Default Work Unit\Play_HOC_Drill"/>
-				<Event Id="3352294839" Name="Play_HOC_Drone" ObjectPath="\Events\Default Work Unit\Play_HOC_Drone"/>
-				<Event Id="3281996986" Name="Play_HOC_DroneGain" ObjectPath="\Events\Default Work Unit\Play_HOC_DroneGain"/>
-				<Event Id="1596425374" Name="Play_HOC_DroneHit" ObjectPath="\Events\Default Work Unit\Play_HOC_DroneHit"/>
-				<Event Id="1030244185" Name="Play_HOC_Hammer" ObjectPath="\Events\Default Work Unit\Play_HOC_Hammer"/>
-				<Event Id="1032766253" Name="Play_HOC_Punch" ObjectPath="\Events\Default Work Unit\Play_HOC_Punch"/>
-				<Event Id="1629303843" Name="Play_HOC_StartHammer" ObjectPath="\Events\Default Work Unit\Play_HOC_StartHammer"/>
-				<Event Id="1983674255" Name="Play_HOC_StartPunch" ObjectPath="\Events\Default Work Unit\Play_HOC_StartPunch"/>
+				<Event Id="3923719566" Name="Play_HOC_Drill" ObjectPath="\Events\Default Work Unit\Play_HOC_Drill">
+					<IncludedMemoryFiles>
+						<File Id="199100726" Language="SFX">
+							<ShortName>wDrill.wav</ShortName>
+							<Path>SFX\wDrill_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3352294839" Name="Play_HOC_Drone" ObjectPath="\Events\Default Work Unit\Play_HOC_Drone">
+					<IncludedMemoryFiles>
+						<File Id="407884217" Language="SFX">
+							<ShortName>wJanitorShoot2 2.wav</ShortName>
+							<Path>SFX\wJanitorShoot2 2_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3281996986" Name="Play_HOC_DroneGain" ObjectPath="\Events\Default Work Unit\Play_HOC_DroneGain">
+					<IncludedMemoryFiles>
+						<File Id="415114961" Language="SFX">
+							<ShortName>wJanitorShoot2 1.wav</ShortName>
+							<Path>SFX\wJanitorShoot2 1_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1596425374" Name="Play_HOC_DroneHit" ObjectPath="\Events\Default Work Unit\Play_HOC_DroneHit">
+					<IncludedMemoryFiles>
+						<File Id="863164524" Language="SFX">
+							<ShortName>wLizardHit.wav</ShortName>
+							<Path>SFX\wLizardHit_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1030244185" Name="Play_HOC_Hammer" ObjectPath="\Events\Default Work Unit\Play_HOC_Hammer">
+					<IncludedMemoryFiles>
+						<File Id="115842647" Language="SFX">
+							<ShortName>wJanitorShoot4 2.wav</ShortName>
+							<Path>SFX\wJanitorShoot4 2_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1032766253" Name="Play_HOC_Punch" ObjectPath="\Events\Default Work Unit\Play_HOC_Punch">
+					<IncludedMemoryFiles>
+						<File Id="940683805" Language="SFX">
+							<ShortName>wJanitorShoot1 2.wav</ShortName>
+							<Path>SFX\wJanitorShoot1 2_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1629303843" Name="Play_HOC_StartHammer" ObjectPath="\Events\Default Work Unit\Play_HOC_StartHammer">
+					<IncludedMemoryFiles>
+						<File Id="306440750" Language="SFX">
+							<ShortName>wJanitorShoot4 1.wav</ShortName>
+							<Path>SFX\wJanitorShoot4 1_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1983674255" Name="Play_HOC_StartPunch" ObjectPath="\Events\Default Work Unit\Play_HOC_StartPunch">
+					<IncludedMemoryFiles>
+						<File Id="28592980" Language="SFX">
+							<ShortName>wJanitorShoot1 1.wav</ShortName>
+							<Path>SFX\wJanitorShoot1 1_0D5756A9.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
 			</IncludedEvents>
-			<IncludedMemoryFiles>
-				<File Id="28592980" Language="SFX">
-					<ShortName>wJanitorShoot1 1.wav</ShortName>
-					<Path>SFX\wJanitorShoot1 1_A1793BE9.wem</Path>
-				</File>
-				<File Id="115842647" Language="SFX">
-					<ShortName>wJanitorShoot4 2.wav</ShortName>
-					<Path>SFX\wJanitorShoot4 2_A1793BE9.wem</Path>
-				</File>
-				<File Id="199100726" Language="SFX">
-					<ShortName>wDrill.wav</ShortName>
-					<Path>SFX\wDrill_A1793BE9.wem</Path>
-				</File>
-				<File Id="306440750" Language="SFX">
-					<ShortName>wJanitorShoot4 1.wav</ShortName>
-					<Path>SFX\wJanitorShoot4 1_A1793BE9.wem</Path>
-				</File>
-				<File Id="407884217" Language="SFX">
-					<ShortName>wJanitorShoot2 2.wav</ShortName>
-					<Path>SFX\wJanitorShoot2 2_A1793BE9.wem</Path>
-				</File>
-				<File Id="415114961" Language="SFX">
-					<ShortName>wJanitorShoot2 1.wav</ShortName>
-					<Path>SFX\wJanitorShoot2 1_A1793BE9.wem</Path>
-				</File>
-				<File Id="863164524" Language="SFX">
-					<ShortName>wLizardHit.wav</ShortName>
-					<Path>SFX\wLizardHit_A1793BE9.wem</Path>
-				</File>
-				<File Id="940683805" Language="SFX">
-					<ShortName>wJanitorShoot1 2.wav</ShortName>
-					<Path>SFX\wJanitorShoot1 2_A1793BE9.wem</Path>
-				</File>
-			</IncludedMemoryFiles>
+			<GameParameters>
+				<GameParameter Id="3673881719" Name="Volume_SFX" ObjectPath="\Game Parameters\Default Work Unit\Volume_SFX"/>
+			</GameParameters>
 		</SoundBank>
-		<SoundBank Id="1355168291" Language="SFX">
+		<SoundBank Id="1355168291" Language="SFX" Hash="1891520505">
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>

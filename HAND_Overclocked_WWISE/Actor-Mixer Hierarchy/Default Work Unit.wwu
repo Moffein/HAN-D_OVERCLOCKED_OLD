@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}" SchemaVersion="89">
+<WwiseDocument Type="WorkUnit" ID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}" SchemaVersion="97">
 	<AudioObjects>
 		<WorkUnit Name="Default Work Unit" ID="{068EBB0B-3714-4C7C-A629-E920CE6D27A5}" PersistMode="Standalone">
 			<ChildrenList>
@@ -75,9 +75,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot1 1" ID="{87F2CF57-A895-4E29-B162-A498A7A2E0B5}" ShortID="28592980">
+										<AudioFileSource Name="wJanitorShoot1 1" ID="{87F2CF57-A895-4E29-B162-A498A7A2E0B5}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot1 1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="28592980"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -94,9 +97,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot1 2" ID="{862D64FF-A440-4E74-9E21-898FAD811C67}" ShortID="940683805">
+										<AudioFileSource Name="wJanitorShoot1 2" ID="{862D64FF-A440-4E74-9E21-898FAD811C67}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot1 2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="940683805"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -113,9 +119,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot2 1" ID="{0C78CB97-D647-4A61-A419-507957E6F1E3}" ShortID="415114961">
+										<AudioFileSource Name="wJanitorShoot2 1" ID="{0C78CB97-D647-4A61-A419-507957E6F1E3}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot2 1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="415114961"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -132,9 +141,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot4 1" ID="{632AA539-0955-40F7-B17F-765465EBCA09}" ShortID="306440750">
+										<AudioFileSource Name="wJanitorShoot4 1" ID="{632AA539-0955-40F7-B17F-765465EBCA09}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot4 1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="306440750"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -151,9 +163,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot2 2" ID="{C5461FAF-41A8-49D8-962B-B45F25DAB9DE}" ShortID="407884217">
+										<AudioFileSource Name="wJanitorShoot2 2" ID="{C5461FAF-41A8-49D8-962B-B45F25DAB9DE}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot2 2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="407884217"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -170,9 +185,12 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<AudioFileSource Name="wJanitorShoot4 2" ID="{8A74084F-A87C-46E8-8375-63BD9D2B4064}" ShortID="115842647">
+										<AudioFileSource Name="wJanitorShoot4 2" ID="{8A74084F-A87C-46E8-8375-63BD9D2B4064}">
 											<Language>SFX</Language>
 											<AudioFile>wJanitorShoot4 2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="115842647"/>
+											</MediaIDList>
 										</AudioFileSource>
 									</ChildrenList>
 									<ActiveSourceList>
@@ -217,9 +235,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="wDrill" ID="{1AC2A85E-DC0F-4024-85D9-00E402268C66}" ShortID="199100726">
+												<AudioFileSource Name="wDrill" ID="{1AC2A85E-DC0F-4024-85D9-00E402268C66}">
 													<Language>SFX</Language>
 													<AudioFile>wDrill.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="199100726"/>
+													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
@@ -260,9 +281,12 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<AudioFileSource Name="wLizardHit" ID="{1F3AFA14-1566-471A-BA67-0D001AA88A8B}" ShortID="863164524">
+												<AudioFileSource Name="wLizardHit" ID="{1F3AFA14-1566-471A-BA67-0D001AA88A8B}">
 													<Language>SFX</Language>
 													<AudioFile>wLizardHit.wav</AudioFile>
+													<MediaIDList>
+														<MediaID ID="863164524"/>
+													</MediaIDList>
 												</AudioFileSource>
 											</ChildrenList>
 											<ActiveSourceList>
