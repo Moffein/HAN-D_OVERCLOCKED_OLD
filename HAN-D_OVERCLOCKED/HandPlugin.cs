@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using HandPlugin.Modules;
 using UnityEngine.Networking;
+using System.IO;
 
 namespace HandPlugin
 {
@@ -133,11 +134,13 @@ namespace HandPlugin
                     HANDContent.assets = AssetBundle.LoadFromStream(stream);
                 }
 
-                using (var bankStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("HAN_D_OVERCLOCKED.HAND_Overclocked_Soundbank.bnk"))
+                using (Stream manifestResourceStream2 = Assembly.GetExecutingAssembly().GetManifestResourceStream("HAN_D_OVERCLOCKED.HAND_Overclocked_Soundbank.bnk"))
                 {
-                    var bytes = new byte[bankStream.Length];
-                    bankStream.Read(bytes, 0, bytes.Length);
-                    SoundAPI.SoundBanks.Add(bytes);
+                    byte[] array = new byte[manifestResourceStream2.Length];
+                    manifestResourceStream2.Read(array, 0, array.Length);
+                    SoundAPI.SoundBanks.Add(array);
+
+                    Debug.Log("HAN-D sounds loaded");
                 }
             }
         }
