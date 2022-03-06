@@ -26,7 +26,6 @@ Additional code help - Enigma
 	- Not sure if this actually changes anything.
 - Fixed SkillDefs not having a ScriptableObject name.
 - Reduced size in the Character Select screen.
-- Temporarily disabled Scepter/King Kombat Arena compatibilities.
 
 - Passive
 	- No longer affects damage.

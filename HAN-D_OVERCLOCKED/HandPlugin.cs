@@ -208,8 +208,8 @@ namespace HandPlugin
 
             void SetCameraAttributes() {
                 CameraTargetParams cameraTargetParams = HANDBody.GetComponent<CameraTargetParams>();
-                //cameraTargetParams.idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
                 cameraTargetParams.cameraParams = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/toolbotbody").GetComponent<CameraTargetParams>().cameraParams;
+                cameraTargetParams.cameraParams.data.idealLocalCameraPos = new Vector3(0f, 0f, -4.7f);
             }
 
             void SetCharacterBodyAttributes() {
