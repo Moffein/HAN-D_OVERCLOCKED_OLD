@@ -73,7 +73,7 @@ namespace HandPlugin.Modules
             {
                 int pcCount = sender.GetBuffCount(ParallelComputingBuff);
                 //args.damageMultAdd += pcCount * 0.025f;
-                args.armorAdd += 2f * pcCount;
+                args.armorAdd += 3f * pcCount;
             }
             if (sender.HasBuff(OverclockBuff))
             {

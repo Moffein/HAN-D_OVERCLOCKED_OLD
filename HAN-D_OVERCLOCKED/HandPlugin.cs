@@ -27,7 +27,7 @@ using System.IO;
 namespace HandPlugin
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.0")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.4")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
@@ -94,11 +94,11 @@ namespace HandPlugin
             new DisableFade();
             new OnCharacterDeath();
             new FixBearDisplay();
-            /*if (arenaPluginLoaded)
+            if (arenaPluginLoaded)
             {
                 new Stage_Start();
                 new AddTimedBuff();
-            }*/
+            }
             new FixMenuUI();
         }
 
@@ -151,6 +151,9 @@ namespace HandPlugin
                 HANDBody = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/handbody").InstantiateClone("HANDOverclockedBody", true);
                 HANDBodyName = HANDBody.name;
                 PrefabAPI.RegisterNetworkPrefab(HANDBody);
+
+                HurtBoxGroup hbg = HANDBody.GetComponent<ModelLocator>().modelTransform.GetComponent<HurtBoxGroup>();
+                hbg.mainHurtBox.isSniperTarget = true;
 
                 LoadAssets();
                 HANDBody.GetComponent<CharacterBody>().portraitIcon = HANDContent.assets.LoadAsset<Texture2D>("Portrait.png");

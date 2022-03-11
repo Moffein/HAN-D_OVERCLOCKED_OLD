@@ -195,7 +195,7 @@ namespace HandPlugin.Modules
             ovcCancelDef.requiredStock = 0;
             ovcCancelDef.skillName = "CancelOverclock";
             ovcCancelDef.skillNameToken = "HAND_OVERCLOCKED_UTILITY_CANCEL_NAME";
-            ovcCancelDef.skillDescriptionToken = "HAND_OVERCLOCKED_UTILITY_CANCEL_DESCRIPTION";
+            ovcCancelDef.skillDescriptionToken = "HAND_OVERCLOCKED_UTILITY_CANCEL_DESC";
             ovcCancelDef.stockToConsume = 0;
             FixScriptableObjectName(ovcCancelDef);
             HANDContent.skillDefs.Add(ovcCancelDef);
