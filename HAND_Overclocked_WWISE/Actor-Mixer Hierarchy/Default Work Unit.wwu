@@ -199,7 +199,7 @@
 								</Sound>
 								<ActorMixer Name="Drone_Sounds" ID="{9820558F-E168-441B-9159-4C69A7B050B5}" ShortID="707527557">
 									<PropertyList>
-										<Property Name="3DSpatialization" Type="int16" Value="1"/>
+										<Property Name="3DSpatialization" Type="int16" Value="2"/>
 										<Property Name="OverridePositioning" Type="bool" Value="True"/>
 									</PropertyList>
 									<ReferenceList>

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace HandPlugin.Modules
 {
@@ -26,7 +27,7 @@ namespace HandPlugin.Modules
             BuffDef ParallelBuffDef = ScriptableObject.CreateInstance<BuffDef>();
             ParallelBuffDef.buffColor = HAND_OVERCLOCKED.HANDColor;
             ParallelBuffDef.canStack = true;
-            ParallelBuffDef.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texbuffoverheat");
+            ParallelBuffDef.iconSprite = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Grandparent/bdOverheat.asset").WaitForCompletion().iconSprite;
             ParallelBuffDef.isDebuff = false;
             ParallelBuffDef.name = "MoffeinHANDParallelComputing";
             FixScriptableObjectName(ParallelBuffDef);
@@ -36,7 +37,7 @@ namespace HandPlugin.Modules
             BuffDef OverclockBuffDef = ScriptableObject.CreateInstance<BuffDef>();
             OverclockBuffDef.buffColor = HAND_OVERCLOCKED.OverclockColor;
             OverclockBuffDef.canStack = false;
-            OverclockBuffDef.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texbuffteslaicon");
+            OverclockBuffDef.iconSprite = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/ShockNearby/bdTeslaField.asset").WaitForCompletion().iconSprite;
             OverclockBuffDef.isDebuff = false;
             OverclockBuffDef.name = "MoffeinHANDOverclock";
             FixScriptableObjectName(OverclockBuffDef);
@@ -46,7 +47,7 @@ namespace HandPlugin.Modules
             BuffDef DroneBoostDef = ScriptableObject.CreateInstance<BuffDef>();
             DroneBoostDef.buffColor = HAND_OVERCLOCKED.OverclockColor;
             DroneBoostDef.canStack = false;
-            DroneBoostDef.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texbuffgenericshield");
+            DroneBoostDef.iconSprite = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdHiddenInvincibility.asset").WaitForCompletion().iconSprite;
             DroneBoostDef.isDebuff = false;
             DroneBoostDef.name = "MoffeinHANDDroneBoost";
             FixScriptableObjectName(DroneBoostDef);
@@ -56,7 +57,7 @@ namespace HandPlugin.Modules
             BuffDef DroneDebuffDef = ScriptableObject.CreateInstance<BuffDef>();
             DroneDebuffDef.buffColor = HAND_OVERCLOCKED.HANDColor;
             DroneDebuffDef.canStack = false;
-            DroneDebuffDef.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texbuffweakicon");
+            DroneDebuffDef.iconSprite = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Treebot/bdWeak.asset").WaitForCompletion().iconSprite;
             DroneDebuffDef.isDebuff = true;
             DroneDebuffDef.name = "MoffeinHANDDroneDebuff";
             FixScriptableObjectName(DroneDebuffDef);

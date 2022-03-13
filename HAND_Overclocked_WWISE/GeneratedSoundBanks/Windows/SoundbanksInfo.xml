@@ -11,7 +11,7 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="1029746374" Language="SFX" Hash="2857746951">
+		<SoundBank Id="1029746374" Language="SFX" Hash="912009791">
 			<ObjectPath>\SoundBanks\Default Work Unit\HAND_Overclocked_Soundbank</ObjectPath>
 			<ShortName>HAND_Overclocked_Soundbank</ShortName>
 			<Path>HAND_Overclocked_Soundbank.bnk</Path>
