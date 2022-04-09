@@ -27,10 +27,11 @@ using System.IO;
 namespace HandPlugin
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.5")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.6")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.ThinkInvisible.ClassicItems", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Kingpinush.KingKombatArena", BepInDependency.DependencyFlags.SoftDependency)]
     class HAND_OVERCLOCKED : BaseUnityPlugin
     {
@@ -116,6 +117,10 @@ namespace HandPlugin
             {
                 SetupScepter();
             }
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.ThinkInvisible.ClassicItems"))
+            {
+                SetupScepterClassic();
+            }
             AddHooks();
         }
 
@@ -123,6 +128,12 @@ namespace HandPlugin
         private void SetupScepter()
         {
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private void SetupScepterClassic()
+        {
+            ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
         }
 
         private void LoadAssets()
