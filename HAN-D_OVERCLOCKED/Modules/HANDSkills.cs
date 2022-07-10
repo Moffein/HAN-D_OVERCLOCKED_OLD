@@ -100,7 +100,7 @@ namespace HandPlugin.Modules
             secondarySkill.keywordTokens = new string[] { "KEYWORD_STUNNING", "KEYWORD_HANDOVERCLOCKED_SPRINGY" };
             FixScriptableObjectName(secondarySkill);
             HANDContent.skillDefs.Add(secondarySkill);
-
+            HAND_OVERCLOCKED.m2Def = secondarySkill;
             SkillFamily secondarySkillFamily = skillLocator.secondary.skillFamily;
 
             secondarySkillFamily.variants[0] = new SkillFamily.Variant

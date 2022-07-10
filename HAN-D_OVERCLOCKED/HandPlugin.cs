@@ -27,7 +27,7 @@ using System.IO;
 namespace HandPlugin
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.6")]
+    [BepInPlugin("com.Moffein.HAND_Overclocked", "HAN-D OVERCLOCKED BETA", "0.2.8")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(SoundAPI), nameof(NetworkingAPI), nameof(RecalculateStatsAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
@@ -53,7 +53,7 @@ namespace HandPlugin
 
         public static bool changeSortOrder = false;
 
-        public static SkillDef scepterDef;
+        public static SkillDef m2Def, scepterDef;
 
         private void CreateSurvivorDef() {
             GameObject HANDDisplay = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/handbody").GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("HANDOverclockedDisplay", false);
@@ -133,7 +133,7 @@ namespace HandPlugin
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private void SetupScepterClassic()
         {
-            ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, 0);
+            ThinkInvisible.ClassicItems.Scepter.instance.RegisterScepterSkill(scepterDef, "HANDOverclockedBody", SkillSlot.Secondary, HAND_OVERCLOCKED.m2Def);
         }
 
         private void LoadAssets()
